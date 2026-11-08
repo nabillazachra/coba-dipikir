@@ -3,6 +3,7 @@ import {CanvasImage, Easing, interpolate, useCurrentFrame, useVideoConfig} from 
 import {brand} from '../../brand/tokens';
 import {publicAsset} from '../../brand/publicAsset';
 import {Character} from './Character';
+import {OriginalCharacter} from './OriginalCharacter';
 import {EpisodeSubtitle} from './EpisodeSubtitle';
 import {Fridge} from './Fridge';
 import {SceneBase} from './SceneBase';
@@ -531,15 +532,12 @@ export const QuestionScene: React.FC = () => {
 
       {/* Use top-level layers: nested SVG percentage sizing made character vanish. */}
       <Fridge left={565} top={778} width={395} open={open} />
-      <Character
-        expression={frame < 1.3*fps ? 'thinking' : 'doubtful'}
-        width={440}
-        left={104}
-        top={818}
-        headTilt={glance}
-        rightArm={interpolate(frame,[0,1.1*fps,2.0*fps],[-20,46,35],clamp)}
-        blink={blinkAt(frame,fps)}
-        scarfSwing={Math.sin(frame/7)*4}
+      <OriginalCharacter
+        width={365}
+        left={120}
+        top={810}
+        tilt={glance * .65}
+        bob={Math.sin(frame/13)*5}
       />
 
       <div style={{
@@ -828,19 +826,14 @@ export const HabitLoopScene: React.FC = () => {
 
       {/* A loop demonstrated by acting, not a tiny character on a diagram. */}
       <Fridge left={595} top={835} width={370} open={doorOpen} />
-      <Character
-        width={430}
-        left={115}
-        top={850}
-        expression={phase===0?'doubtful':phase===1?'curious':phase===2?'surprised':'deadpan'}
-        headTilt={interpolate(
+      <OriginalCharacter
+        width={360}
+        left={135}
+        top={815}
+        tilt={interpolate(
           frame,[0,1*fps,2.0*fps,3.4*fps,4.2*fps],
-          [10,-7,5,-4,9],clamp)}
-        rightArm={interpolate(
-          frame,[0,.9*fps,1.6*fps,3.15*fps,4.2*fps],
-          [-18,45,70,70,-12],clamp)}
-        blink={blinkAt(frame,fps)}
-        scarfSwing={Math.sin(frame/5)*5}
+          [10,-7,5,-5,8],clamp)}
+        bob={Math.sin(frame/8)*5}
       />
 
       <div style={{
