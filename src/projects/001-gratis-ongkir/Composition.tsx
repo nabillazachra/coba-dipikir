@@ -6,12 +6,14 @@ import {PromoTemptationScene} from './scenes/PromoTemptationScene';
 import {DecisionScene} from './scenes/DecisionScene';
 import {RevealScene} from './scenes/RevealScene';
 import {ClosingScene} from './scenes/ClosingScene';
+import {EpisodeAudio} from './EpisodeAudio';
 
 export const GratisOngkirEpisode: React.FC = () => {
   const {fps} = useVideoConfig();
 
   return (
-    <Series>
+    <>
+      <Series>
       <Series.Sequence name="01 Hook" durationInFrames={5 * fps} premountFor={fps}>
         <HookScene />
       </Series.Sequence>
@@ -30,6 +32,8 @@ export const GratisOngkirEpisode: React.FC = () => {
       <Series.Sequence name="06 Penutup" durationInFrames={9 * fps} premountFor={fps}>
         <ClosingScene />
       </Series.Sequence>
-    </Series>
+      </Series>
+      <EpisodeAudio />
+    </>
   );
 };
