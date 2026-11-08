@@ -482,6 +482,9 @@ export const SameAgainScene: React.FC = () => {
 export const QuestionScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const glance = interpolate(frame, [0, .8*fps, 1.55*fps, 2.2*fps, 3.8*fps],
+    [-6, 8, -6, 9, 5], clamp);
+  const open = interpolate(frame, [0, .65*fps, 1.35*fps], [.4, .4, 1], clamp);
 
   return (
     <SceneBase mode="paper">
@@ -493,20 +496,62 @@ export const QuestionScene: React.FC = () => {
         <span style={{color: brand.colors.orange}}>padahal tahu isinya?</span>
       </PaperHeader>
 
+      {/* Main illustration stage stays separate from captions and headline. */}
       <div
         style={{
           position: 'absolute',
-          left: 88,
-          right: 112,
-          top: 760,
-          height: 500,
-          borderTop: `3px solid ${brand.colors.rule}`,
-          borderBottom: `3px solid ${brand.colors.rule}`,
+          left: 70,
+          top: 670,
+          width: 940,
+          height: 795,
+          borderRadius: 48,
+          border: `5px solid ${brand.colors.ink}`,
+          background: 'linear-gradient(135deg, #FFFDF7, #F0E4D4)',
+          boxShadow: '0 16px 0 rgba(32,37,31,.09)',
+          overflow: 'hidden',
         }}
       >
-        <Character expression="deadpan" width={260} left={100} top={115} headTilt={7} />
-        <Fridge left={505} top={75} width={245} open={1} />
+        <div style={{
+          position:'absolute', right:42, top:42,
+          width:150, height:150, borderRadius:999,
+          backgroundColor:'#F7E1CD',
+          opacity:.8,
+        }}/>
+        <div style={{
+          position:'absolute',left:55,bottom:40,
+          width:600,height:5,borderRadius:4,
+          backgroundColor:'rgba(32,37,31,.16)',
+        }}/>
+        <div style={{
+          position:'absolute',right:75,bottom:40,
+          width:170,height:5,borderRadius:4,
+          backgroundColor:'rgba(32,37,31,.16)',
+        }}/>
       </div>
+
+      {/* Use top-level layers: nested SVG percentage sizing made character vanish. */}
+      <Fridge left={565} top={778} width={395} open={open} />
+      <Character
+        expression={frame < 1.3*fps ? 'thinking' : 'doubtful'}
+        width={440}
+        left={104}
+        top={818}
+        headTilt={glance}
+        rightArm={interpolate(frame,[0,1.1*fps,2.0*fps],[-20,46,35],clamp)}
+        blink={blinkAt(frame,fps)}
+        scarfSwing={Math.sin(frame/7)*4}
+      />
+
+      <div style={{
+        position:'absolute',left:475,top:760,
+        fontSize:145,fontWeight:950,lineHeight:1,
+        color:brand.colors.orange,
+        rotate:interpolate(frame,[0,1.0*fps,2.0*fps],['-18deg','-3deg','8deg'],clamp),
+        scale:interpolate(frame,[0,.55*fps],[.65,1],{
+          ...clamp,easing:Easing.spring({damping:145}),output:'perceptual-scale',
+        }),
+        textShadow:'0 7px 0 rgba(32,37,31,.10)',
+      }}>?</div>
 
       <PaperSubtitle text={voiceText('08-question')} highlight="tahu isinya" />
     </SceneBase>
@@ -726,21 +771,17 @@ export const RewardScene: React.FC = () => {
 export const HabitLoopScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const beat = frame < 2.8 * fps ? 'habit' : frame < 4.0 * fps ? 'bored' : 'check';
 
-  const points = [
-    {x: 170, y: 720},
-    {x: 680, y: 720},
-    {x: 680, y: 1110},
-    {x: 170, y: 1110},
-  ];
-
-  const t = Math.min(1, frame / (5 * fps));
-  const pos = t * 4;
-  const idx = Math.min(3, Math.floor(pos));
-  const local = pos - idx;
-  const a = points[idx];
-  const b = points[(idx + 1) % points.length];
+  const phase = frame < 1.0 * fps ? 0 : frame < 2.1 * fps ? 1
+    : frame < 3.55 * fps ? 2 : 3;
+  const beat = frame < 2.8 * fps ? 'habit'
+    : frame < 4.0 * fps ? 'bored' : 'check';
+  const doorOpen = interpolate(
+    frame,
+    [0, .8*fps, 1.65*fps, 2.95*fps, 3.75*fps, 4.25*fps, 4.8*fps],
+    [0, 0, 1, 1, 0, 0, .25],
+    clamp
+  );
 
   return (
     <SceneBase mode="paper">
@@ -749,69 +790,79 @@ export const HabitLoopScene: React.FC = () => {
         <br />
         tubuhnya
         <br />
-        <span style={{color: brand.colors.orange}}>hafal sendiri.</span>
+        <span style={{color:brand.colors.orange}}>hafal sendiri.</span>
       </PaperHeader>
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 155,
-          top: 675,
-          width: 770,
-          height: 500,
-          border: '4px dashed rgba(32,37,31,.22)',
-          borderRadius: 190,
-        }}
-      />
-
-      {[
-        ['BOSAN', 135, 635],
-        ['BUKA', 745, 635],
-        ['CEK', 765, 1125],
-        ['TUTUP', 125, 1125],
-      ].map(([label, x, y]) => (
-        <div
-          key={String(label)}
-          style={{
-            position: 'absolute',
-            left: Number(x),
-            top: Number(y),
-            minWidth: 155,
-            padding: '13px 18px',
-            borderRadius: 999,
-            border: `3px solid ${brand.colors.ink}`,
-            backgroundColor: label === 'BUKA' ? '#FFF0EA' : '#FFFDF8',
-            color: label === 'BUKA' ? brand.colors.orange : brand.colors.ink,
-            textAlign: 'center',
-            fontSize: 21,
-            fontWeight: 900,
-            letterSpacing: 1.4,
-          }}
-        >
-          {label}
+      <div style={{
+        position:'absolute',left:70,top:640,width:940,height:810,
+        border:`5px solid ${brand.colors.ink}`,
+        borderRadius:48,overflow:'hidden',
+        background:'linear-gradient(115deg,#FFFDF7 0%,#EDE4D9 100%)',
+        boxShadow:'0 16px 0 rgba(32,37,31,.08)',
+      }}>
+        <div style={{
+          position:'absolute',left:35,right:35,top:35,
+          display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:14,
+        }}>
+          {['BOSAN','BUKA','CEK','TUTUP'].map((label,i)=>(
+            <div key={label} style={{
+              padding:'16px 8px',
+              borderRadius:999,
+              border:`3px solid ${i===phase?brand.colors.orange:brand.colors.ink}`,
+              backgroundColor:i===phase?brand.colors.orange:'#FFFDF8',
+              color:i===phase?brand.colors.white:brand.colors.ink,
+              fontSize:22,fontWeight:950,textAlign:'center',
+              letterSpacing:.9,
+              scale:i===phase?1.055:1,
+              opacity:i===phase?1:.72,
+            }}>{label}</div>
+          ))}
         </div>
-      ))}
 
+        <div style={{
+          position:'absolute',left:60,right:60,bottom:34,
+          height:5,borderRadius:8,
+          backgroundColor:'rgba(32,37,31,.16)',
+        }}/>
+      </div>
+
+      {/* A loop demonstrated by acting, not a tiny character on a diagram. */}
+      <Fridge left={595} top={835} width={370} open={doorOpen} />
       <Character
-        expression={beat === 'check' ? 'curious' : 'neutral'}
-        width={175}
-        left={a.x + (b.x - a.x) * local}
-        top={a.y + (b.y - a.y) * local}
-        headTilt={beat === 'check' ? -7 : 0}
-        bob={Math.sin(frame / 4) * 3}
-        step={frame / 8}
-        scarfSwing={Math.sin(frame / 6) * 7}
+        width={430}
+        left={115}
+        top={850}
+        expression={phase===0?'doubtful':phase===1?'curious':phase===2?'surprised':'deadpan'}
+        headTilt={interpolate(
+          frame,[0,1*fps,2.0*fps,3.4*fps,4.2*fps],
+          [10,-7,5,-4,9],clamp)}
+        rightArm={interpolate(
+          frame,[0,.9*fps,1.6*fps,3.15*fps,4.2*fps],
+          [-18,45,70,70,-12],clamp)}
+        blink={blinkAt(frame,fps)}
+        scarfSwing={Math.sin(frame/5)*5}
       />
+
+      <div style={{
+        position:'absolute',left:480,top:1110,
+        width:100,height:100,
+        opacity:interpolate(frame,[.85*fps,1.3*fps,3.55*fps,4*fps],[0,1,1,0],clamp),
+      }}>
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          <path d="M9 72 Q20 23 75 30" fill="none" stroke={brand.colors.orange}
+            strokeWidth="9" strokeLinecap="round"/>
+          <path d="M62 11 L85 29 L65 49" fill="none" stroke={brand.colors.orange}
+            strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
 
       <PaperSubtitle
         text={
-          beat === 'habit'
-            ? voiceText('11-habit')
-            : beat === 'bored'
-              ? voiceText('11-bored')
-              : voiceText('11-check')
+          beat==='habit'?voiceText('11-habit')
+            :beat==='bored'?voiceText('11-bored')
+              :voiceText('11-check')
         }
-        highlight={beat === 'check' ? 'cek kulkas' : beat === 'bored' ? 'Bosan' : 'kebiasaan'}
+        highlight={beat==='check'?'cek kulkas':beat==='bored'?'Bosan':'kebiasaan'}
       />
     </SceneBase>
   );
