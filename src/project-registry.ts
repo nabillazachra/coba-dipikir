@@ -6,6 +6,9 @@ import {projectConfig as kulkasConfig} from './projects/002-kulkas/project.confi
 import {Harga99000Episode} from './projects/003-harga-99000/Composition';
 import {projectConfig as harga99000Config} from './projects/003-harga-99000/project.config';
 import {scenePlan as harga99000Scenes} from './projects/003-harga-99000/timeline';
+import {LiftCloseEpisode} from './projects/004-lift-close/Composition';
+import {projectConfig as liftCloseConfig} from './projects/004-lift-close/project.config';
+import {scenePlan as liftCloseScenes} from './projects/004-lift-close/timeline';
 
 export type ProjectStatus = 'idea' | 'draft' | 'review' | 'published';
 
@@ -107,6 +110,28 @@ export const projectRegistry: ProjectRegistryEntry[] = [
       label: scene.label,
       startFrame: Math.round(scene.start * harga99000Config.fps),
       durationInFrames: Math.round((scene.end - scene.start) * harga99000Config.fps),
+    })),
+  },
+  {
+    id: liftCloseConfig.id,
+    episode: liftCloseConfig.episode,
+    title: liftCloseConfig.title,
+    coverText: liftCloseConfig.coverText,
+    category: liftCloseConfig.category,
+    status: liftCloseConfig.status,
+    compositionId: 'E004-Close-Lift',
+    width: liftCloseConfig.width,
+    height: liftCloseConfig.height,
+    fps: liftCloseConfig.fps,
+    durationInFrames: liftCloseConfig.durationInFrames,
+    folder: 'src/projects/004-lift-close',
+    component: LiftCloseEpisode,
+    scenes: liftCloseScenes.map((scene) => ({
+      id: scene.id,
+      title: scene.title,
+      label: scene.label,
+      startFrame: Math.round(scene.start * liftCloseConfig.fps),
+      durationInFrames: Math.round((scene.end - scene.start) * liftCloseConfig.fps),
     })),
   },
 ];
