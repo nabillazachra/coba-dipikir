@@ -2,6 +2,7 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
+import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
 export const PromoTemptationScene: React.FC = () => {
@@ -71,10 +72,7 @@ export const PromoTemptationScene: React.FC = () => {
         otak: “tanggung...”
       </div>
 
-      <Subtitle>
-        Terus muncul tulisan kecil yang mulai bahaya:
-        <br />kurang 30 ribu lagi.
-      </Subtitle>
+      <Subtitle>{voiceText('03-promo')}</Subtitle>
     </SceneBase>
   );
 };
