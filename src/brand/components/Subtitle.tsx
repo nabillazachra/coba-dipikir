@@ -11,7 +11,7 @@ export const Subtitle: React.FC<SubtitleProps> = ({children}) => (
       position: 'absolute',
       left: brand.safe.left,
       right: brand.safe.right,
-      bottom: 305,
+      bottom: 300,
       display: 'flex',
       justifyContent: 'center',
       pointerEvents: 'none',
@@ -19,15 +19,15 @@ export const Subtitle: React.FC<SubtitleProps> = ({children}) => (
   >
     <div
       style={{
-        maxWidth: 800,
+        maxWidth: 760,
         backgroundColor: 'rgba(32,37,31,0.93)',
         color: brand.colors.paper,
-        borderRadius: 20,
-        padding: '15px 22px 17px',
+        borderRadius: 18,
+        padding: '14px 20px 16px',
         fontFamily: brand.fontFamily,
-        fontSize: 34,
+        fontSize: 31,
         fontWeight: 700,
-        lineHeight: 1.22,
+        lineHeight: 1.2,
         textAlign: 'center',
       }}
     >
