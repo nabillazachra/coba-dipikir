@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feat/episode-004-lift-close
+      - feat/e004-cinematic-rework
   workflow_dispatch:
 
 permissions:
