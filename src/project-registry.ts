@@ -45,12 +45,12 @@ export const projectRegistry: ProjectRegistryEntry[] = [
     folder: 'src/projects/001-gratis-ongkir',
     component: GratisOngkirEpisode,
     scenes: [
-      {id: 'hook', title: 'Hook', label: 'Nambah belanja 35 ribu?', startFrame: 0, durationInFrames: 150},
-      {id: 'awal', title: 'Belanja Awal', label: 'Total awal Rp80.000', startFrame: 150, durationInFrames: 180},
-      {id: 'promo', title: 'Godaan Promo', label: 'Kurang Rp30.000', startFrame: 330, durationInFrames: 180},
-      {id: 'keputusan', title: 'Keputusan', label: 'Tambah barang Rp35.000', startFrame: 510, durationInFrames: 180},
-      {id: 'reveal', title: 'Reveal', label: '+Rp25.000', startFrame: 690, durationInFrames: 240},
-      {id: 'penutup', title: 'Penutup', label: 'Tanpa promo, tetap dibeli?', startFrame: 930, durationInFrames: 270},
+      {id: 'hook', title: 'Hook', label: 'Nambah belanja cuma demi ongkir?', startFrame: 0, durationInFrames: 180},
+      {id: 'awal', title: 'Belanja Awal', label: 'Total awal Rp80.000', startFrame: 180, durationInFrames: 180},
+      {id: 'promo', title: 'Godaan Promo', label: 'Kurang Rp30.000', startFrame: 360, durationInFrames: 210},
+      {id: 'keputusan', title: 'Keputusan', label: 'Tambah barang Rp35.000', startFrame: 570, durationInFrames: 210},
+      {id: 'reveal', title: 'Reveal', label: '+Rp25.000', startFrame: 780, durationInFrames: 300},
+      {id: 'penutup', title: 'Penutup', label: 'Tanpa promo, tetap dibeli?', startFrame: 1080, durationInFrames: 270},
     ],
   },
 ];
