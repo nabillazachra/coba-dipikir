@@ -2,6 +2,7 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
+import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
 const ProductCard = ({label, price, left, rotate, active, frame, fps, delay}: {
@@ -96,10 +97,7 @@ export const DecisionScene: React.FC = () => {
         ONGKIR 0 ✓
       </div>
 
-      <Subtitle>
-        Dan entah kenapa... nemu barang 35 ribu.
-        <br />Cocok banget, ya?
-      </Subtitle>
+      <Subtitle>{voiceText('04-keputusan')}</Subtitle>
     </SceneBase>
   );
 };
