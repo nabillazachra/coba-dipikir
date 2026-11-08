@@ -135,7 +135,7 @@ const NightSet: React.FC<SetProps> = ({
     <div style={{position: 'absolute', left: 618, top: 1398, width: 380, height: 44,
       borderRadius: '50%', background: 'rgba(14,16,16,.38)', filter: 'blur(17px)',
     }} />
-    <Fridge left={616} top={817} width={374} open={open} />
+    <Fridge left={600} top={750} width={430} open={open} />
 
     {showHero ? <Character
       width={heroWidth}
@@ -207,7 +207,7 @@ const PaperSet: React.FC<PaperSetProps> = ({
       background: 'linear-gradient(180deg,#E5D9C8,#D7C7B5)'}} />
     <div style={{position: 'absolute', left: 0, right: 0, top: 1380, height: 11,
       background: '#B9A994'}} />
-    {showFridge ? <Fridge left={628} top={805} width={374} open={open} /> : null}
+    {showFridge ? <Fridge left={608} top={754} width={422} open={open} /> : null}
     {showHero ? <Character
       left={heroX}
       top={heroY}
@@ -256,7 +256,7 @@ export const ApproachScene: React.FC = () => {
   const tilt = motion(f, secs(fps,0,.8,1.5,2.4,3.4), [-6,9,-9,7,-4]);
   const arm = motion(f, secs(fps,0,2.3,3.75), [-15,-15,66]);
   return <Night>
-    <NightSet heroX={118} heroY={790} heroWidth={475}
+    <NightSet heroX={170} heroY={715} heroWidth={535}
       expression={f > 1.15*fps ? 'curious' : 'neutral'}
       tilt={tilt} arm={arm} scarf={Math.sin(f/12)*3}
       eyeBlink={f > 1.7*fps && f < 1.82*fps ? 1 : 0}
@@ -273,7 +273,7 @@ export const OpenFridgeScene: React.FC = () => {
   });
   const cam = motion(f, secs(fps,0,4.8), [1.02,1.14]);
   return <Night>
-    <NightSet open={open} heroX={130} heroY={788} heroWidth={480}
+    <NightSet open={open} heroX={180} heroY={715} heroWidth={555}
       expression={open > .72 ? 'surprised' : 'curious'}
       tilt={motion(f,secs(fps,0,2.1),[-6,7])}
       lean={open*6} arm={motion(f,secs(fps,0,.8,2.0),[3,62,75])}
@@ -288,7 +288,7 @@ export const InvestigationScene: React.FC = () => {
   const magIn = motion(f, secs(fps,1.18,1.58,3.12,3.48), [0,1,1,0]);
   const magnifierX = motion(f, secs(fps,1.5,3.1), [630,770]);
   return <Night>
-    <NightSet open={1} heroX={70} heroY={765} heroWidth={525}
+    <NightSet open={1} heroX={112} heroY={688} heroWidth={585}
       expression={f < 1.6*fps ? 'curious' : f < 3.25*fps ? 'thinking' : 'doubtful'}
       tilt={motion(f,secs(fps,0,1.4,2.8,4.1),[-11,8,-8,11])}
       lean={motion(f,secs(fps,0,2.6),[0,9])}
@@ -362,7 +362,7 @@ export const SameAgainScene: React.FC = () => {
   const open = motion(f,secs(fps,.25,1.22),[0,1]);
   const tilt = motion(f,secs(fps,0,1.2,2.8,3.8),[0,0,12,17]);
   return <Night>
-    <NightSet open={open} heroX={130} heroY={788} heroWidth={480}
+    <NightSet open={open} heroX={170} heroY={715} heroWidth={560}
       expression={f>1.6*fps ? 'deadpan' : 'curious'}
       tilt={tilt} arm={75}
       cameraScale={1.06} cameraX={-15} />
@@ -377,10 +377,10 @@ export const QuestionScene: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   return <Paper>
-    <PaperSet heroX={25} heroY={730} heroWidth={610}
+    <PaperSet heroX={-36} heroY={585} heroWidth={720}
       expression="thinking" tilt={motion(f,secs(fps,0,1.5,3.7),[-8,8,-5])}
       arm={34} open={1}
-      cameraScale={motion(f,secs(fps,0,3.9),[1.0,1.11])}
+      cameraScale={motion(f,secs(fps,0,3.9),[1.0,1.055])}
       cameraX={-22} />
     <div style={{position:'absolute',left:85,top:235,
       fontSize:148,fontWeight:1000,letterSpacing:-8,
@@ -477,9 +477,9 @@ export const HabitLoopScene: React.FC = () => {
   const fStep = Math.max(0,f-1.0*fps)/(fps*.28);
   return <Paper>
     <PaperSet open={open}
-      heroX={motion(f,secs(fps,0,1.1,1.65,5),[95,95,165,165])}
-      heroY={795+Math.sin(fStep*Math.PI*2)*(phase===1?10:2)}
-      heroWidth={535}
+      heroX={motion(f,secs(fps,0,1.1,1.65,5),[75,75,110,110])}
+      heroY={685+Math.sin(fStep*Math.PI*2)*(phase===1?10:2)}
+      heroWidth={615}
       expression={phase===0?'doubtful':phase===1?'curious':phase===2?'surprised':'deadpan'}
       tilt={phase===0?9:phase===1?-7:phase===2?7:-5}
       arm={phase===0?-12:phase===1?65:phase===2?73:6}
@@ -506,7 +506,7 @@ export const EndingScene: React.FC = () => {
   const open = motion(f,secs(fps,4.65,5.34),[0,1]);
   const final = motion(f,secs(fps,5.3,5.85),[0,1]);
   return <Night>
-    <NightSet open={open} heroX={110} heroY={795} heroWidth={490}
+    <NightSet open={open} heroX={170} heroY={725} heroWidth={550}
       expression={f<1.8*fps?'thinking':f<4.45*fps?'realization':'deadpan'}
       tilt={motion(f,secs(fps,0,1.65,2.9,4.1),[8,-8,12,-4])}
       arm={motion(f,secs(fps,0,1.8,3.4,4.2,4.9),[70,70,-12,25,71])}
