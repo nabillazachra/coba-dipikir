@@ -84,7 +84,7 @@ export const Character: React.FC<CharacterProps> = ({
         left,
         top,
         width,
-        aspectRatio: '300 / 420',
+        height: (width * 420) / 300,
         opacity,
         scale: flip ? '-1 1' : '1 1',
         translate: `0px ${bob}px`,
