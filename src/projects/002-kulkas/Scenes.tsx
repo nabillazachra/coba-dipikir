@@ -86,10 +86,10 @@ const NightLight: React.FC<{strength: number}> = ({strength}) => (
   <div
     style={{
       position: 'absolute',
-      left: 325,
+      left: 335,
       top: 640,
-      width: 730,
-      height: 860,
+      width: 660,
+      height: 790,
       opacity: strength,
       background:
         'linear-gradient(270deg, rgba(255,201,98,.54) 0%, rgba(255,221,142,.34) 43%, rgba(255,238,197,.05) 100%)',
