@@ -69,9 +69,10 @@ jobs:
       - name: QA episode 002 rendered frames
         continue-on-error: true
         run: |
+          python -m pip install --quiet Pillow
           for frame in 60 300 1050; do
             npx remotion still E002-Kenapa-Buka-Kulkas /tmp/ep2-qa-${frame}.png --frame=${frame}
-            ffmpeg -y -loglevel error -i /tmp/ep2-qa-${frame}.png -vf scale=405:-2 -c:v libwebp -quality 52 /tmp/ep2-qa-${frame}.webp
+            python -c "from PIL import Image; im=Image.open('/tmp/ep2-qa-${frame}.png'); im.thumbnail((405,720)); im.save('/tmp/ep2-qa-${frame}.webp',quality=52,method=6)"
             echo "EP2_QA_FRAME_${frame}_BEGIN"
             base64 -w0 /tmp/ep2-qa-${frame}.webp
             echo
