@@ -1,5 +1,5 @@
 import {existsSync, mkdirSync, readFileSync, readdirSync} from 'node:fs';
-import {basename, dirname, join} from 'node:path';
+import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 
 const projectsRoot = 'src/projects';
@@ -18,8 +18,15 @@ const readString = (source, key, fallback = '') => {
 
 const readScenes = (source) => {
   const scenesBlock = source.match(/scenes\s*:\s*\[([\s\S]*?)\]\s*,?\s*\}\s*as const/)?.[1] ?? '';
-  const matches = [...scenesBlock.matchAll(/\{\s*id:\s*'([^']+)'\s*,\s*text:\s*'([^']+)'\s*,?\s*\}/g)];
-  return matches.map((match) => ({id: match[1], text: match[2]}));
+  const objects = [...scenesBlock.matchAll(/\{([^{}]+)\}/g)].map((match) => match[1]);
+
+  return objects.map((body) => ({
+    id: readString(body, 'id'),
+    text: readString(body, 'text'),
+    rate: readString(body, 'rate'),
+    pitch: readString(body, 'pitch'),
+    volume: readString(body, 'volume'),
+  })).filter((scene) => scene.id && scene.text);
 };
 
 let generated = 0;
@@ -30,9 +37,9 @@ for (const projectDir of projectDirs) {
 
   const source = readFileSync(configPath, 'utf8');
   const voice = readString(source, 'voice', 'id-ID-ArdiNeural');
-  const rate = readString(source, 'rate', '+5%');
-  const pitch = readString(source, 'pitch', '+0Hz');
-  const volume = readString(source, 'volume', '+0%');
+  const defaultRate = readString(source, 'rate', '+0%');
+  const defaultPitch = readString(source, 'pitch', '+0Hz');
+  const defaultVolume = readString(source, 'volume', '+0%');
   const scenes = readScenes(source);
 
   if (!scenes.length) {
@@ -46,6 +53,12 @@ for (const projectDir of projectDirs) {
 
   for (const scene of scenes) {
     const output = join(outputDir, `${scene.id}.mp3`);
+    const rate = scene.rate || defaultRate;
+    const pitch = scene.pitch || defaultPitch;
+    const volume = scene.volume || defaultVolume;
+
+    console.log(`  ${scene.id}: rate=${rate}, pitch=${pitch}`);
+
     const result = spawnSync(
       'edge-tts',
       [
