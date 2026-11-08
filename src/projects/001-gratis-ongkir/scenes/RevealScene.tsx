@@ -1,9 +1,5 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {BracketFocus} from '../../../brand/components/BracketFocus';
-import {ReceiptCard} from '../../../brand/components/ReceiptCard';
-import {SimulationNote} from '../../../brand/components/SimulationNote';
-import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -11,119 +7,77 @@ export const RevealScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
+  const celebrateOut = interpolate(frame,[.9*fps,1.35*fps],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+  const compareIn = interpolate(frame,[1.05*fps,1.55*fps],[0,1],{
+    extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:180})
+  });
+
   return (
     <SceneBase>
-      <div style={{position: 'absolute', left: 84, top: 165, fontSize: 34, fontWeight: 780, color: brand.colors.orange}}>
-        COBA LIHAT TOTALNYA
-      </div>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 230, fontSize: 78, fontWeight: 920, lineHeight: 1.02, letterSpacing: -2.9}}>
-        Hemat ongkir.
-        <br />Totalnya naik.
-      </div>
       <div
         style={{
-          position: 'absolute',
-          left: 84,
-          right: 170,
-          top: 455,
-          height: 54,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 18,
-          borderTop: `2px solid ${brand.colors.rule}`,
-          borderBottom: `2px solid ${brand.colors.rule}`,
-          fontSize: 24,
-          fontWeight: 820,
-          opacity: interpolate(frame, [0.25 * fps, 0.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          position:'absolute',inset:'160px 90px 360px',
+          display:'grid',placeItems:'center',
+          opacity:celebrateOut,
+          scale:interpolate(frame,[0,.45*fps],[.75,1],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:150}),output:'perceptual-scale'
+          })
         }}
       >
-        <span style={{color: brand.colors.green}}>ongkir -10k</span>
-        <span style={{color: brand.colors.muted}}>tapi</span>
-        <span style={{color: brand.colors.orange}}>belanja +35k</span>
+        <div style={{textAlign:'center'}}>
+          <div style={{fontSize:32,fontWeight:850,color:brand.colors.green,letterSpacing:1.6}}>BERHASIL!</div>
+          <div style={{fontSize:156,fontWeight:950,letterSpacing:-6,color:brand.colors.green,lineHeight:.9,marginTop:12}}>ONGKIR</div>
+          <div style={{fontSize:180,fontWeight:950,letterSpacing:-7,lineHeight:.9}}>Rp0</div>
+        </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 70,
-          top: 535,
-          display: 'flex',
-          gap: 24,
-          opacity: interpolate(frame, [0.5 * fps, 1.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          translate: interpolate(frame, [0.5 * fps, 1.3 * fps], ['0px 50px', '0px 0px'], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
-        }}
-      >
-        <ReceiptCard
-          compact
-          width={416}
-          title="Checkout langsung"
-          lines={[
-            {label: 'Barang', value: 'Rp70.000'},
-            {label: 'Tambahan', value: '—'},
-            {label: 'Ongkir', value: 'Rp10.000'},
-            {label: 'Total', value: 'Rp80.000'},
-          ]}
-        />
-        <ReceiptCard
-          compact
-          width={416}
-          title="Kejar gratis ongkir"
-          lines={[
-            {label: 'Barang awal', value: 'Rp70.000'},
-            {label: 'Tambahan', value: 'Rp35.000'},
-            {label: 'Ongkir', value: 'Rp0', emphasis: 'success'},
-            {label: 'Total', value: 'Rp105.000', emphasis: 'accent'},
-          ]}
-        />
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 84,
-          right: 170,
-          top: 1265,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: 74,
-          fontWeight: 930,
-          opacity: interpolate(frame, [6.0 * fps, 6.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          scale: interpolate(frame, [3.2 * fps, 4.0 * fps], [0.88, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-            output: 'perceptual-scale',
-          }),
-        }}
-      >
-        <BracketFocus>+Rp25.000</BracketFocus>
-      </div>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 1382, textAlign: 'center', fontSize: 27, fontWeight: 670, color: brand.colors.muted}}>
-        tambahan pengeluaran dibanding checkout langsung
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 445,
-          top: 1160,
-          width: 150,
-          height: 2,
-          backgroundColor: brand.colors.orange,
-          rotate: '-5deg',
-          opacity: interpolate(frame, [6.05 * fps, 6.75 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      />
+      <div style={{position:'absolute',left:70,right:70,top:180,opacity:compareIn}}>
+        <div style={{fontSize:28,fontWeight:850,color:brand.colors.orange,letterSpacing:1.5}}>EH. TOTALNYA?</div>
+        <div style={{fontSize:82,fontWeight:950,lineHeight:.98,letterSpacing:-3.3,marginTop:12}}>
+          Bandingin aja.
+        </div>
 
-      <SimulationNote />
-      <Subtitle>
-        Ongkirnya nol. Tapi totalnya 105 ribu.
-        <br />Kita keluar 25 ribu lebih banyak.
-      </Subtitle>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24,marginTop:95}}>
+          <div style={{border:`4px solid ${brand.colors.ink}`,borderRadius:34,background:'#FFFDF8',padding:'34px 28px',textAlign:'center'}}>
+            <div style={{fontSize:25,fontWeight:850,color:brand.colors.muted}}>CHECKOUT LANGSUNG</div>
+            <div style={{fontSize:94,fontWeight:950,letterSpacing:-3,marginTop:24}}>80K</div>
+            <div style={{fontSize:24,fontWeight:800,color:brand.colors.muted,marginTop:16}}>70K + ongkir 10K</div>
+          </div>
+          <div style={{border:`4px solid ${brand.colors.orange}`,borderRadius:34,background:'#FFF3EC',padding:'34px 28px',textAlign:'center'}}>
+            <div style={{fontSize:25,fontWeight:850,color:brand.colors.orange}}>KEJAR PROMO</div>
+            <div style={{fontSize:94,fontWeight:950,letterSpacing:-3,marginTop:24}}>105K</div>
+            <div style={{fontSize:24,fontWeight:800,color:brand.colors.muted,marginTop:16}}>70K + 35K + ongkir 0</div>
+          </div>
+        </div>
+
+        <div style={{display:'grid',gridTemplateColumns:'1fr 70px 1fr',gap:14,alignItems:'center',marginTop:70,
+          opacity:interpolate(frame,[3.1*fps,3.6*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+        }}>
+          <div style={{backgroundColor:'#E7F0E9',border:`3px solid ${brand.colors.green}`,borderRadius:22,padding:'20px 18px',textAlign:'center',color:brand.colors.green}}>
+            <div style={{fontSize:22,fontWeight:850}}>HEMAT ONGKIR</div>
+            <div style={{fontSize:58,fontWeight:950,marginTop:4}}>-10K</div>
+          </div>
+          <div style={{fontSize:52,fontWeight:950,textAlign:'center'}}>+</div>
+          <div style={{backgroundColor:'#FFF0EA',border:`3px solid ${brand.colors.orange}`,borderRadius:22,padding:'20px 18px',textAlign:'center',color:brand.colors.orange}}>
+            <div style={{fontSize:22,fontWeight:850}}>TAMBAH BARANG</div>
+            <div style={{fontSize:58,fontWeight:950,marginTop:4}}>+35K</div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop:70,textAlign:'center',
+            opacity:interpolate(frame,[4.7*fps,5.25*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+            scale:interpolate(frame,[4.7*fps,5.25*fps],[.78,1],{
+              extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:150}),output:'perceptual-scale'
+            })
+          }}
+        >
+          <div style={{fontSize:28,fontWeight:850,color:brand.colors.muted}}>HASIL AKHIR</div>
+          <div style={{fontSize:122,fontWeight:950,letterSpacing:-4,color:brand.colors.orange,lineHeight:.95}}>+25K</div>
+          <div style={{fontSize:28,fontWeight:800,color:brand.colors.muted,marginTop:12}}>lebih banyak keluar</div>
+        </div>
+      </div>
     </SceneBase>
   );
 };
