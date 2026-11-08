@@ -244,9 +244,9 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>
     <Camera zoom={1.04+crossing*.05} panX={-12}>
       <ElevatorShell/>
-      <Actor x={-90+350*crossing} y={308} width={230}
-        expression="happy" walk={t*3.1} scarf={6}/>
       <Door x={120} y={150} w={640} h={490} open={open} sensor={false}/>
+      {t>1.65&&<Actor x={75+240*crossing} y={308} width={230}
+        expression="happy" walk={t*3.1} scarf={6}/>}
       <SensorBeam pulse={t>1.8?Math.min(1,range(t,1.7,2.2)+hop(t,3,.6)):.25}/>
       <Actor x={490} y={175} width={360}
         expression={t>3?'surprised':'annoyed'}
