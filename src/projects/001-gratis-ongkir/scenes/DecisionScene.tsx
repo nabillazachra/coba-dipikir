@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -94,6 +95,11 @@ export const DecisionScene: React.FC = () => {
       >
         ONGKIR 0 ✓
       </div>
+
+      <Subtitle>
+        Dan entah kenapa... nemu barang 35 ribu.
+        <br />Cocok banget, ya?
+      </Subtitle>
     </SceneBase>
   );
 };
