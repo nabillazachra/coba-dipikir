@@ -12,7 +12,8 @@ export type CharacterExpression =
   | 'worried'
   | 'happy'
   | 'excited'
-  | 'deadpan';
+  | 'deadpan'
+  | 'annoyed';
 
 type CharacterProps = {
   readonly expression?: CharacterExpression;
@@ -67,7 +68,7 @@ export const Character: React.FC<CharacterProps> = ({
   const mouth =
     expression === 'happy' || expression === 'excited'
       ? 'M132 168 Q150 192 168 168'
-      : expression === 'worried'
+      : expression === 'worried' || expression === 'annoyed'
         ? 'M133 179 Q150 164 167 179'
         : expression === 'surprised' || expression === 'realization'
           ? 'M150 168 m-8 0 a8 13 0 1 0 16 0 a8 13 0 1 0 -16 0'
@@ -146,11 +147,11 @@ export const Character: React.FC<CharacterProps> = ({
             <rect x={113 + gazeX} y={eyeY - browLift} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
             <rect x={176 + gazeX} y={eyeY + browLift * 0.2} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
 
-            {expression === 'curious' || expression === 'thinking' || expression === 'doubtful' || expression === 'worried' ? (
+            {expression === 'curious' || expression === 'thinking' || expression === 'doubtful' || expression === 'worried' || expression === 'annoyed' ? (
               <>
                 <path d="M104 104 Q117 96 129 103" fill="none" stroke={brand.colors.ink} strokeWidth="7" strokeLinecap="round" />
                 <path
-                  d={expression === 'doubtful' ? 'M170 104 Q185 111 197 103' : 'M170 101 Q184 94 197 100'}
+                  d={expression === 'doubtful' || expression === 'annoyed' ? 'M170 109 Q185 115 197 109' : 'M170 101 Q184 94 197 100'}
                   fill="none"
                   stroke={brand.colors.ink}
                   strokeWidth="7"
