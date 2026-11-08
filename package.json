@@ -12,7 +12,9 @@
     "voice:generate": "node scripts/generate-voiceover.mjs",
     "audio:bed": "node scripts/generate-soundbed.mjs",
     "render:e002": "remotion render E002-Kenapa-Buka-Kulkas renders/002-kulkas.mp4",
-    "audio:ep2-sfx": "node scripts/generate-episode2-sfx.mjs"
+    "audio:ep2-sfx": "node scripts/generate-episode2-sfx.mjs",
+    "audio:ep3-sfx": "node scripts/generate-episode3-sfx.mjs",
+    "render:e003": "remotion render E003-Harga-99000 renders/003-harga-99000.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
