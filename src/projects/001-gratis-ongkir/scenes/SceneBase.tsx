@@ -1,8 +1,9 @@
 import type React from 'react';
+import {EditorialDecor} from '../../../brand/components/EditorialDecor';
 import {brand} from '../../../brand/tokens';
 
 type SceneBaseProps = {
-  readonly children : React.ReactNode;
+  readonly children: React.ReactNode;
 };
 
 export const SceneBase: React.FC<SceneBaseProps> = ({children}) => (
@@ -16,6 +17,7 @@ export const SceneBase: React.FC<SceneBaseProps> = ({children}) => (
       fontFamily: brand.fontFamily,
     }}
   >
+    <EditorialDecor />
     {children}
   </div>
 );
