@@ -1,7 +1,5 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {EpisodeClosing} from '../../../brand/components/EpisodeClosing';
-import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -13,110 +11,59 @@ export const ClosingScene: React.FC = () => {
     <SceneBase>
       <div
         style={{
-          position: 'absolute',
-          left: 155,
-          top: 250,
-          width: 255,
-          height: 340,
-          border: `3px solid ${brand.colors.rule}`,
-          borderRadius: 26,
-          rotate: '-8deg',
-          opacity: interpolate(frame, [0, 0.8 * fps, 3.4 * fps, 4.2 * fps], [0, 0.38, 0.38, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          position:'absolute',left:115,right:115,top:300,height:420,
+          opacity:interpolate(frame,[0,.45*fps,2.1*fps,2.65*fps],[0,1,1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
         }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          right: 180,
-          top: 265,
-          width: 255,
-          height: 340,
-          border: `3px solid ${brand.colors.rule}`,
-          borderRadius: 26,
-          rotate: '9deg',
-          opacity: interpolate(frame, [0.2 * fps, 1 * fps, 3.4 * fps, 4.2 * fps], [0, 0.28, 0.28, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      />
+      >
+        <div style={{position:'absolute',left:0,top:70,width:300,borderRadius:30,background:'#E7F0E9',border:`4px solid ${brand.colors.green}`,padding:'28px',textAlign:'center',rotate:'-7deg'}}>
+          <div style={{fontSize:24,fontWeight:850,color:brand.colors.green}}>YANG DIHEMAT</div>
+          <div style={{fontSize:82,fontWeight:950,color:brand.colors.green,marginTop:8}}>10K</div>
+        </div>
+        <div style={{position:'absolute',right:0,top:30,width:330,borderRadius:30,background:'#FFF0EA',border:`4px solid ${brand.colors.orange}`,padding:'28px',textAlign:'center',rotate:'6deg'}}>
+          <div style={{fontSize:24,fontWeight:850,color:brand.colors.orange}}>YANG DITAMBAH</div>
+          <div style={{fontSize:82,fontWeight:950,color:brand.colors.orange,marginTop:8}}>35K</div>
+        </div>
+        <div style={{position:'absolute',left:300,right:300,top:295,height:5,backgroundColor:brand.colors.ink,rotate:'5deg'}} />
+        <div style={{position:'absolute',left:420,top:295,width:70,height:150,backgroundColor:brand.colors.ink,clipPath:'polygon(50% 0,100% 100%,0 100%)'}} />
+      </div>
 
       <div
         style={{
-          position: 'absolute',
-          left: 345,
-          top: 310,
-          width: 300,
-          height: 300,
-          border: `5px solid ${brand.colors.ink}`,
-          borderRadius: 44,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: interpolate(frame, [0, 0.7 * fps, 3.5 * fps, 4.4 * fps], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          scale: interpolate(frame, [0, 0.7 * fps], [0.9, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-            output: 'perceptual-scale',
-          }),
+          position:'absolute',left:84,right:84,top:500,textAlign:'center',
+          opacity:interpolate(frame,[2.3*fps,2.9*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+          translate:interpolate(frame,[2.3*fps,2.9*fps],['0px 42px','0px 0px'],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.bezier(.16,1,.3,1)
+          })
         }}
       >
-        <div style={{width: 112, height: 140, border: `6px solid ${brand.colors.ink}`, borderRadius: '26px 26px 38px 38px', position: 'relative'}}>
-          <div style={{position: 'absolute', width: 62, height: 28, border: `6px solid ${brand.colors.ink}`, borderBottom: 0, borderRadius: '40px 40px 0 0', left: 19, top: -27}} />
+        <div style={{fontSize:31,fontWeight:850,color:brand.colors.orange,letterSpacing:1.4}}>JADI...</div>
+        <div style={{fontSize:108,fontWeight:950,lineHeight:.92,letterSpacing:-4.5,marginTop:24}}>
+          Masih
+          <br />hemat?
         </div>
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 84,
-          right: 170,
-          top: 680,
-          fontSize: 72,
-          fontWeight: 900,
-          lineHeight: 1.04,
-          textAlign: 'center',
-          opacity: interpolate(frame, [0.6 * fps, 1.4 * fps, 3.5 * fps, 4.4 * fps], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      >
-        Memang perlu?
-      </div>
-      <div
-        style={{
-          opacity: interpolate(frame, [4.2 * fps, 5.1 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          translate: interpolate(frame, [4.2 * fps, 5.1 * fps], ['0px 35px', '0px 0px'], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
-        }}
-      >
-        <EpisodeClosing
-          question={
-            <>
-              Tanpa promo,
-              <br />tetap dibeli?
-            </>
-          }
-        />
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 84,
-          right: 170,
-          top: 1060,
-          textAlign: 'center',
-          color: brand.colors.muted,
-          fontSize: 27,
-          fontWeight: 760,
-          opacity: interpolate(frame, [1.3 * fps, 2 * fps, 3.4 * fps, 4.2 * fps], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      >
-        promo mengubah keputusan... atau cuma kelihatan begitu?
-      </div>
 
-      <Subtitle>
-        Kalau barangnya memang perlu, ya masuk akal.
-        <br />Tapi coba jujur... tanpa promo, tetap dibeli?
-      </Subtitle>
+      <div
+        style={{
+          position:'absolute',left:95,right:95,top:1040,
+          borderTop:`3px solid ${brand.colors.ink}`,paddingTop:54,textAlign:'center',
+          opacity:interpolate(frame,[3.55*fps,4.2*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+        }}
+      >
+        <div style={{fontSize:31,fontWeight:800,color:brand.colors.muted}}>Tanpa promo,</div>
+        <div style={{fontSize:82,fontWeight:950,lineHeight:.98,letterSpacing:-3,marginTop:10}}>
+          tetap dibeli?
+        </div>
+        <div style={{
+          display:'inline-flex',alignItems:'center',gap:16,marginTop:70,
+          color:brand.colors.orange,fontSize:34,fontWeight:850,
+          scale:interpolate(frame,[4.8*fps,5.3*fps],[.8,1],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:170}),output:'perceptual-scale'
+          })
+        }}>
+          <span>(</span><span>coba dipikir.</span><span>)</span>
+        </div>
+      </div>
     </SceneBase>
   );
 };
