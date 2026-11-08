@@ -1,6 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {Actor, Burst, EditorNote, INK, ORANGE, PAPER, PriceTag, ProductBox, SceneCanvas, TopText, clamp, tween, FONT} from './VisualSystem';
+import {Actor, Burst, EditorNote, GREEN, INK, ORANGE, PAPER, PriceTag, ProductBox, SceneCanvas, TopText, clamp, tween, FONT} from './VisualSystem';
 
 export const CompareScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
