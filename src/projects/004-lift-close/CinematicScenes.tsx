@@ -24,13 +24,17 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>:<FilmTitle night eyebrow="PERNAH KAYAK GINI?" size={77}>
       BURU-BURU<br/><Accent night>MASUK LIFT?</Accent>
     </FilmTitle>}
-    <LiftLocation night open={range(t,.15,.75,.35,1)}
-      zoom={1.01+entering*.055} panX={entering*-17}
-      hero={<Actor x={-305+600*entering} y={190} width={405}
-        expression="worried" walk={t*3.5} lean={15} tilt={11}
-        arm={t>2.4?64:-45} scarf={Math.sin(t*14)*14} gaze={12}/>}/>
-    <FloorClock x={842} y={556} size={106} turn={t*19} night/>
-    {t>.9&&guide('cepet… cepet…',109,1217,true,34)}
+    {early?<ButtonMacro night press={hop(t,.38,.30)} finger={hop(t,.38,.30)}
+       camera={1.14} count={8} spotlight/>:
+     <>
+       <LiftLocation night open={range(t,1.04,1.59,.24,1)}
+         zoom={1.01+entering*.055} panX={entering*-17}
+         hero={<Actor x={-305+600*entering} y={190} width={405}
+           expression="worried" walk={t*3.5} lean={15} tilt={11}
+           arm={t>2.4?64:-45} scarf={Math.sin(t*14)*14} gaze={12}/>}/>
+       <FloorClock x={842} y={556} size={106} turn={t*19} night/>
+       {guide('cepet… cepet…',109,1217,true,34)}
+     </>}
    </>;
  }
  case 'waiting':{
@@ -49,7 +53,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <FloorClock x={74} y={726} size={100} turn={t*39} night/>
     {t>2.65&&guide('…',155,985,true,104)}
     <div style={{position:'absolute',left:90,top:1188,color:warm,
-      fontSize:30,fontWeight:900,letterSpacing:1.2,opacity:range(t,3.2,3.55)}}>menunggu intensifies</div>
+      fontSize:30,fontWeight:900,letterSpacing:1.2,opacity:range(t,3.2,3.55)}}>nunggu… nunggu…</div>
    </>;
  }
  case 'discovery':{
@@ -90,10 +94,6 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <ButtonMacro night press={active} finger={active}
       camera={zoom} shake={hits>3?Math.sin(t*43)*hits*1.6:0}
       count={hits?count:undefined} spotlight={hits>=2}/>
-    <div style={{position:'absolute',left:126,top:1165,color:warm,
-      fontSize:35,fontWeight:900,transform:'rotate(-5deg)',opacity:range(t,1.6,2.2)}}>
-      {hits>=6?'INI BARU USAHA!':hits>=4?'belum cukup niat…':'sekali lagi?'}
-    </div>
     {hits>=6&&<LightBurst x={850} y={1080} on={.7+hop(t,3.25,.25)*.3}
       color={warm} size={165}/>}
    </>;
@@ -116,7 +116,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <FilmTitle night eyebrow="DAN SETELAH MENUNGGU…" size={84}>
       NAH!<br/><Accent night>…TAPI?</Accent>
     </FilmTitle>
-    <LiftLocation night open={open} behind zoom={1.075}
+    <LiftLocation night open={open} zoom={1.075}
       hero={<Actor x={250} y={150} width={490}
          expression={t<1.1?'happy':t<1.8?'realization':'thinking'}
          tilt={t<1.3?-11:9} gaze={7} arm={t<1.3?51:9}
@@ -244,15 +244,15 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>
     <Camera zoom={1.04+crossing*.05} panX={-12}>
       <ElevatorShell/>
-      <Actor x={473} y={175} width={390}
-        expression={t>3?'surprised':'annoyed'}
-        tilt={t>3?-19:10} gaze={-9}
-        arm={t>3?78:44} leftArm={t>3?-68:2} impatient={t<3}
-        scarf={Math.sin(t*8)*9}/>
       <Actor x={-100+480*crossing} y={308} width={230}
         expression="happy" walk={t*3.1} scarf={6}/>
       <Door x={120} y={150} w={640} h={490} open={open} sensor={false}/>
       <SensorBeam pulse={t>1.8?Math.min(1,range(t,1.7,2.2)+hop(t,3,.6)):.25}/>
+      <Actor x={365} y={175} width={390}
+        expression={t>3?'surprised':'annoyed'}
+        tilt={t>3?-19:10} gaze={-9}
+        arm={t>3?78:44} leftArm={t>3?-68:2} impatient={t<3}
+        scarf={Math.sin(t*8)*9}/>
       <Panel x={787} y={143} scale={.99} pressed={0}/>
       {t>2.8&&<div style={{position:'absolute',left:132,top:465,
        transform:'rotate(-8deg)',color:ORANGE,
@@ -334,7 +334,6 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
         textAlign:'center',lineHeight:'70px',fontSize:52,color:INK}}>›‹</div>
       <LightBurst x={915} y={498} on={action} size={116}/>
     </Camera>
-    {action>.5&&guide('setidaknya aku ngapa-ngapain!',105,1204,false,35)}
    </>;
  }
  case 'cockpit':{
