@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -71,6 +72,11 @@ export const InitialCheckoutScene: React.FC = () => {
       }}>
         selesai.
       </div>
+
+      <Subtitle>
+        Padahal awalnya simpel: barang 70 ribu, ongkir 10 ribu.
+        <br />Total 80 ribu.
+      </Subtitle>
     </SceneBase>
   );
 };
