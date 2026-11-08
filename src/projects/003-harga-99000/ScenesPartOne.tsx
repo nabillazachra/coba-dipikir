@@ -91,7 +91,7 @@ export const DifferenceScene:React.FC=()=>{
 export const DistanceScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
  const stretch=tween(f,[.2*fps,2.7*fps],[0,1]);
- const right=575+stretch*110;
+ const right=548+stretch*42;
  return <SceneCanvas>
   <TopText size={80}>KOK RASANYA<br/><span style={{color:ORANGE}}>JAUH BANGET?</span></TopText>
   <PriceTag x={70} y={742} width={380} text="Rp99.000" highlight/>
@@ -105,7 +105,7 @@ export const DistanceScene:React.FC=()=>{
     position:'absolute',left:479,top:778,fontSize:46,fontWeight:950,color:ORANGE,
     opacity:stretch,
   }}>↔</div>
-  <Actor x={320} y={851} width={420} expression="doubtful"
+  <Actor x={320} y={920} width={420} expression="doubtful"
     tilt={stretch*14-7} rightArm={-70} leftArm={45}
     gazeX={stretch*12-6} scarf={Math.sin(f/8)*4}/>
   <ProductBox x={120} y={1101} width={256} opacity={.75}/>
