@@ -46,8 +46,8 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
 }) => (
   <div
     style={{
-      width: 650,
-      height: 960,
+      width: 620,
+      height: 900,
       borderRadius: 62,
       border: `7px solid ${brand.colors.ink}`,
       backgroundColor: '#FFFCF7',
@@ -62,14 +62,14 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
         left: '50%',
         top: 18,
         translate: '-50% 0px',
-        width: 160,
+        width: 150,
         height: 34,
         borderRadius: 999,
         backgroundColor: brand.colors.ink,
       }}
     />
 
-    <div style={{padding: '78px 38px 34px'}}>
+    <div style={{padding: '74px 34px 30px'}}>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <div>
           <div style={{fontSize: 21, fontWeight: 800, color: brand.colors.muted}}>KERANJANG</div>
@@ -77,8 +77,8 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
         </div>
         <div
           style={{
-            width: 62,
-            height: 62,
+            width: 58,
+            height: 58,
             borderRadius: 20,
             border: `3px solid ${brand.colors.ink}`,
             display: 'grid',
@@ -95,7 +95,7 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
         style={{
           marginTop: 32,
           display: 'grid',
-          gridTemplateColumns: '132px 1fr',
+          gridTemplateColumns: '122px 1fr',
           gap: 24,
           alignItems: 'center',
           padding: 22,
@@ -105,7 +105,7 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
       >
         <div
           style={{
-            height: 130,
+            height: 120,
             borderRadius: 22,
             backgroundColor: '#E0CDB8',
             border: `3px solid ${brand.colors.ink}`,
@@ -115,10 +115,10 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
           <div
             style={{
               position: 'absolute',
-              left: 32,
-              top: 34,
-              width: 64,
-              height: 62,
+              left: 29,
+              top: 31,
+              width: 60,
+              height: 58,
               border: `4px solid ${brand.colors.ink}`,
               borderRadius: '18px 18px 24px 24px',
             }}
@@ -174,7 +174,7 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        padding: '26px 38px 34px',
+        padding: '24px 34px 30px',
         borderTop: `3px solid ${brand.colors.ink}`,
         backgroundColor: brand.colors.ink,
         color: brand.colors.paper,
@@ -182,7 +182,7 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
     >
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'end'}}>
         <span style={{fontSize: 24, fontWeight: 760, color: '#C9C6BD'}}>TOTAL</span>
-        <span style={{fontSize: 55, fontWeight: 950, letterSpacing: -2}}>{totalPrice}</span>
+        <span style={{fontSize: 52, fontWeight: 950, letterSpacing: -2}}>{totalPrice}</span>
       </div>
     </div>
 
