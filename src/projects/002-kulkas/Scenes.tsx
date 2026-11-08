@@ -8,103 +8,139 @@ import {Fridge} from './Fridge';
 import {SceneBase} from './SceneBase';
 import {voiceText} from './voiceover.config';
 
+const NIGHT_FRIDGE = {left: 625, top: 455, width: 330} as const;
+const NIGHT_CHAR = {left: 190, top: 990, width: 320} as const;
+
 const blinkAt = (frame: number, fps: number) => {
-  const cycle = frame % Math.round(2.6 * fps);
-  return cycle > 2.46 * fps ? 1 : 0;
+  const cycle = frame % Math.round(2.7 * fps);
+  return cycle > 2.53 * fps ? 1 : 0;
 };
 
-const DigitalClock: React.FC<{time: string; top?: number}> = ({time, top = 145}) => (
+const clamp = {
+  extrapolateLeft: 'clamp' as const,
+  extrapolateRight: 'clamp' as const,
+};
+
+const DigitalClock: React.FC<{time: string}> = ({time}) => (
   <div
     style={{
       position: 'absolute',
-      left: '50%',
-      top,
-      translate: '-50% 0px',
-      padding: '14px 24px',
-      borderRadius: 18,
-      border: '2px solid rgba(246,240,229,.18)',
-      backgroundColor: 'rgba(0,0,0,.32)',
-      color: '#F8B45A',
+      left: 88,
+      top: 145,
+      padding: '12px 18px',
+      borderRadius: 16,
+      border: '2px solid rgba(246,240,229,.14)',
+      backgroundColor: 'rgba(0,0,0,.22)',
+      color: '#F6B75C',
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      fontSize: 40,
+      fontSize: 34,
       fontWeight: 800,
-      letterSpacing: 5,
-      boxShadow: '0 0 24px rgba(248,180,90,.08)',
+      letterSpacing: 4,
     }}
   >
     {time}
   </div>
 );
 
-const NightCaption: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
+const NightSubtitle: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
   <EpisodeSubtitle text={text} highlight={highlight} dark />
 );
 
-const PaperCaption: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
+const PaperSubtitle: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
   <EpisodeSubtitle text={text} highlight={highlight} dark={false} />
+);
+
+const PaperHeader: React.FC<{eyebrow: string; children: React.ReactNode}> = ({eyebrow, children}) => (
+  <>
+    <div
+      style={{
+        position: 'absolute',
+        left: 88,
+        top: 150,
+        fontSize: 24,
+        fontWeight: 850,
+        letterSpacing: 2.2,
+        color: brand.colors.orange,
+      }}
+    >
+      {eyebrow}
+    </div>
+    <div
+      style={{
+        position: 'absolute',
+        left: 88,
+        right: 112,
+        top: 205,
+        fontSize: 78,
+        fontWeight: 950,
+        lineHeight: 0.98,
+        letterSpacing: -3.1,
+      }}
+    >
+      {children}
+    </div>
+  </>
+);
+
+const NightLight: React.FC<{strength: number}> = ({strength}) => (
+  <div
+    style={{
+      position: 'absolute',
+      left: 445,
+      top: 470,
+      width: 590,
+      height: 760,
+      opacity: strength,
+      background:
+        'radial-gradient(ellipse at 82% 44%, rgba(255,239,190,.42), rgba(255,239,190,.16) 38%, transparent 69%)',
+      clipPath: 'polygon(37% 9%, 100% 0, 100% 100%, 18% 84%)',
+      pointerEvents: 'none',
+    }}
+  />
 );
 
 export const MidnightScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const walk = frame / (0.55 * fps);
+  const walk = frame / (0.52 * fps);
 
   return (
     <SceneBase>
       <DigitalClock time="00:13" />
-
-      <div
-        style={{
-          position: 'absolute',
-          right: 78,
-          top: 275,
-          fontSize: 18,
-          fontWeight: 800,
-          color: 'rgba(246,240,229,.34)',
-          letterSpacing: 2,
-        }}
-      >
-        DAPUR · MALAM
-      </div>
-
-      <Fridge left={610} top={390} width={370} />
+      <Fridge {...NIGHT_FRIDGE} />
 
       <Character
         expression="sleepy"
         width={310}
-        left={interpolate(frame, [0, 3.2 * fps], [-180, 250], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
+        left={interpolate(frame, [0, 3.15 * fps], [-190, 235], {
+          ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
-        top={980}
-        headTilt={8}
+        top={1000}
+        headTilt={7}
         lean={7}
-        bob={Math.sin(walk * Math.PI * 2) * 7}
+        bob={Math.sin(walk * Math.PI * 2) * 6}
         step={walk}
-        scarfSwing={Math.sin(walk * Math.PI * 2) * 8}
+        scarfSwing={Math.sin(walk * Math.PI * 2) * 7}
         blink={blinkAt(frame, fps)}
       />
 
       <div
         style={{
           position: 'absolute',
-          left: 110,
-          top: 1280,
-          fontSize: 24,
+          left: 105,
+          top: 1350,
+          fontSize: 21,
           fontWeight: 800,
-          color: 'rgba(246,240,229,.32)',
           letterSpacing: 5,
-          opacity: interpolate(frame, [0.8 * fps, 1.2 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
+          color: 'rgba(246,240,229,.27)',
+          opacity: interpolate(frame, [0.8 * fps, 1.25 * fps], [0, 1], clamp),
         }}
       >
-        tap… tap… tap…
+        tap · tap · tap
       </div>
 
-      <NightCaption text={voiceText('01-midnight')} />
+      <NightSubtitle text={voiceText('01-midnight')} />
     </SceneBase>
   );
 };
@@ -116,50 +152,54 @@ export const ApproachScene: React.FC = () => {
 
   return (
     <SceneBase>
-      <Fridge left={615} top={385} width={365} />
+      <DigitalClock time="00:13" />
+      <Fridge {...NIGHT_FRIDGE} />
+
       <Character
-        expression={frame < 1.2 * fps ? 'neutral' : 'curious'}
-        width={330}
-        left={240}
-        top={980}
-        headTilt={interpolate(frame, [0.2 * fps, 0.8 * fps, 1.15 * fps, 1.55 * fps], [0, -9, 8, -5], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
-        rightArm={interpolate(frame, [2.2 * fps, 3.5 * fps], [-10, -72], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
+        expression={frame < 1.25 * fps ? 'neutral' : 'curious'}
+        width={NIGHT_CHAR.width}
+        left={NIGHT_CHAR.left}
+        top={NIGHT_CHAR.top}
+        headTilt={interpolate(
+          frame,
+          [0.2 * fps, 0.85 * fps, 1.25 * fps, 1.7 * fps],
+          [0, -7, 7, -4],
+          clamp,
+        )}
+        rightArm={interpolate(frame, [2.25 * fps, 3.45 * fps], [-10, -70], {
+          ...clamp,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
         })}
-        scarfSwing={2}
         blink={blinkAt(frame, fps)}
       />
 
       <div
         style={{
           position: 'absolute',
-          left: 110,
-          top: 285,
-          maxWidth: 520,
-          color: 'rgba(246,240,229,.8)',
-          fontSize: 64,
-          fontWeight: 950,
-          lineHeight: 0.97,
-          letterSpacing: -2.5,
-          opacity: interpolate(frame, [0.2 * fps, 0.7 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
+          left: 470,
+          top: 870,
+          width: 74,
+          height: 74,
+          borderRadius: 999,
+          border: `3px solid ${brand.colors.orange}`,
+          opacity: interpolate(frame, [1.05 * fps, 1.45 * fps, 2.0 * fps, 2.3 * fps], [0, 1, 1, 0], clamp),
         }}
-      >
-        Tatap kulkas.
-        <br />
-        <span style={{color: brand.colors.orange}}>Tatap kamera.</span>
-        <br />
-        Tatap kulkas lagi.
-      </div>
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: 490,
+          top: 835,
+          width: 12,
+          height: 34,
+          borderRadius: 999,
+          backgroundColor: brand.colors.orange,
+          rotate: '-22deg',
+          opacity: interpolate(frame, [1.05 * fps, 1.45 * fps, 2.0 * fps, 2.3 * fps], [0, 1, 1, 0], clamp),
+        }}
+      />
 
-      <NightCaption text={secondBeat ? voiceText('02-kitchen') : voiceText('02-why')} />
+      <NightSubtitle text={secondBeat ? voiceText('02-kitchen') : voiceText('02-why')} />
     </SceneBase>
   );
 };
@@ -167,63 +207,42 @@ export const ApproachScene: React.FC = () => {
 export const OpenFridgeScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const open = interpolate(frame, [0.45 * fps, 1.75 * fps], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
+  const open = interpolate(frame, [0.5 * fps, 1.75 * fps], [0, 1], {
+    ...clamp,
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
   return (
     <SceneBase>
-      <div
-        style={{
-          position: 'absolute',
-          left: 450,
-          top: 420,
-          width: 620,
-          height: 780,
-          background: 'radial-gradient(ellipse at 80% 48%, rgba(255,236,176,.42), rgba(255,236,176,.15) 38%, transparent 68%)',
-          opacity: open,
-          clipPath: 'polygon(45% 10%, 100% 0, 100% 100%, 22% 84%)',
-        }}
-      />
-
-      <Fridge left={610} top={370} width={380} open={open} />
-
+      <NightLight strength={open} />
+      <Fridge {...NIGHT_FRIDGE} open={open} />
       <Character
         expression={open > 0.72 ? 'surprised' : 'curious'}
-        width={350}
-        left={218}
-        top={960}
-        rightArm={-76}
-        headTilt={interpolate(frame, [0.6 * fps, 1.8 * fps], [-3, 5], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
-        lean={interpolate(frame, [0.6 * fps, 1.8 * fps], [0, 4], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
+        width={330}
+        left={195}
+        top={985}
+        rightArm={-70}
+        headTilt={interpolate(frame, [0.55 * fps, 1.8 * fps], [-3, 5], clamp)}
+        lean={interpolate(frame, [0.55 * fps, 1.8 * fps], [0, 4], clamp)}
         light={open}
-        scarfSwing={open * 6}
-        blink={0}
+        scarfSwing={open * 5}
       />
 
       <div
         style={{
           position: 'absolute',
-          left: 82,
-          top: 245,
-          fontSize: 24,
-          fontWeight: 850,
-          letterSpacing: 3,
-          color: 'rgba(246,240,229,.45)',
+          left: 745,
+          top: 390,
+          width: 18,
+          height: 18,
+          borderRadius: 999,
+          backgroundColor: '#FFF1B4',
+          boxShadow: '0 0 25px rgba(255,241,180,.9)',
+          opacity: open,
         }}
-      >
-        VISUAL REVEAL YANG SANGAT DRAMATIS
-      </div>
+      />
 
-      <NightCaption
+      <NightSubtitle
         text={frame < 2.35 * fps ? voiceText('03-open') : voiceText('03-look')}
         highlight={frame < 2.35 * fps ? 'Buka kulkas.' : 'Lihat isinya.'}
       />
@@ -234,26 +253,25 @@ export const OpenFridgeScene: React.FC = () => {
 export const InvestigationScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const expression = frame < 1.5 * fps ? 'curious' : frame < 3.2 * fps ? 'thinking' : 'doubtful';
+  const expression = frame < 1.4 * fps ? 'curious' : frame < 3.0 * fps ? 'thinking' : 'doubtful';
+  const mag = interpolate(frame, [1.05 * fps, 1.45 * fps], [0, 1], {
+    ...clamp,
+    easing: Easing.spring({damping: 160}),
+    output: 'perceptual-scale',
+  });
 
   return (
     <SceneBase>
-      <Fridge left={605} top={360} width={385} open={1} />
-
+      <NightLight strength={0.95} />
+      <Fridge {...NIGHT_FRIDGE} open={1} />
       <Character
         expression={expression}
-        width={360}
-        left={205}
-        top={960}
-        headTilt={interpolate(frame, [0, 1.1 * fps, 2.2 * fps, 3.2 * fps], [-6, 8, -9, 4], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
-        lean={interpolate(frame, [0, 2.6 * fps], [0, 8], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
-        rightArm={frame > 1.7 * fps ? -116 : -34}
+        width={345}
+        left={188}
+        top={985}
+        headTilt={interpolate(frame, [0, 1.2 * fps, 2.3 * fps, 3.2 * fps], [-5, 7, -8, 3], clamp)}
+        lean={interpolate(frame, [0, 2.4 * fps], [0, 7], clamp)}
+        rightArm={frame > 1.5 * fps ? -108 : -30}
         light={0.9}
         blink={blinkAt(frame, fps)}
       />
@@ -261,30 +279,22 @@ export const InvestigationScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: interpolate(frame, [1.4 * fps, 3.2 * fps], [530, 740], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-          top: interpolate(frame, [1.4 * fps, 3.2 * fps], [720, 905], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-          width: 145,
-          height: 145,
+          left: 565,
+          top: 910,
+          width: 160,
+          height: 160,
           borderRadius: 999,
           border: `8px solid ${brand.colors.ink}`,
-          boxShadow: '0 0 0 5px rgba(246,240,229,.7)',
-          opacity: interpolate(frame, [1.15 * fps, 1.55 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
+          boxShadow: '0 0 0 5px rgba(246,240,229,.82)',
+          scale: mag,
+          opacity: mag,
         }}
       >
         <div
           style={{
             position: 'absolute',
-            left: 112,
-            top: 112,
+            left: 125,
+            top: 125,
             width: 105,
             height: 18,
             borderRadius: 999,
@@ -298,52 +308,19 @@ export const InvestigationScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: 420,
-          right: 100,
-          top: 250,
-          textAlign: 'right',
-          fontSize: 82,
+          right: 120,
+          top: 285,
+          fontSize: 64,
           fontWeight: 950,
-          letterSpacing: -3.2,
-          lineHeight: 0.94,
           color: brand.colors.orange,
-          opacity: interpolate(frame, [2.1 * fps, 2.45 * fps, 3.2 * fps, 3.55 * fps], [0, 1, 1, 0], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-          scale: interpolate(frame, [2.1 * fps, 2.45 * fps], [0.82, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 145}),
-            output: 'perceptual-scale',
-          }),
+          letterSpacing: -2.2,
+          opacity: interpolate(frame, [2.25 * fps, 2.55 * fps, 3.25 * fps, 3.55 * fps], [0, 1, 1, 0], clamp),
         }}
       >
-        DUNNN…
+        DUN…
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          right: 94,
-          top: 1180,
-          padding: '16px 22px',
-          borderRadius: 20,
-          border: '2px solid rgba(246,240,229,.18)',
-          backgroundColor: 'rgba(0,0,0,.3)',
-          fontSize: 24,
-          fontWeight: 820,
-          color: 'rgba(246,240,229,.72)',
-          opacity: interpolate(frame, [3.35 * fps, 3.8 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-        }}
-      >
-        plot twist: wadah kemarin.
-      </div>
-
-      <NightCaption text={frame < 1.55 * fps ? voiceText('04-but') : voiceText('04-know')} />
+      <NightSubtitle text={frame < 1.55 * fps ? voiceText('04-but') : voiceText('04-know')} />
     </SceneBase>
   );
 };
@@ -351,52 +328,32 @@ export const InvestigationScene: React.FC = () => {
 export const CloseFridgeScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const close = interpolate(frame, [0.2 * fps, 1.1 * fps], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
+  const close = interpolate(frame, [0.2 * fps, 1.05 * fps], [1, 0], {
+    ...clamp,
     easing: Easing.bezier(0.3, 0, 0.6, 1),
   });
-  const walk = Math.max(0, frame - 1.1 * fps) / (0.5 * fps);
+  const walk = Math.max(0, frame - 1.0 * fps) / (0.48 * fps);
 
   return (
     <SceneBase>
-      <Fridge left={610} top={380} width={375} open={close} />
+      <NightLight strength={close} />
+      <Fridge {...NIGHT_FRIDGE} open={close} />
       <Character
         expression="deadpan"
-        width={330}
-        left={interpolate(frame, [1.05 * fps, 2.7 * fps], [235, -180], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
+        width={315}
+        left={interpolate(frame, [1.0 * fps, 2.75 * fps], [205, -190], {
+          ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
-        top={995}
+        top={1010}
         flip
         headTilt={-3}
-        bob={frame > 1.05 * fps ? Math.sin(walk * Math.PI * 2) * 6 : 0}
+        bob={frame > 1.0 * fps ? Math.sin(walk * Math.PI * 2) * 5 : 0}
         step={walk}
-        scarfSwing={frame > 1.05 * fps ? Math.sin(walk * Math.PI * 2) * 8 : 0}
+        scarfSwing={frame > 1.0 * fps ? Math.sin(walk * Math.PI * 2) * 7 : 0}
       />
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 110,
-          top: 330,
-          fontSize: 74,
-          fontWeight: 950,
-          letterSpacing: -3,
-          lineHeight: 0.95,
-          color: 'rgba(246,240,229,.72)',
-          opacity: interpolate(frame, [0.1 * fps, 0.55 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-        }}
-      >
-        yaudah.
-      </div>
-
-      <NightCaption text={voiceText('05-nothing')} />
+      <NightSubtitle text={voiceText('05-nothing')} />
     </SceneBase>
   );
 };
@@ -404,27 +361,23 @@ export const CloseFridgeScene: React.FC = () => {
 export const FiveMinutesScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const cardOut = interpolate(frame, [1.2 * fps, 1.55 * fps], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const walk = Math.max(0, frame - 1.3 * fps) / (0.38 * fps);
+  const cardOut = interpolate(frame, [1.15 * fps, 1.5 * fps], [1, 0], clamp);
+  const walk = Math.max(0, frame - 1.35 * fps) / (0.36 * fps);
 
   return (
     <SceneBase>
-      <Fridge left={610} top={380} width={375} />
+      <Fridge {...NIGHT_FRIDGE} />
       <Character
         expression="curious"
-        width={325}
-        left={interpolate(frame, [1.25 * fps, 3.3 * fps], [-160, 250], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
+        width={315}
+        left={interpolate(frame, [1.25 * fps, 3.3 * fps], [-180, 225], {
+          ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
-        top={995}
-        bob={frame > 1.25 * fps ? Math.sin(walk * Math.PI * 2) * 8 : 0}
+        top={1000}
+        bob={frame > 1.25 * fps ? Math.sin(walk * Math.PI * 2) * 7 : 0}
         step={walk}
-        scarfSwing={frame > 1.25 * fps ? Math.sin(walk * Math.PI * 2) * 12 : 0}
+        scarfSwing={frame > 1.25 * fps ? Math.sin(walk * Math.PI * 2) * 10 : 0}
         lean={-4}
       />
 
@@ -440,9 +393,17 @@ export const FiveMinutesScene: React.FC = () => {
           zIndex: 5,
         }}
       >
-        <div style={{textAlign: 'center'}}>
-          <div style={{fontSize: 28, fontWeight: 850, color: brand.colors.orange, letterSpacing: 4}}>HARD CUT</div>
-          <div style={{fontSize: 112, fontWeight: 950, letterSpacing: -5, lineHeight: 0.9, marginTop: 18}}>
+        <div
+          style={{
+            width: 820,
+            padding: '70px 70px 76px',
+            borderTop: `4px solid ${brand.colors.ink}`,
+            borderBottom: `4px solid ${brand.colors.ink}`,
+            textAlign: 'center',
+          }}
+        >
+          <div style={{fontSize: 26, fontWeight: 850, color: brand.colors.orange, letterSpacing: 4}}>TIME SKIP</div>
+          <div style={{fontSize: 108, fontWeight: 950, letterSpacing: -4.5, lineHeight: 0.9, marginTop: 18}}>
             5 MENIT
             <br />
             KEMUDIAN
@@ -450,7 +411,7 @@ export const FiveMinutesScene: React.FC = () => {
         </div>
       </div>
 
-      <NightCaption text={frame < 2.15 * fps ? voiceText('06-five') : voiceText('06-again')} />
+      <NightSubtitle text={frame < 2.15 * fps ? voiceText('06-five') : voiceText('06-again')} />
     </SceneBase>
   );
 };
@@ -458,81 +419,41 @@ export const FiveMinutesScene: React.FC = () => {
 export const SameAgainScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const open = interpolate(frame, [0.25 * fps, 1.25 * fps], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
+  const open = interpolate(frame, [0.25 * fps, 1.2 * fps], [0, 1], {
+    ...clamp,
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
   return (
     <SceneBase>
-      <div
-        style={{
-          position: 'absolute',
-          left: 450,
-          top: 420,
-          width: 620,
-          height: 780,
-          background: 'radial-gradient(ellipse at 80% 48%, rgba(255,236,176,.42), rgba(255,236,176,.15) 38%, transparent 68%)',
-          opacity: open,
-          clipPath: 'polygon(45% 10%, 100% 0, 100% 100%, 22% 84%)',
-        }}
-      />
-
-      <Fridge left={610} top={370} width={380} open={open} />
+      <NightLight strength={open} />
+      <Fridge {...NIGHT_FRIDGE} open={open} />
       <Character
         expression="deadpan"
-        width={350}
-        left={218}
-        top={960}
-        rightArm={-76}
-        headTilt={interpolate(frame, [1.5 * fps, 3.1 * fps], [0, 11], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
+        width={330}
+        left={195}
+        top={985}
+        rightArm={-70}
+        headTilt={interpolate(frame, [1.55 * fps, 3.0 * fps], [0, 10], clamp)}
         light={open}
-        blink={frame > 2.1 * fps ? 0 : blinkAt(frame, fps)}
       />
 
       <div
         style={{
           position: 'absolute',
-          left: 92,
-          top: 290,
-          padding: '18px 24px',
+          left: 88,
+          top: 155,
+          padding: '12px 18px',
           borderRadius: 999,
           border: `3px solid ${brand.colors.orange}`,
           color: brand.colors.orange,
-          fontSize: 28,
-          fontWeight: 900,
-          letterSpacing: 2,
-          opacity: interpolate(frame, [1.5 * fps, 2.0 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-        }}
-      >
-        SAMA. PERSIS.
-      </div>
-
-      <div
-        style={{
-          position: 'absolute',
-          left: 100,
-          right: 100,
-          bottom: 290,
-          textAlign: 'center',
-          color: 'rgba(246,240,229,.45)',
           fontSize: 24,
-          fontWeight: 800,
-          letterSpacing: 5,
-          opacity: interpolate(frame, [2.0 * fps, 2.4 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
+          fontWeight: 900,
+          letterSpacing: 1.8,
+          opacity: interpolate(frame, [1.45 * fps, 1.9 * fps], [0, 1], clamp),
         }}
       >
-        bzzzzzzzz…
+        SAMA PERSIS.
       </div>
     </SceneBase>
   );
@@ -544,50 +465,30 @@ export const QuestionScene: React.FC = () => {
 
   return (
     <SceneBase mode="paper">
-      <div
-        style={{
-          position: 'absolute',
-          left: 92,
-          right: 92,
-          top: 245,
-          fontSize: 102,
-          fontWeight: 950,
-          lineHeight: 0.92,
-          letterSpacing: -4.3,
-          opacity: interpolate(frame, [0.15 * fps, 0.7 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
-          translate: interpolate(frame, [0.15 * fps, 0.7 * fps], ['0px 46px', '0px 0px'], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
-        }}
-      >
+      <PaperHeader eyebrow="COBA DIPIKIR">
         Kenapa kita
         <br />
         buka kulkas…
         <br />
         <span style={{color: brand.colors.orange}}>padahal tahu isinya?</span>
-      </div>
+      </PaperHeader>
 
       <div
         style={{
           position: 'absolute',
-          left: 95,
-          right: 95,
-          top: 830,
-          height: 420,
+          left: 88,
+          right: 112,
+          top: 760,
+          height: 500,
           borderTop: `3px solid ${brand.colors.rule}`,
           borderBottom: `3px solid ${brand.colors.rule}`,
         }}
       >
-        <Character expression="deadpan" width={260} left={110} top={70} headTilt={8} />
-        <Fridge left={500} top={55} width={260} open={1} />
+        <Character expression="deadpan" width={260} left={100} top={115} headTilt={7} />
+        <Fridge left={505} top={75} width={245} open={1} />
       </div>
 
-      <PaperCaption text={voiceText('08-question')} highlight="tahu isinya" />
+      <PaperSubtitle text={voiceText('08-question')} highlight="tahu isinya" />
     </SceneBase>
   );
 };
@@ -598,51 +499,106 @@ export const NotHungryScene: React.FC = () => {
 
   return (
     <SceneBase mode="paper">
-      <div style={{position: 'absolute', left: 92, right: 92, top: 175, fontSize: 82, fontWeight: 950, lineHeight: 0.98, letterSpacing: -3.2}}>
-        Bukan selalu
+      <PaperHeader eyebrow="BUKAN SELALU LAPAR">
+        Kadang yang
         <br />
-        karena <span style={{color: brand.colors.orange}}>lapar.</span>
-      </div>
-
-      <Character expression="curious" width={340} left={360} top={720} headTilt={-5} blink={blinkAt(frame, fps)} />
-
-      <div
-        style={{
-          position: 'absolute',
-          left: 100,
-          top: 650,
-          width: 265,
-          height: 220,
-          borderRadius: 42,
-          border: `4px solid ${brand.colors.ink}`,
-          backgroundColor: '#FFFDF8',
-          opacity: interpolate(frame, [0.5 * fps, 1.0 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      >
-        <div style={{position: 'absolute', left: 48, right: 48, bottom: 52, height: 68, border: `5px solid ${brand.colors.ink}`, borderTop: 0, borderRadius: '0 0 60px 60px'}} />
-        <div style={{position: 'absolute', left: 78, top: 62, width: 105, height: 35, borderRadius: 999, backgroundColor: brand.colors.orange}} />
-      </div>
+        bergerak duluan
+        <br />
+        <span style={{color: brand.colors.orange}}>bukan perut.</span>
+      </PaperHeader>
 
       <div
         style={{
           position: 'absolute',
-          right: 100,
-          top: 650,
-          width: 265,
-          height: 220,
-          borderRadius: 42,
-          border: `4px solid ${brand.colors.ink}`,
-          backgroundColor: '#FFFDF8',
-          opacity: interpolate(frame, [0.8 * fps, 1.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          left: 88,
+          right: 112,
+          top: 700,
+          height: 520,
+          display: 'grid',
+          gridTemplateColumns: '1fr 220px 1fr',
+          alignItems: 'center',
+          gap: 26,
         }}
       >
-        <div style={{position: 'absolute', left: 70, top: 55, width: 125, height: 90, borderRadius: '55% 45% 50% 45%', border: `5px solid ${brand.colors.ink}`, backgroundColor: '#E7F0E9'}} />
-        <div style={{position: 'absolute', left: 98, top: 92, width: 12, height: 12, borderRadius: 999, backgroundColor: brand.colors.ink}} />
-        <div style={{position: 'absolute', right: 98, top: 92, width: 12, height: 12, borderRadius: 999, backgroundColor: brand.colors.ink}} />
-        <div style={{position: 'absolute', left: 110, top: 122, width: 42, height: 5, borderRadius: 999, backgroundColor: brand.colors.ink}} />
+        <div
+          style={{
+            height: 330,
+            borderRadius: 34,
+            border: `4px solid ${brand.colors.ink}`,
+            backgroundColor: '#FFFDF8',
+            display: 'grid',
+            placeItems: 'center',
+          }}
+        >
+          <div style={{textAlign: 'center'}}>
+            <div
+              style={{
+                width: 160,
+                height: 92,
+                margin: '0 auto 24px',
+                border: `5px solid ${brand.colors.ink}`,
+                borderTop: 0,
+                borderRadius: '0 0 90px 90px',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 32,
+                  right: 32,
+                  top: 18,
+                  height: 24,
+                  borderRadius: 999,
+                  backgroundColor: brand.colors.orange,
+                }}
+              />
+            </div>
+            <div style={{fontSize: 25, fontWeight: 900}}>LAPAR</div>
+          </div>
+        </div>
+
+        <Character
+          expression="curious"
+          width={220}
+          left={0}
+          top={0}
+          headTilt={-5}
+          blink={blinkAt(frame, fps)}
+        />
+
+        <div
+          style={{
+            height: 330,
+            borderRadius: 34,
+            border: `4px solid ${brand.colors.green}`,
+            backgroundColor: '#EAF1EB',
+            display: 'grid',
+            placeItems: 'center',
+          }}
+        >
+          <div style={{textAlign: 'center'}}>
+            <div
+              style={{
+                width: 150,
+                height: 112,
+                margin: '0 auto 18px',
+                borderRadius: '55% 45% 50% 45%',
+                border: `5px solid ${brand.colors.ink}`,
+                backgroundColor: '#DDE9DE',
+                position: 'relative',
+              }}
+            >
+              <div style={{position: 'absolute', left: 40, top: 45, width: 13, height: 13, borderRadius: 999, backgroundColor: brand.colors.ink}} />
+              <div style={{position: 'absolute', right: 40, top: 45, width: 13, height: 13, borderRadius: 999, backgroundColor: brand.colors.ink}} />
+              <div style={{position: 'absolute', left: 53, top: 78, width: 42, height: 5, borderRadius: 999, backgroundColor: brand.colors.ink}} />
+            </div>
+            <div style={{fontSize: 25, fontWeight: 900}}>BOSAN</div>
+          </div>
+        </div>
       </div>
 
-      <PaperCaption text={voiceText('09-not-hungry')} highlight="nggak selalu" />
+      <PaperSubtitle text={voiceText('09-not-hungry')} highlight="nggak selalu" />
     </SceneBase>
   );
 };
@@ -654,42 +610,42 @@ export const RewardScene: React.FC = () => {
 
   return (
     <SceneBase mode="paper">
-      <div style={{position: 'absolute', left: 92, right: 92, top: 175, fontSize: 80, fontWeight: 950, lineHeight: 0.98, letterSpacing: -3.1}}>
+      <PaperHeader eyebrow="REWARD KECIL">
         Otak lagi cari
         <br />
-        <span style={{color: brand.colors.orange}}>reward kecil.</span>
-      </div>
+        sesuatu yang
+        <br />
+        <span style={{color: brand.colors.orange}}>terasa baru.</span>
+      </PaperHeader>
 
       <Character
         expression={secondBeat ? 'realization' : 'doubtful'}
-        width={350}
-        left={180}
-        top={760}
-        headTilt={secondBeat ? -11 : 6}
+        width={340}
+        left={140}
+        top={790}
+        headTilt={secondBeat ? -10 : 6}
         blink={blinkAt(frame, fps)}
       />
 
       <div
         style={{
           position: 'absolute',
-          right: 120,
-          top: 620,
-          width: 380,
-          minHeight: 190,
-          padding: '34px 36px',
-          borderRadius: '48px 48px 48px 12px',
+          right: 105,
+          top: 720,
+          width: 430,
+          padding: '34px 36px 38px',
+          borderRadius: '42px 42px 42px 12px',
           border: `4px solid ${brand.colors.ink}`,
           backgroundColor: '#FFFDF8',
-          opacity: interpolate(frame, [0.55 * fps, 1.05 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          scale: interpolate(frame, [0.55 * fps, 1.05 * fps], [0.86, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
+          opacity: interpolate(frame, [0.5 * fps, 1.0 * fps], [0, 1], clamp),
+          scale: interpolate(frame, [0.5 * fps, 1.0 * fps], [0.88, 1], {
+            ...clamp,
             easing: Easing.spring({damping: 165}),
             output: 'perceptual-scale',
           }),
         }}
       >
-        <div style={{fontSize: 37, fontWeight: 880, lineHeight: 1.08}}>
+        <div style={{fontSize: 38, fontWeight: 880, lineHeight: 1.08}}>
           “ada yang enak
           <br />
           nggak ya?”
@@ -699,24 +655,50 @@ export const RewardScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          right: 128,
-          top: 920,
-          width: 280,
-          height: 300,
-          borderRadius: 34,
-          backgroundColor: '#E7F0E9',
+          right: 165,
+          top: 1035,
+          width: 260,
+          height: 230,
+          borderRadius: 30,
           border: `4px solid ${brand.colors.green}`,
-          opacity: interpolate(frame, [2.2 * fps, 2.75 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          backgroundColor: '#EAF1EB',
+          opacity: interpolate(frame, [2.2 * fps, 2.7 * fps], [0, 1], clamp),
         }}
       >
-        <div style={{position: 'absolute', left: 54, top: 58, width: 170, height: 180, borderRadius: 24, border: `5px solid ${brand.colors.ink}`, backgroundColor: '#ECEDE7'}} />
-        <div style={{position: 'absolute', right: 66, top: 94, width: 12, height: 64, borderRadius: 999, backgroundColor: brand.colors.ink}} />
+        <div
+          style={{
+            position: 'absolute',
+            left: 56,
+            top: 45,
+            width: 150,
+            height: 150,
+            borderRadius: 26,
+            border: `5px solid ${brand.colors.ink}`,
+            backgroundColor: '#ECEDE7',
+          }}
+        />
+        <div style={{position: 'absolute', left: 75, top: 86, width: 11, height: 55, borderRadius: 999, backgroundColor: brand.colors.ink}} />
         {[0, 1, 2].map((i) => (
-          <div key={i} style={{position: 'absolute', right: 18 + i * 28, top: 42 - i * 13, width: 12, height: 38, borderRadius: 999, backgroundColor: brand.colors.orange, rotate: `${18 + i * 18}deg`}} />
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              right: 28 + i * 28,
+              top: 35 - i * 10,
+              width: 11,
+              height: 34,
+              borderRadius: 999,
+              backgroundColor: brand.colors.orange,
+              rotate: `${18 + i * 18}deg`,
+            }}
+          />
         ))}
       </div>
 
-      <PaperCaption text={secondBeat ? voiceText('10-reward') : voiceText('10-bored')} highlight={secondBeat ? 'hadiah kecil' : 'bosan'} />
+      <PaperSubtitle
+        text={secondBeat ? voiceText('10-reward') : voiceText('10-bored')}
+        highlight={secondBeat ? 'hadiah kecil' : 'bosan'}
+      />
     </SceneBase>
   );
 };
@@ -724,48 +706,49 @@ export const RewardScene: React.FC = () => {
 export const HabitLoopScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const t = Math.min(1, frame / (5 * fps));
+  const beat = frame < 2.8 * fps ? 'habit' : frame < 4.0 * fps ? 'bored' : 'check';
+
   const points = [
-    {x: 200, y: 540},
-    {x: 690, y: 540},
-    {x: 690, y: 1030},
-    {x: 200, y: 1030},
+    {x: 170, y: 720},
+    {x: 680, y: 720},
+    {x: 680, y: 1110},
+    {x: 170, y: 1110},
   ];
-  const loopPos = t * 4;
-  const idx = Math.min(3, Math.floor(loopPos));
-  const local = loopPos - idx;
+
+  const t = Math.min(1, frame / (5 * fps));
+  const pos = t * 4;
+  const idx = Math.min(3, Math.floor(pos));
+  const local = pos - idx;
   const a = points[idx];
   const b = points[(idx + 1) % points.length];
-  const charX = a.x + (b.x - a.x) * local;
-  const charY = a.y + (b.y - a.y) * local;
-
-  const beat = frame < 2.8 * fps ? 'habit' : frame < 4.0 * fps ? 'bored' : 'check';
 
   return (
     <SceneBase mode="paper">
-      <div style={{position: 'absolute', left: 92, right: 92, top: 170, fontSize: 80, fontWeight: 950, lineHeight: 0.98, letterSpacing: -3}}>
-        Lama-lama jadi
+      <PaperHeader eyebrow="HABIT LOOP">
+        Lama-lama
         <br />
-        <span style={{color: brand.colors.orange}}>habit loop.</span>
-      </div>
+        tubuhnya
+        <br />
+        <span style={{color: brand.colors.orange}}>hafal sendiri.</span>
+      </PaperHeader>
 
       <div
         style={{
           position: 'absolute',
-          left: 145,
-          top: 485,
-          width: 790,
-          height: 640,
-          border: `4px dashed rgba(32,37,31,.28)`,
-          borderRadius: 210,
+          left: 155,
+          top: 675,
+          width: 770,
+          height: 500,
+          border: '4px dashed rgba(32,37,31,.22)',
+          borderRadius: 190,
         }}
       />
 
       {[
-        ['BOSAN', 155, 445],
-        ['BUKA', 735, 445],
-        ['CEK', 760, 1060],
-        ['TUTUP', 145, 1060],
+        ['BOSAN', 135, 635],
+        ['BUKA', 745, 635],
+        ['CEK', 765, 1125],
+        ['TUTUP', 125, 1125],
       ].map(([label, x, y]) => (
         <div
           key={String(label)}
@@ -773,16 +756,16 @@ export const HabitLoopScene: React.FC = () => {
             position: 'absolute',
             left: Number(x),
             top: Number(y),
-            minWidth: 150,
-            padding: '14px 18px',
+            minWidth: 155,
+            padding: '13px 18px',
             borderRadius: 999,
             border: `3px solid ${brand.colors.ink}`,
             backgroundColor: label === 'BUKA' ? '#FFF0EA' : '#FFFDF8',
             color: label === 'BUKA' ? brand.colors.orange : brand.colors.ink,
             textAlign: 'center',
-            fontSize: 22,
+            fontSize: 21,
             fontWeight: 900,
-            letterSpacing: 1.5,
+            letterSpacing: 1.4,
           }}
         >
           {label}
@@ -791,16 +774,16 @@ export const HabitLoopScene: React.FC = () => {
 
       <Character
         expression={beat === 'check' ? 'curious' : 'neutral'}
-        width={180}
-        left={charX}
-        top={charY}
-        headTilt={beat === 'check' ? -8 : 0}
-        bob={Math.sin(frame / 4) * 4}
+        width={175}
+        left={a.x + (b.x - a.x) * local}
+        top={a.y + (b.y - a.y) * local}
+        headTilt={beat === 'check' ? -7 : 0}
+        bob={Math.sin(frame / 4) * 3}
         step={frame / 8}
-        scarfSwing={Math.sin(frame / 6) * 8}
+        scarfSwing={Math.sin(frame / 6) * 7}
       />
 
-      <PaperCaption
+      <PaperSubtitle
         text={
           beat === 'habit'
             ? voiceText('11-habit')
@@ -818,29 +801,23 @@ export const EndingScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const beat = frame < 1.4 * fps ? 'maybe' : frame < 3.2 * fps ? 'not-food' : 'something';
-  const reopen = interpolate(frame, [4.75 * fps, 5.35 * fps], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
+  const reopen = interpolate(frame, [4.75 * fps, 5.32 * fps], [0, 1], {
+    ...clamp,
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
   return (
     <SceneBase>
-      <Fridge left={610} top={385} width={375} open={reopen} />
+      <NightLight strength={reopen} />
+      <Fridge {...NIGHT_FRIDGE} open={reopen} />
 
       <Character
-        expression={frame < 2.5 * fps ? 'thinking' : frame < 4.6 * fps ? 'realization' : 'deadpan'}
-        width={335}
-        left={245}
-        top={985}
-        rightArm={interpolate(frame, [0, 1.5 * fps, 3.1 * fps, 4.3 * fps], [-72, -72, -20, -72], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
-        headTilt={interpolate(frame, [0, 1.5 * fps, 2.8 * fps, 4.3 * fps], [4, -8, 6, -3], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })}
+        expression={frame < 2.4 * fps ? 'thinking' : frame < 4.55 * fps ? 'realization' : 'deadpan'}
+        width={325}
+        left={205}
+        top={995}
+        rightArm={interpolate(frame, [0, 1.4 * fps, 3.05 * fps, 4.3 * fps], [-70, -70, -18, -70], clamp)}
+        headTilt={interpolate(frame, [0, 1.45 * fps, 2.8 * fps, 4.3 * fps], [4, -7, 6, -3], clamp)}
         light={reopen}
         blink={blinkAt(frame, fps)}
       />
@@ -849,24 +826,16 @@ export const EndingScene: React.FC = () => {
         style={{
           position: 'absolute',
           left: 88,
-          right: 112,
-          top: 215,
-          fontSize: 72,
-          fontWeight: 950,
-          lineHeight: 0.96,
-          letterSpacing: -2.8,
-          color: 'rgba(246,240,229,.9)',
-          opacity: interpolate(frame, [0.2 * fps, 0.65 * fps], [0, 1], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          }),
+          top: 155,
+          width: 470,
+          fontSize: 24,
+          fontWeight: 850,
+          letterSpacing: 2.2,
+          color: 'rgba(246,240,229,.42)',
+          opacity: interpolate(frame, [0.2 * fps, 0.65 * fps], [0, 1], clamp),
         }}
       >
-        Tangan sudah
-        <br />
-        di handle.
-        <br />
-        <span style={{color: brand.colors.orange}}>Terus berhenti.</span>
+        TANGAN SUDAH DI HANDLE.
       </div>
 
       {frame > 5.15 * fps ? (
@@ -879,19 +848,21 @@ export const EndingScene: React.FC = () => {
             placeItems: 'center',
             backgroundColor: brand.colors.paper,
             color: brand.colors.ink,
-            opacity: interpolate(frame, [5.15 * fps, 5.65 * fps], [0, 1], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            }),
+            opacity: interpolate(frame, [5.15 * fps, 5.65 * fps], [0, 1], clamp),
           }}
         >
           <div style={{textAlign: 'center'}}>
             <CanvasImage
               src={publicAsset('brand/coba-dipikir-logo.webp')}
-              style={{width: 210, height: 210, objectFit: 'contain', margin: '0 auto 34px'}}
+              style={{
+                width: 190,
+                height: 190,
+                objectFit: 'contain',
+                margin: '0 auto 34px',
+              }}
             />
-            <div style={{fontSize: 86, fontWeight: 950, letterSpacing: -3.5}}>COBA DIPIKIR.</div>
-            <div style={{fontSize: 28, fontWeight: 760, color: brand.colors.muted, marginTop: 18}}>
+            <div style={{fontSize: 82, fontWeight: 950, letterSpacing: -3.3}}>COBA DIPIKIR.</div>
+            <div style={{fontSize: 27, fontWeight: 760, color: brand.colors.muted, marginTop: 16}}>
               Yang biasa, belum tentu sederhana.
             </div>
           </div>
@@ -899,7 +870,7 @@ export const EndingScene: React.FC = () => {
       ) : null}
 
       {frame <= 5.15 * fps ? (
-        <NightCaption
+        <NightSubtitle
           text={
             beat === 'maybe'
               ? voiceText('12-maybe')
