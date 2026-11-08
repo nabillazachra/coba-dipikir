@@ -43,7 +43,7 @@ export const PromoTemptationScene: React.FC = () => {
           <div
             style={{
               height: '100%',
-              width: `${interpolate(frame, [0.35 * fps, 1.15 * fps], [0, 70], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}%`,
+              width: `${interpolate(frame, [2.0 * fps, 3.2 * fps], [0, 70], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}%`,
               backgroundColor: brand.colors.green,
             }}
           />
@@ -65,7 +65,7 @@ export const PromoTemptationScene: React.FC = () => {
           fontSize: 22,
           fontWeight: 850,
           rotate: '-4deg',
-          opacity: interpolate(frame, [0.75 * fps, 1.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [5.55 * fps, 6.05 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         nah, mulai nih...
@@ -96,7 +96,7 @@ export const PromoTemptationScene: React.FC = () => {
           color: brand.colors.green,
           fontSize: 22,
           fontWeight: 850,
-          opacity: interpolate(frame, [1.2 * fps, 1.7 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [3.0 * fps, 3.5 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         tinggal 30k
