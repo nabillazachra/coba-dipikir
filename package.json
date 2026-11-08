@@ -5,18 +5,23 @@
   "scripts": {
     "studio": "remotion studio",
     "start": "remotion studio",
-    "render:e001": "remotion render E001-Gratis-Ongkir renders/001-gratis-ongkir.mp4"
+    "render:e001": "remotion render E001-Gratis-Ongkir renders/001-gratis-ongkir.mp4",
+    "cms": "vite",
+    "cms:build": "vite build",
+    "cms:preview": "vite preview"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
     "@remotion/media": "4.0.534",
     "remotion": "4.0.534",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "@remotion/player": "4.0.534"
   },
   "devDependencies": {
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vite": "7.1.7"
   }
 }
