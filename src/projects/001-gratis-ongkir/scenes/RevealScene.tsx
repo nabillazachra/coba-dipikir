@@ -13,12 +13,11 @@ export const RevealScene: React.FC = () => {
 
   return (
     <SceneBase>
-      <div>
-        style={{position: 'absolute', left: 84, top: 165, fontSize: 34, fontWeight: 780, color: brand.colors.orange}}>
+      <div style={{position: 'absolute', left: 84, top: 165, fontSize: 34, fontWeight: 780, color: brand.colors.orange}}>
         COBA LIHAT TOTALNYA
       </div>
       <div style={{position: 'absolute', left: 84, right: 170, top: 230, fontSize: 82, fontWeight: 920, lineHeight: 1.02, letterSpacing: -2.9}}>
-        Hemat ongkir(.
+        Hemat ongkir.
         <br />Totalnya naik.
       </div>
       <div
@@ -32,7 +31,7 @@ export const RevealScene: React.FC = () => {
           translate: interpolate(frame, [0.5 * fps, 1.3 * fps], ['0px 50px', '0px 0px'], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 190}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
           }),
         }}
       >
@@ -73,7 +72,7 @@ export const RevealScene: React.FC = () => {
           scale: interpolate(frame, [3.2 * fps, 4.0 * fps], [0.88, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 170}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
             output: 'perceptual-scale',
           }),
         }}
