@@ -102,10 +102,18 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    const lean=hits<2?3:hits<4?11:hits<8?18:26;
    return <>
     <Heading eyebrow="KALAU BELUM BERGERAK…" size={76}>PENCET<br/><span style={{color:ORANGE}}>LAGI. LAGI.</span></Heading>
-    <Lift open={1} pressed={isDown} character={<Actor x={310+lean*.5} y={725} width={360}
+    {/* Medium character/button shot: not the same frontal elevator every time. */}
+    <div style={{position:'absolute',left:67,top:584,width:943,height:629,
+      border:'7px solid #7B887F',borderRadius:35,background:'#D9DED4',
+      boxShadow:'11px 16px 0 rgba(32,37,31,.09)'}}/>
+    <Door x={96} y={666} w={512} h={509} open={1}/>
+    <Actor x={212+lean*.6} y={736} width={373}
       expression={hits<3?'doubtful':hits<7?'annoyed':'surprised'} tilt={lean*.4} lean={lean}
-      arm={hits<7?69:78} leftArm={-28} impatient={hits>=3} walk={hits>=3?t*2.8:0} scarf={Math.sin(t*16)*15}/>}/>
-    <PressFinger x={950} y={1068} progress={isDown} size={.68}/>
+      arm={hits<7?75:84} leftArm={-28} impatient={hits>=3}
+      walk={hits>=3?t*2.8:0} scarf={Math.sin(t*16)*15}/>
+    <Panel x={633} y={631} scale={1.13} pressed={isDown}/>
+    <PressFinger x={825} y={1072} progress={isDown} size={.92}/>
+
     {hits>0&&<Count value={'×'+(hits<1?1:hits<3?2:hits<7?4:8)} x={650} y={558}
       scale={1+pulse(t,timings[Math.max(0,hits-1)],.22)*.13}/>}
     {hits>=6&&<Note x={125} y={654}>INI DIA USAHANYA!</Note>}
