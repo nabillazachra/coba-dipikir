@@ -6,10 +6,10 @@ export const SimulationNote: React.FC = () => (
     style={{
       position: 'absolute',
       left: brand.safe.left,
-      bottom: 238,
+      bottom: 242,
       fontFamily: brand.fontFamily,
       color: brand.colors.muted,
-      fontSize: 25,
+      fontSize: 22,
       fontWeight: 600,
       letterSpacing: 0.2,
     }}
