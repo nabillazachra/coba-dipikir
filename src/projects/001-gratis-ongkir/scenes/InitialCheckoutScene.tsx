@@ -15,8 +15,7 @@ export const InitialCheckoutScene: React.FC = () => {
       <div style={{position: 'absolute', left: 84, top: 170, fontSize: 34, fontWeight: 750, color: brand.colors.orange}}>
         BELANJA AWAL
       </div>
-      <div>
-        style={{position: 'absolute', left: 84, right: 170, top: 235, fontSize: 78, fontWeight: 900, lineHeight: 1.02, letterSpacing: -2.5}}>
+      <div style={{position: 'absolute', left: 84, right: 170, top: 235, fontSize: 78, fontWeight: 900, lineHeight: 1.02, letterSpacing: -2.5}}>
         Sebelum promonya
         <br />ikut campur.
       </div>
@@ -29,7 +28,7 @@ export const InitialCheckoutScene: React.FC = () => {
           translate: interpolate(frame, [0, 0.55 * fps], ['0px 58px', '0px 0px'], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 180}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
           }),
         }}
       >
