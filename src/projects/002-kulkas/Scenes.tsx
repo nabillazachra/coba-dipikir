@@ -185,7 +185,7 @@ export const ApproachScene: React.FC = () => {
           [0, -7, 7, -4],
           clamp,
         )}
-        rightArm={interpolate(frame, [2.25 * fps, 3.45 * fps], [-10, -70], {
+        rightArm={interpolate(frame, [2.25 * fps, 3.45 * fps], [-10, 68], {
           ...clamp,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
         })}
@@ -240,7 +240,7 @@ export const OpenFridgeScene: React.FC = () => {
         width={395}
         left={138}
         top={845}
-        rightArm={-70}
+        rightArm={68}
         headTilt={interpolate(frame, [0.55 * fps, 1.8 * fps], [-3, 5], clamp)}
         lean={interpolate(frame, [0.55 * fps, 1.8 * fps], [0, 4], clamp)}
         light={open}
@@ -290,7 +290,7 @@ export const InvestigationScene: React.FC = () => {
         top={845}
         headTilt={interpolate(frame, [0, 1.2 * fps, 2.3 * fps, 3.2 * fps], [-5, 7, -8, 3], clamp)}
         lean={interpolate(frame, [0, 2.4 * fps], [0, 7], clamp)}
-        rightArm={frame > 1.5 * fps ? -108 : -30}
+        rightArm={frame > 1.5 * fps ? 70 : -12}
         light={0.9}
         blink={blinkAt(frame, fps)}
       />
@@ -452,7 +452,7 @@ export const SameAgainScene: React.FC = () => {
         width={385}
         left={145}
         top={850}
-        rightArm={-70}
+        rightArm={68}
         headTilt={interpolate(frame, [1.55 * fps, 3.0 * fps], [0, 10], clamp)}
         light={open}
       />
@@ -835,7 +835,7 @@ export const EndingScene: React.FC = () => {
         width={385}
         left={145}
         top={850}
-        rightArm={interpolate(frame, [0, 1.4 * fps, 3.05 * fps, 4.3 * fps], [-70, -70, -18, -70], clamp)}
+        rightArm={interpolate(frame, [0, 1.4 * fps, 3.05 * fps, 4.3 * fps], [68, 68, -12, 68], clamp)}
         headTilt={interpolate(frame, [0, 1.45 * fps, 2.8 * fps, 4.3 * fps], [4, -7, 6, -3], clamp)}
         light={reopen}
         blink={blinkAt(frame, fps)}
