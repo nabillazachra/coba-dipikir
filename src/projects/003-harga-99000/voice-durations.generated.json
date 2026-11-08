@@ -1,0 +1,30 @@
+{
+  "note": "Build replaces these fallback values with durations measured from generated MP3 files.",
+  "durations": {
+    "s01-choose": 1.5,
+    "s01-ninety-nine": 1.5,
+    "s01-hundred": 1.5,
+    "s02-cheaper": 1.5,
+    "s02-but": 1.5,
+    "s03-difference": 1.5,
+    "s03-one-thousand": 1.5,
+    "s04-feels": 1.5,
+    "s04-far": 1.5,
+    "s05-brain": 1.5,
+    "s05-left": 1.5,
+    "s06-group": 1.5,
+    "s06-nineties": 1.5,
+    "s06-but-hundred": 1.5,
+    "s06-hundred-feels": 1.5,
+    "s07-effect": 1.5,
+    "s08-often": 1.5,
+    "s08-round": 1.5,
+    "s09-not-fooled": 1.5,
+    "s09-know": 1.5,
+    "s10-glance": 1.5,
+    "s10-impression": 1.5,
+    "s11-next": 1.5,
+    "s11-look": 1.5,
+    "s11-punch": 1.5
+  }
+}
