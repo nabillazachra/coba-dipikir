@@ -56,6 +56,24 @@ export const PromoTemptationScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
+          right: 110,
+          top: 405,
+          padding: '10px 17px',
+          borderRadius: 999,
+          backgroundColor: brand.colors.orange,
+          color: brand.colors.white,
+          fontSize: 22,
+          fontWeight: 850,
+          rotate: '-4deg',
+          opacity: interpolate(frame, [0.75 * fps, 1.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        nah, mulai nih...
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
           left: 84,
           top: 1110,
           fontSize: 42,
@@ -67,8 +85,28 @@ export const PromoTemptationScene: React.FC = () => {
         Mata kita pindah dari
         <br />“total berapa?” ke “kurang berapa?”.
       </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 615,
+          top: 935,
+          padding: '8px 14px',
+          border: `2px solid ${brand.colors.green}`,
+          borderRadius: 12,
+          color: brand.colors.green,
+          fontSize: 22,
+          fontWeight: 850,
+          opacity: interpolate(frame, [1.2 * fps, 1.7 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        tinggal 30k
+      </div>
+
       <SimulationNote />
-      <Subtitle>Lalu muncul: tambah 30 ribu lagi buat gratis ongkir.</Subtitle>
+      <Subtitle>
+        Terus muncul kalimat sakti: kurang 30 ribu lagi.
+        <br />Biar gratis ongkir.
+      </Subtitle>
     </SceneBase>
   );
 };
