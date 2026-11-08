@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -64,6 +65,11 @@ export const ClosingScene: React.FC = () => {
           <span>(</span><span>coba dipikir.</span><span>)</span>
         </div>
       </div>
+
+      <Subtitle>
+        Kalau barangnya memang perlu, ya oke.
+        <br />Tapi kalau nggak ada promo... tadi tetap dibeli?
+      </Subtitle>
     </SceneBase>
   );
 };
