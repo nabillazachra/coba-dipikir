@@ -203,6 +203,37 @@ const PaperSet: React.FC<PaperSetProps> = ({
       borderRadius: '50%', background: '#F1E4D2'}} />
     <div style={{position: 'absolute', right: -130, top: 340, width: 580, height: 620,
       borderRadius: '50%', background: 'rgba(233,107,60,.065)'}} />
+
+    {/* Paper-mode is still a lived-in kitchen, not a blank presentation slide. */}
+    <div style={{position:'absolute',left:58,top:552,width:415,height:372,
+      border:'15px solid #B8AC98',borderRadius:19,
+      background:'linear-gradient(180deg,#DBE5DD,#B3CCBF)',
+      boxShadow:'10px 14px 0 rgba(32,37,31,.08)',overflow:'hidden'}}>
+      <div style={{position:'absolute',left:0,right:0,bottom:0,height:80,
+        background:'linear-gradient(180deg,#B7C9BC,#93B4A3)'}} />
+      <div style={{position:'absolute',left:'50%',top:0,bottom:0,width:9,background:'#9E917D'}} />
+      <div style={{position:'absolute',left:0,right:0,top:'50%',height:9,background:'#9E917D'}} />
+    </div>
+    <div style={{position:'absolute',left:47,top:946,width:440,height:23,
+      borderRadius:12,background:'#AE9B82'}} />
+    <div style={{position:'absolute',left:76,top:969,width:374,height:275,
+      border:'7px solid #AD9B84',borderTop:0,borderRadius:'0 0 19px 19px',
+      background:'#E0D1BD'}} />
+    <div style={{position:'absolute',left:265,top:990,width:5,height:230,
+      background:'rgba(32,37,31,.12)'}} />
+    <div style={{position:'absolute',left:190,top:1050,width:11,height:61,
+      background:'#8B7662',borderRadius:9}} />
+    <div style={{position:'absolute',left:339,top:1050,width:11,height:61,
+      background:'#8B7662',borderRadius:9}} />
+    <div style={{position:'absolute',left:683,top:555,width:305,height:16,
+      background:'#A59077',borderRadius:7}} />
+    {[0,1,2].map((i) => (
+      <div key={i} style={{position:'absolute',left:705+i*86,top:498-(i%2)*12,
+        width:48,height:57+(i%2)*12,borderRadius:'12px 12px 5px 5px',
+        border:'4px solid #A39380',
+        background:i===1?'#D2D4B7':i===2?'#E6B28E':'#F2DDC0'}}/>
+    ))}
+
     <div style={{position: 'absolute', left: 0, right: 0, top: 1390, height: 530,
       background: 'linear-gradient(180deg,#E5D9C8,#D7C7B5)'}} />
     <div style={{position: 'absolute', left: 0, right: 0, top: 1380, height: 11,
