@@ -2,6 +2,7 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
+import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
 export const RevealScene: React.FC = () => {
@@ -81,14 +82,11 @@ export const RevealScene: React.FC = () => {
       </div>
 
       {frame < 1.75 * fps ? (
-        <Subtitle>Ongkirnya nol. Mantap.</Subtitle>
+        <Subtitle>{voiceText('05-menang')}</Subtitle>
       ) : frame < 4.2 * fps ? (
-        <Subtitle>Tapi total belanjanya jadi 105 ribu.</Subtitle>
+        <Subtitle>{voiceText('05-total')}</Subtitle>
       ) : (
-        <Subtitle>
-          Jadi hemat 10 ribu... sambil keluar 25 ribu
-          <br />lebih banyak.
-        </Subtitle>
+        <Subtitle>{voiceText('05-punch')}</Subtitle>
       )}
     </SceneBase>
   );
