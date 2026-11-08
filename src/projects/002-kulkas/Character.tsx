@@ -86,7 +86,10 @@ export const Character: React.FC<CharacterProps> = ({
         width,
         height: (width * 420) / 300,
         opacity,
-        scale: flip ? '-1 1' : '1 1',
+        // Keep the feet anchored while bringing the character into the foreground.
+        // At 1080px this puts the face at a readable mobile-first size.
+        transformOrigin: '50% 100%',
+        scale: flip ? '-1.55 1.55' : '1.55',
         translate: `0px ${bob}px`,
         filter: light > 0 ? `drop-shadow(0 0 ${16 + light * 32}px rgba(255,238,188,${0.2 + light * 0.35}))` : undefined,
         pointerEvents: 'none',
