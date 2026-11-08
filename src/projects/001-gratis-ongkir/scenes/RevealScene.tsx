@@ -16,7 +16,7 @@ export const RevealScene: React.FC = () => {
       <div style={{position: 'absolute', left: 84, top: 165, fontSize: 34, fontWeight: 780, color: brand.colors.orange}}>
         COBA LIHAT TOTALNYA
       </div>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 230, fontSize: 82, fontWeight: 920, lineHeight: 1.02, letterSpacing: -2.9}}>
+      <div style={{position: 'absolute', left: 84, right: 170, top: 230, fontSize: 78, fontWeight: 920, lineHeight: 1.02, letterSpacing: -2.9}}>
         Hemat ongkir.
         <br />Totalnya naik.
       </div>
@@ -24,9 +24,9 @@ export const RevealScene: React.FC = () => {
         style={{
           position: 'absolute',
           left: 70,
-          top: 530,
+          top: 535,
           display: 'flex',
-          gap: 34,
+          gap: 24,
           opacity: interpolate(frame, [0.5 * fps, 1.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
           translate: interpolate(frame, [0.5 * fps, 1.3 * fps], ['0px 50px', '0px 0px'], {
             extrapolateLeft: 'clamp',
@@ -37,17 +37,18 @@ export const RevealScene: React.FC = () => {
       >
         <ReceiptCard
           compact
-          width={410}
+          width={416}
           title="Checkout langsung"
           lines={[
             {label: 'Barang', value: 'Rp70.000'},
+            {label: 'Tambahan', value: '—'},
             {label: 'Ongkir', value: 'Rp10.000'},
             {label: 'Total', value: 'Rp80.000'},
           ]}
         />
         <ReceiptCard
           compact
-          width={410}
+          width={416}
           title="Kejar gratis ongkir"
           lines={[
             {label: 'Barang awal', value: 'Rp70.000'},
@@ -62,7 +63,7 @@ export const RevealScene: React.FC = () => {
           position: 'absolute',
           left: 84,
           right: 170,
-          top: 1250,
+          top: 1265,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -79,7 +80,7 @@ export const RevealScene: React.FC = () => {
       >
         <BracketFocus>+Rp25.000</BracketFocus>
       </div>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 1370, textAlign: 'center', fontSize: 29, fontWeight: 670, color: brand.colors.muted}}>
+      <div style={{position: 'absolute', left: 84, right: 170, top: 1382, textAlign: 'center', fontSize: 27, fontWeight: 670, color: brand.colors.muted}}>
         tambahan pengeluaran dibanding checkout langsung
       </div>
       <SimulationNote />
