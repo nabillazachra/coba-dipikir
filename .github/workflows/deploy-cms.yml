@@ -64,7 +64,7 @@ jobs:
 
       - name: Measure actual VO and synchronize episode 3 subtitles
         run: |
-          python -m pip install --quiet mutagen==1.47.0
+          python -m pip install --quiet mutagen==1.47.0 imageio-ffmpeg==0.6.0
           python scripts/measure-episode3-voice.py
 
       - name: Generate CMS auth verifier
