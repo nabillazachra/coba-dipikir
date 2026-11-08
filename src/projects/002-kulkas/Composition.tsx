@@ -14,7 +14,7 @@ import {
   QuestionScene,
   RewardScene,
   SameAgainScene,
-} from './Scenes';
+} from './CinematicScenes';
 
 export const KulkasEpisode: React.FC = () => {
   const {fps} = useVideoConfig();
