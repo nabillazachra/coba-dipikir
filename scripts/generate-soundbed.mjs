@@ -2,7 +2,7 @@ import {mkdirSync, writeFileSync} from 'node:fs';
 import {dirname} from 'node:path';
 
 const sampleRate = 44100;
-const durationSeconds = 33;
+const durationSeconds = 36;
 const samples = sampleRate * durationSeconds;
 const data = new Float32Array(samples);
 
@@ -44,7 +44,7 @@ const addPluck = (time, freq = 440, level = 0.028) => {
 };
 
 for (let t = 0; t < durationSeconds; t += 1) {
-  if ((t >= 18 && t < 20) || (t >= 26 && t < 27.5)) continue;
+  if ((t >= 18 && t < 20) || (t >= 29.5 && t < 31)) continue;
   addKick(t, t % 4 === 0 ? 0.18 : 0.11);
   addHat(t + 0.5);
 }
