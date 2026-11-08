@@ -9,7 +9,8 @@
     "cms": "vite",
     "cms:build": "vite build",
     "cms:preview": "vite preview",
-    "voice:generate": "node scripts/generate-voiceover.mjs"
+    "voice:generate": "node scripts/generate-voiceover.mjs",
+    "audio:bed": "node scripts/generate-soundbed.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
