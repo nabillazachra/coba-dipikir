@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CMS_EMAIL: ${{ secrets.CMS_EMAIL }}
+      CMS_PASSWORD: ${{ secrets.CMS_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -31,10 +34,7 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: Generate CMS auth verifier
-        if: ${{ secrets.CMS_EMAIL != '' && secrets.CMS_PASSWORD != '' }}
-        env:
-          CMS_EMAIL: ${{ secrets.CMS_EMAIL }}
-          CMS_PASSWORD: ${{ secrets.CMS_PASSWORD }}
+        if: ${{ env.CMS_EMAIL != '' && env.CMS_PASSWORD != '' }}
         run: node scripts/generate-auth-env.mjs
 
       - name: Build CMS
