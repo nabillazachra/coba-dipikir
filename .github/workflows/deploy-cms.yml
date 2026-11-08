@@ -56,6 +56,9 @@ jobs:
       - name: Generate sound bed
         run: npm run audio:bed
 
+      - name: Generate episode 2 SFX
+        run: npm run audio:ep2-sfx
+
       - name: Generate CMS auth verifier
         if: ${{ env.CMS_EMAIL != '' && env.CMS_PASSWORD != '' }}
         run: node scripts/generate-auth-env.mjs
