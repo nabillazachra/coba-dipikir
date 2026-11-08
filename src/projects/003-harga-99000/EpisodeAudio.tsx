@@ -12,10 +12,10 @@ const sound=(name:string)=>publicAsset('audio/003-harga-99000/sfx/'+name+'.wav')
 type SfxCue={name:string; file:string;time:number;volume:number;rate?:number};
 
 const cues:SfxCue[]=[
- {name:'Choice ready',file:'game-show',time:.34,volume:.20},
- {name:'Tag 99 appears',file:'price-pop',time:1.68,volume:.19},
+ {name:'Choice ready',file:'game-show',time:.20,volume:.20},
+ {name:'Tag 99 appears',file:'price-pop',time:1.19,volume:.19},
  {name:'Tag 100 appears',file:'price-pop',time:3.0,volume:.18,rate:.86},
- {name:'Dart left',file:'small-swipe',time:4.63,volume:.18},
+ {name:'Dart left',file:'small-swipe',time:4.91,volume:.18},
  {name:'Hugged the cheaper one',file:'boing',time:5.63,volume:.17},
  {name:'Thinking hold',file:'record-stop',time:7.28,volume:.20},
  {name:'Dramatic arithmetic',file:'suspense',time:8.74,volume:.18},
@@ -27,10 +27,10 @@ const cues:SfxCue[]=[
  {name:'Look at digit 9',file:'scanner',time:18.44,volume:.16},
  {name:'Look at digit 1',file:'scanner',time:21.34,volume:.16,rate:.92},
  {name:'Mind categorizes',file:'thought-bubble',time:24.46,volume:.17},
- {name:'Nine tens aha',file:'tiny-pop',time:26.76,volume:.16},
- {name:'Category switch',file:'record-stop',time:27.96,volume:.14},
- {name:'Hundred feels heavier',file:'little-bonk',time:29.42,volume:.22},
- {name:'Left-digit stamp',file:'stamp',time:31.91,volume:.18},
+ {name:'Nine tens aha',file:'tiny-pop',time:27.15,volume:.16},
+ {name:'Category switch',file:'record-stop',time:28.59,volume:.14},
+ {name:'Hundred feels heavier',file:'little-bonk',time:30.50,volume:.22},
+ {name:'Left-digit stamp',file:'stamp',time:32.42,volume:.18},
  {name:'Point and discover',file:'scanner',time:33.2,volume:.11},
  {name:'19.900 tag',file:'price-pop',time:35.89,volume:.14},
  {name:'49.900 tag',file:'price-pop',time:36.51,volume:.13},
