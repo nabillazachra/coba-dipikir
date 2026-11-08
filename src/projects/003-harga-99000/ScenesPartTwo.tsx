@@ -5,35 +5,68 @@ import {Actor, Burst, EditorNote, FONT, GREEN, INK, ORANGE, PAPER, PriceTag, Pro
 
 export const EffectScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
- const stamp=tween(f,[.25*fps,.7*fps],[.65,1]);
+ const stamp=tween(f,[0,.48*fps],[.86,1]);
+ const ideas=[
+   {digit:'9',price:'Rp99.000',category:'90 RIBUAN',fill:'#E7F0E8',accent:GREEN,start:.22},
+   {digit:'1',price:'Rp100.000',category:'100 RIBU',fill:'#FCE7D9',accent:ORANGE,start:.92},
+ ] as const;
  return <SceneCanvas store={false}>
   <div style={{
-    position:'absolute',left:98,right:98,top:387,
-    padding:'25px 20px',boxSizing:'border-box',
+    position:'absolute',left:75,top:305,
+    fontSize:24,fontWeight:900,letterSpacing:3.3,color:GREEN,
+  }}>TERNYATA ADA NAMANYA</div>
+  <div style={{
+    position:'absolute',left:85,top:374,width:900,height:125,
+    boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'center',
     transform:'rotate(-2deg) scale('+stamp+')',
-    border:'8px solid '+ORANGE,borderRadius:24,
-    color:ORANGE,backgroundColor:'#FFF8EE',
-    textAlign:'center',whiteSpace:'nowrap',letterSpacing:-1.8,fontSize:61,fontWeight:900,
-    boxShadow:'12px 13px 0 rgba(233,107,60,.11)',
+    border:'8px solid '+ORANGE,borderRadius:27,
+    backgroundColor:'#FFF9F0',color:ORANGE,
+    boxShadow:'10px 13px 0 rgba(233,107,60,.14)',
+    letterSpacing:-2.5,fontSize:71,fontWeight:950,
   }}>LEFT-DIGIT EFFECT</div>
-  <Actor x={85} y={820} width={450} expression="realization"
-    tilt={tween(f,[0,1.3*fps,3.8*fps],[-7,6,-5])}
-    rightArm={71} gazeX={8} scarf={Math.sin(f/7)*5}/>
-  {([
-    {digit:'9',label:'90 ribuan',tone:GREEN,y:823},
-    {digit:'1',label:'100 ribu',tone:ORANGE,y:1012},
-  ] as const).map((entry) => <div key={entry.digit} style={{
-    position:'absolute',left:574,top:entry.y,width:418,height:165,
-    display:'flex',alignItems:'center',gap:20,padding:'10px 26px',
-    boxSizing:'border-box',
-    border:'5px solid '+INK,borderRadius:26,
-    backgroundColor:'#FFFDF8',
-    boxShadow:'8px 11px 0 rgba(32,37,31,.09)',
-  }}>
-    <span style={{fontSize:112,fontWeight:950,lineHeight:1,color:entry.tone}}>{entry.digit}</span>
-    <span style={{fontSize:47,fontWeight:900,lineHeight:1.08,letterSpacing:-1.8,color:INK}}>{entry.label}</span>
-  </div>)}
-  <Burst x={493} y={789} visible={tween(f,[1.6*fps,1.98*fps],[0,1])} size={82}/>
+  <div style={{
+    position:'absolute',left:43,top:601,width:475,height:550,
+    borderRadius:'48% 52% 44% 56%',backgroundColor:'#F5DDC9',opacity:.63,
+  }}/>
+  <div style={{
+    position:'absolute',left:105,top:1180,width:375,height:12,borderRadius:20,
+    backgroundColor:'rgba(32,37,31,.12)',
+  }}/>
+  <Actor x={75} y={727} width={334} expression="realization"
+    tilt={tween(f,[0,.6*fps,2*fps],[-10,8,-4])}
+    rightArm={tween(f,[0,.65*fps],[13,69])}
+    gazeX={9} scarf={Math.sin(f/7)*6}/>
+  <Burst x={427} y={705} size={94}
+    visible={tween(f,[.5*fps,.77*fps],[0,1])}/>
+  {ideas.map((item,i)=>{
+    const entrance=tween(f,[item.start*fps,(item.start+.42)*fps],[0,1]);
+    return <div key={item.digit} style={{
+      position:'absolute',left:548,top:627+i*265,width:462,height:218,
+      border:'5px solid '+INK,borderRadius:31,boxSizing:'border-box',
+      backgroundColor:item.fill,boxShadow:'9px 12px 0 rgba(32,37,31,.10)',
+      display:'flex',alignItems:'center',gap:14,padding:'18px 22px',
+      transform:'translateX('+((1-entrance)*42)+'px)',
+      opacity:entrance,
+    }}>
+      <div style={{
+        width:108,flexShrink:0,textAlign:'center',
+        color:item.accent,fontSize:127,lineHeight:1,fontWeight:950,
+      }}>{item.digit}</div>
+      <div style={{minWidth:0,flex:1}}>
+        <div style={{fontSize:22,fontWeight:900,letterSpacing:2.2,color:INK,opacity:.7}}>TERBACA</div>
+        <div style={{fontSize:55,fontWeight:950,letterSpacing:-2.6,whiteSpace:'nowrap',color:INK}}>{item.price}</div>
+        <div style={{
+          display:'inline-block',marginTop:8,borderRadius:10,
+          backgroundColor:item.accent,color:'#FFFDF8',
+          padding:'7px 13px',fontSize:25,fontWeight:900,letterSpacing:.5,
+        }}>{item.category}</div>
+      </div>
+    </div>;
+  })}
+  <div style={{
+    position:'absolute',left:748,top:853,fontSize:40,
+    fontWeight:950,color:ORANGE,opacity:tween(f,[1.05*fps,1.3*fps],[0,1]),
+  }}>↓</div>
  </SceneCanvas>;
 };
 
@@ -67,30 +100,67 @@ const HangTag:React.FC<{value:string;x:number;y:number;rotate?:number;active?:bo
 
 export const OtherPricesScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
- const progress=tween(f,[2.4*fps,3.9*fps,4.45*fps,5.2*fps],[0,1,1,0]);
- const push=progress*70;
- const wobble=f>4.4*fps?Math.sin((f-4.4*fps)/3)*9:0;
- return <SceneCanvas>
-  <TopText eyebrow="DI MANA-MANA KETEMU" size={68}>
+ const examples=['Rp19.900','Rp49.900','Rp199.900'] as const;
+ const highlight=tween(f,[1.1*fps,1.65*fps],[0,1]);
+ const wobble=f>4.3*fps?Math.sin((f-4.3*fps)/3)*3:0;
+ return <SceneCanvas store={false}>
+  <TopText eyebrow="SERING KITA TEMUKAN" size={68}>
     HARGANYA<br/><span style={{color:ORANGE}}>NYARIS BULAT.</span>
   </TopText>
-  <HangTag x={105} y={606} value="Rp19.900" rotate={-2}
-    opacity={tween(f,[0,.4*fps],[0,1])}/>
-  <HangTag x={105} y={792} value="Rp49.900" rotate={2}
-    opacity={tween(f,[.45*fps,.85*fps],[0,1])}/>
-  <HangTag x={105} y={978} value="Rp199.900" rotate={-2}
-    opacity={tween(f,[1.0*fps,1.4*fps],[0,1])}/>
-  <HangTag x={105+push*.52+wobble*.45} y={1164}
-    value="Rp99.900" rotate={-2+progress*4} active
-    opacity={tween(f,[1.4*fps,1.8*fps],[0,1])}/>
-  <Actor x={570} y={822} width={420}
-    expression={f>4.3*fps?'surprised':'doubtful'}
-    tilt={f>4.3*fps?13:-8}
-    rightArm={f>2.6*fps?75:12}
-    leftArm={f>4.3*fps?-44:20}
-    lean={f>4.4*fps?-11:f>2.5*fps?13:0}
-    scarf={Math.sin(f/6)*6}/>
-  <EditorNote text={f>4.3*fps?'MENTAL BALIK!':'dikit lagi bulat…'} x={600} y={629}/>
+  <div style={{
+    position:'absolute',left:74,top:579,width:930,height:636,
+    backgroundColor:'#FFF9EE',border:'5px solid #E1D4C3',borderRadius:42,
+    boxSizing:'border-box',boxShadow:'0 14px 0 rgba(32,37,31,.05)',
+  }}/>
+  {examples.map((price,i)=>{
+    const p=tween(f,[(.12+i*.38)*fps,(.52+i*.38)*fps],[0,1]);
+    return <div key={price} style={{
+      position:'absolute',left:100,top:630+i*186,width:404,height:139,
+      display:'flex',alignItems:'center',gap:14,padding:'14px 24px',
+      boxSizing:'border-box',backgroundColor:'#F6F0E5',
+      border:'5px solid '+INK,borderRadius:25,
+      boxShadow:'5px 8px 0 rgba(32,37,31,.09)',
+      transform:'translateX('+((1-p)*-35)+'px) rotate('+(i%2?-1:1)+'deg)',
+      opacity:p,
+    }}>
+      <span style={{
+        fontSize:26,fontWeight:900,color:GREEN,
+        padding:'6px 8px',borderRadius:8,backgroundColor:'#E1EBDD',
+      }}>{String(i+1).padStart(2,'0')}</span>
+      <span style={{
+        fontSize:62,fontWeight:950,whiteSpace:'nowrap',
+        letterSpacing:-3,color:INK,
+      }}>{price}</span>
+    </div>;
+  })}
+  <div style={{
+    position:'absolute',left:549,top:622,width:421,height:167,
+    boxSizing:'border-box',border:'6px solid '+ORANGE,borderRadius:28,
+    backgroundColor:'#FFF0E5',boxShadow:'8px 10px 0 rgba(233,107,60,.15)',
+    padding:'14px 20px',textAlign:'center',
+    transform:'rotate('+wobble+'deg) scale('+(0.92+.08*highlight)+')',
+    opacity:highlight,
+  }}>
+    <div style={{fontSize:23,fontWeight:900,letterSpacing:2.3,color:ORANGE}}>
+      PALING BIKIN MELIRIK
+    </div>
+    <div style={{
+      marginTop:5,color:INK,fontSize:73,fontWeight:950,
+      letterSpacing:-3.2,whiteSpace:'nowrap',
+    }}>Rp99.900</div>
+  </div>
+  <div style={{
+    position:'absolute',left:600,top:798,width:300,
+    textAlign:'center',fontWeight:850,fontSize:32,
+    color:GREEN,opacity:highlight,
+  }}>sedikit lagi 100 ribu…</div>
+  <Actor x={614} y={827} width={277}
+    expression={f>4.2*fps?'surprised':'doubtful'}
+    tilt={f>4.2*fps?11:-8}
+    rightArm={f>2.5*fps?55:-9}
+    gazeX={-8} scarf={Math.sin(f/7)*5}/>
+  <Burst x={902} y={852} size={79}
+    visible={tween(f,[4.1*fps,4.45*fps,5.12*fps],[0,1,0])}/>
  </SceneCanvas>;
 };
 
@@ -144,49 +214,61 @@ export const CalculatorScene:React.FC=()=>{
 
 export const ImpressionScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
- const firstDigit=tween(f,[.25*fps,.62*fps],[0,1]);
- const otherDigit=tween(f,[1.2*fps,1.55*fps],[0,1]);
+ const first=tween(f,[.15*fps,.52*fps],[0,1]);
+ const rest=tween(f,[1.2*fps,1.65*fps],[0,1]);
+ const leftItems=['9','9.000'],rightItems=['1','00.000'];
  return <SceneCanvas store={false}>
+  <TopText size={70} align="center">
+    ANGKA DEPAN,<br/><span style={{color:ORANGE}}>KESAN BEDA.</span>
+  </TopText>
+  {([
+    {x:72,fill:'#E3EDDD',text:GREEN,label:'TERASA LEBIH RINGAN',parts:leftItems,mood:'happy' as const,tilt:-8},
+    {x:556,fill:'#F8DED0',text:ORANGE,label:'TERASA LEBIH BERAT',parts:rightItems,mood:'worried' as const,tilt:8},
+  ] as const).map((entry,i)=>(
+    <React.Fragment key={entry.x}>
+      <div style={{
+        position:'absolute',left:entry.x,top:577,width:452,height:642,
+        backgroundColor:entry.fill,borderRadius:36,
+        border:'4px solid rgba(32,37,31,.12)',boxSizing:'border-box',
+      }}/>
+      <div style={{
+        position:'absolute',left:entry.x+20,top:608,width:412,height:151,
+        backgroundColor:'#FFFDF8',border:'5px solid '+INK,borderRadius:27,
+        boxSizing:'border-box',textAlign:'center',padding:'17px 12px',
+        boxShadow:'5px 8px 0 rgba(32,37,31,.08)',
+      }}>
+        <div style={{
+          fontSize:23,fontWeight:900,letterSpacing:1.4,color:entry.text,
+        }}>{entry.label}</div>
+        <div style={{
+          fontSize:79,fontWeight:950,letterSpacing:-4,color:INK,lineHeight:1.07,
+          whiteSpace:'nowrap',
+        }}>
+          <span style={{color:ORANGE,opacity:first}}>{entry.parts[0]}</span>
+          <span style={{opacity:rest}}>{entry.parts[1]}</span>
+        </div>
+      </div>
+      <Actor x={entry.x+82} y={816} width={279} expression={entry.mood}
+        tilt={entry.tilt}
+        leftArm={i===0?-23:34}
+        rightArm={i===0?32:-28}
+        lean={i===0?-3:8} scarf={Math.sin(f/8)*3}/>
+      <div style={{
+        position:'absolute',left:entry.x+40,top:1143,width:372,height:49,
+        display:'flex',alignItems:'center',justifyContent:'center',
+        backgroundColor:'#FFFDF8',borderRadius:16,
+        color:entry.text,fontSize:31,fontWeight:900,
+        boxShadow:'0 4px 0 rgba(32,37,31,.09)',
+      }}>{i===0?'90 RIBUAN':'100 RIBU'}</div>
+    </React.Fragment>
+  ))}
   <div style={{
-    position:'absolute',left:0,top:260,width:540,height:1250,
-    backgroundColor:'#F2E8D8',
-  }}/>
-  <div style={{
-    position:'absolute',left:540,top:260,width:540,height:1250,
-    backgroundColor:'#F4D7C5',
-  }}/>
-  <div style={{
-    position:'absolute',left:537,top:260,width:6,height:1250,
-    backgroundColor:INK,opacity:.24,
-  }}/>
-  <TopText size={70} align="center">ANGKA DEPAN,<br/><span style={{color:ORANGE}}>KESAN BEDA.</span></TopText>
-  <div style={{
-    position:'absolute',left:50,top:690,width:475,
-    textAlign:'center',fontSize:93,fontWeight:950,
-    letterSpacing:-4,whiteSpace:'nowrap',
-  }}><span style={{color:ORANGE,opacity:firstDigit}}>9</span>
-    <span style={{opacity:otherDigit}}>9.000</span></div>
-  <div style={{
-    position:'absolute',left:564,top:690,width:475,
-    textAlign:'center',fontSize:93,fontWeight:950,
-    letterSpacing:-4,whiteSpace:'nowrap',
-  }}><span style={{color:ORANGE,opacity:firstDigit}}>1</span>
-    <span style={{opacity:otherDigit}}>00.000</span></div>
-  <Actor x={90} y={920} width={365}
-    expression="happy" tilt={-9} gazeX={-5}
-    leftArm={-32} rightArm={37} scarf={Math.sin(f/8)*4}/>
-  <Actor x={603} y={924} width={365}
-    expression="worried" tilt={10} gazeX={-8}
-    leftArm={33} rightArm={-25} lean={12}
-    scarf={Math.sin(f/8)*2}/>
-  <div style={{
-    position:'absolute',left:168,top:835,
-    fontSize:40,fontWeight:950,color:GREEN,
-  }}>santai.</div>
-  <div style={{
-    position:'absolute',left:680,top:835,
-    fontSize:40,fontWeight:950,color:ORANGE,
-  }}>eh, 100K!</div>
+    position:'absolute',left:502,top:828,width:78,height:78,
+    borderRadius:999,backgroundColor:INK,color:PAPER,
+    border:'6px solid '+PAPER,
+    display:'flex',alignItems:'center',justifyContent:'center',
+    fontSize:32,fontWeight:950,transform:'scale('+first+')',
+  }}>VS</div>
  </SceneCanvas>;
 };
 
