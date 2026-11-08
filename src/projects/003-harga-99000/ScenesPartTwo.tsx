@@ -19,16 +19,21 @@ export const EffectScene:React.FC=()=>{
   <Actor x={85} y={820} width={450} expression="realization"
     tilt={tween(f,[0,1.3*fps,3.8*fps],[-7,6,-5])}
     rightArm={71} gazeX={8} scarf={Math.sin(f/7)*5}/>
-  <div style={{
-    position:'absolute',left:620,top:820,
-    fontSize:176,fontWeight:950,lineHeight:.94,
-    letterSpacing:-6,color:ORANGE,textAlign:'center',
-  }}>9<br/><span style={{color:INK}}>1</span></div>
-  <div style={{
-    position:'absolute',left:730,top:840,
-    fontSize:34,fontWeight:850,color:GREEN,lineHeight:2.8,
-  }}>kesan awal<br/>kategori baru</div>
-  <Burst x={440} y={862} visible={tween(f,[1.6*fps,1.98*fps],[0,1])} size={82}/>
+  {([
+    {digit:'9',label:'90 ribuan',tone:GREEN,y:823},
+    {digit:'1',label:'100 ribu',tone:ORANGE,y:1012},
+  ] as const).map((entry) => <div key={entry.digit} style={{
+    position:'absolute',left:574,top:entry.y,width:418,height:165,
+    display:'flex',alignItems:'center',gap:20,padding:'10px 26px',
+    boxSizing:'border-box',
+    border:'5px solid '+INK,borderRadius:26,
+    backgroundColor:'#FFFDF8',
+    boxShadow:'8px 11px 0 rgba(32,37,31,.09)',
+  }}>
+    <span style={{fontSize:112,fontWeight:950,lineHeight:1,color:entry.tone}}>{entry.digit}</span>
+    <span style={{fontSize:47,fontWeight:900,lineHeight:1.08,letterSpacing:-1.8,color:INK}}>{entry.label}</span>
+  </div>)}
+  <Burst x={493} y={789} visible={tween(f,[1.6*fps,1.98*fps],[0,1])} size={82}/>
  </SceneCanvas>;
 };
 
@@ -85,7 +90,7 @@ export const OtherPricesScene:React.FC=()=>{
     leftArm={f>4.3*fps?-44:20}
     lean={f>4.4*fps?-11:f>2.5*fps?13:0}
     scarf={Math.sin(f/6)*6}/>
-  <EditorNote text={f>4.3*fps?'MENTAL BALIK!':'dikit lagi bulat…'} x={615} y={1220}/>
+  <EditorNote text={f>4.3*fps?'MENTAL BALIK!':'dikit lagi bulat…'} x={600} y={629}/>
  </SceneCanvas>;
 };
 
@@ -167,19 +172,19 @@ export const ImpressionScene:React.FC=()=>{
     letterSpacing:-4,whiteSpace:'nowrap',
   }}><span style={{color:ORANGE,opacity:firstDigit}}>1</span>
     <span style={{opacity:otherDigit}}>00.000</span></div>
-  <Actor x={104} y={930} width={335}
+  <Actor x={90} y={920} width={365}
     expression="happy" tilt={-9} gazeX={-5}
     leftArm={-32} rightArm={37} scarf={Math.sin(f/8)*4}/>
-  <Actor x={617} y={970} width={335}
+  <Actor x={603} y={924} width={365}
     expression="worried" tilt={10} gazeX={-8}
     leftArm={33} rightArm={-25} lean={12}
     scarf={Math.sin(f/8)*2}/>
   <div style={{
-    position:'absolute',left:180,top:1265,
+    position:'absolute',left:168,top:835,
     fontSize:40,fontWeight:950,color:GREEN,
   }}>santai.</div>
   <div style={{
-    position:'absolute',left:695,top:1265,
+    position:'absolute',left:680,top:835,
     fontSize:40,fontWeight:950,color:ORANGE,
   }}>eh, 100K!</div>
  </SceneCanvas>;
@@ -206,10 +211,10 @@ export const EndingScene:React.FC=()=>{
     scarf={Math.sin(f/8)*4}
     lean={stop?0:-5}/>
   {stop?<div style={{
-    position:'absolute',left:455,top:1230,
+    position:'absolute',left:648,top:1310,
     backgroundColor:'#FFF9F0',
-    border:'5px solid '+INK,borderRadius:24,
-    padding:'17px 25px',fontSize:42,fontWeight:950,
+    border:'4px solid '+INK,borderRadius:22,
+    padding:'12px 14px',fontSize:34,fontWeight:900,
     color:ORANGE,rotate:'-5deg',
     opacity:tween(f,[3.1*fps,3.5*fps],[0,1]),
   }}>CUMA Rp1.000.</div>:null}
