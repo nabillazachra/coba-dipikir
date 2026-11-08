@@ -8,10 +8,10 @@ export const projectConfig = {
   width: 1080,
   height: 1920,
   fps: 30,
-  durationInFrames: 1080,
+  durationInFrames: 1155,
   status: 'draft',
   narrative: {
-    hook: 'Gratis ongkir memang enak. Tapi nambah 35 ribu buat ngilangin ongkir 10 ribu?',
+    hook: 'Gratis ongkir enak. Tapi nambah 35 ribu cuma buat hemat ongkir 10 ribu?',
     reveal: 'Hemat ongkir 10 ribu, tapi keluar 25 ribu lebih banyak.',
     closingQuestion: 'Kalau nggak ada promo, tadi tetap dibeli?',
   },
