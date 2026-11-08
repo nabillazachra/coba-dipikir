@@ -1,0 +1,34 @@
+import React from 'react';
+import {Composition, Folder, Still} from 'remotion';
+import {GratisOngkirEpisode} from './projects/001-gratis-ongkir/Composition';
+import {GratisOngkirCover} from './projects/001-gratis-ongkir/Cover';
+import {HookScene} from './projects/001-gratis-ongkir/scenes/HookScene';
+import {InitialCheckoutScene} from './projects/001-gratis-ongkir/scenes/InitialCheckoutScene';
+import {PromoTemptationScene} from './projects/001-gratis-ongkir/scenes/PromoTemptationScene';
+import {DecisionScene} from './projects/001-gratis-ongkir/scenes/DecisionScene';
+import {RevealScene} from './projects/001-gratis-ongkir/scenes/RevealScene';
+import {ClosingScene} from './projects/001-gratis-ongkir/scenes/ClosingScene';
+
+export const RemotionRoot: React.FC = () => (
+  <Folder name="Coba-Dipikir">
+    <Folder name="Episode-001-Gratis-Ongkir">
+      <Composition
+        id="E001-Gratis-Ongkir"
+        component={GratisOngkirEpisode}
+        durationInFrames={1200}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Still id="E001-Cover" component={GratisOngkirCover} width={1080} height={1920} />
+      <Folder name="Scenes">
+        <Composition id="E001-S01-Hook" component={HookScene} durationInFrames={150} fps={30} width={1080} height={1920} />
+        <Composition id="E001-S02-Belanja-Awal" component={InitialCheckoutScene} durationInFrames={180} fps={30} width={1080} height={1920} />
+        <Composition id="E001-S03-Godaan-Promo" component={PromoTemptationScene} durationInFrames={180} fps={30} width={1080} height={1920} />
+        <Composition id="E001-S04-Keputusan" component={DecisionScene} durationInFrames={180} fps={30} width={1080} height={1920} />
+        <Composition id="E001-S05-Reveal" component={RevealScene} durationInFrames={240} fps={30} width={1080} height={1920} />
+        <Composition id="E001-S06-Penutup" component={ClosingScene} durationInFrames={270} fps={30} width={1080} height={1920} />
+      </Folder>
+    </Folder>
+  </Folder>
+);

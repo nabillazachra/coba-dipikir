@@ -1,0 +1,22 @@
+{
+  "name": "coba-dipikir",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "start": "remotion studio",
+    "render:e001": "remotion render E001-Gratis-Ongkir renders/001-gratis-ongkir.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "@remotion/media": "4.0.534",
+    "remotion": "4.0.534",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "typescript": "5.9.2"
+  }
+}

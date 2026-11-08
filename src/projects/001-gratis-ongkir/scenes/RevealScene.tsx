@@ -1,0 +1,93 @@
+import React from 'react';
+import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {BracketFocus} from '../../../brand/components/BracketFocus';
+import {ReceiptCard} from '../../../brand/components/ReceiptCard';
+import {SimulationNote} from '../../../brand/components/SimulationNote';
+import {Subtitle} from '../../../brand/components/Subtitle';
+import {brand} from '../../../brand/tokens';
+import {SceneBase} from './SceneBase';
+
+export const RevealScene: React.FC = () => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+
+  return (
+    <SceneBase>
+      <div>
+        style={{position: 'absolute', left: 84, top: 165, fontSize: 34, fontWeight: 780, color: brand.colors.orange}}>
+        COBA LIHAT TOTALNYA
+      </div>
+      <div style={{position: 'absolute', left: 84, right: 170, top: 230, fontSize: 82, fontWeight: 920, lineHeight: 1.02, letterSpacing: -2.9}}>
+        Hemat ongkir(.
+        <br />Totalnya naik.
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 70,
+          top: 530,
+          display: 'flex',
+          gap: 34,
+          opacity: interpolate(frame, [0.5 * fps, 1.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          translate: interpolate(frame, [0.5 * fps, 1.3 * fps], ['0px 50px', '0px 0px'], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+            easing: Easing.spring({damping: 190}),
+          }),
+        }}
+      >
+        <ReceiptCard
+          compact
+          width={410}
+          title="Checkout langsung"
+          lines={[
+            {label: 'Barang', value: 'Rp70.000'},
+            {label: 'Ongkir', value: 'Rp10.000'},
+            {label: 'Total', value: 'Rp80.000'},
+          ]}
+        />
+        <ReceiptCard
+          compact
+          width={410}
+          title="Kejar gratis ongkir"
+          lines={[
+            {label: 'Barang awal', value: 'Rp70.000'},
+            {label: 'Tambahan', value: 'Rp35.000'},
+            {label: 'Ongkir', value: 'Rp0', emphasis: 'success'},
+            {label: 'Total', value: 'Rp105.000', emphasis: 'accent'},
+          ]}
+        />
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 84,
+          right: 170,
+          top: 1250,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: 74,
+          fontWeight: 930,
+          opacity: interpolate(frame, [3.2 * fps, 4.0 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          scale: interpolate(frame, [3.2 * fps, 4.0 * fps], [0.88, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+            easing: Easing.spring({damping: 170}),
+            output: 'perceptual-scale',
+          }),
+        }}
+      >
+        <BracketFocus>+Rp25.000</BracketFocus>
+      </div>
+      <div style={{position: 'absolute', left: 84, right: 170, top: 1370, textAlign: 'center', fontSize: 29, fontWeight: 670, color: brand.colors.muted}}>
+        tambahan pengeluaran dibanding checkout langsung
+      </div>
+      <SimulationNote />
+      <Subtitle>
+        Tapi totalnya sekarang 105 ribu.
+        <br />Kita keluar 25 ribu lebih banyak.
+      </Subtitle>
+    </SceneBase>
+  );
+};
