@@ -8,8 +8,8 @@ import {Fridge} from './Fridge';
 import {SceneBase} from './SceneBase';
 import {voiceText} from './voiceover.config';
 
-const NIGHT_FRIDGE = {left: 625, top: 455, width: 330} as const;
-const NIGHT_CHAR = {left: 190, top: 990, width: 320} as const;
+const NIGHT_FRIDGE = {left: 548, top: 666, width: 430} as const;
+const NIGHT_CHAR = {left: 142, top: 844, width: 385} as const;
 
 const blinkAt = (frame: number, fps: number) => {
   const cycle = frame % Math.round(2.7 * fps);
@@ -26,15 +26,15 @@ const DigitalClock: React.FC<{time: string}> = ({time}) => (
     style={{
       position: 'absolute',
       left: 88,
-      top: 145,
+      top: 205,
       padding: '12px 18px',
       borderRadius: 16,
-      border: '2px solid rgba(246,240,229,.14)',
-      backgroundColor: 'rgba(0,0,0,.22)',
-      color: '#F6B75C',
+      border: `3px solid ${brand.colors.ink}`,
+      backgroundColor: '#FFFDF8',
+      color: brand.colors.orange,
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      fontSize: 34,
-      fontWeight: 800,
+      fontSize: 62,
+      fontWeight: 950,
       letterSpacing: 4,
     }}
   >
@@ -43,7 +43,7 @@ const DigitalClock: React.FC<{time: string}> = ({time}) => (
 );
 
 const NightSubtitle: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
-  <EpisodeSubtitle text={text} highlight={highlight} dark />
+  <EpisodeSubtitle text={text} highlight={highlight} dark={false} />
 );
 
 const PaperSubtitle: React.FC<{text: string; highlight?: string}> = ({text, highlight}) => (
@@ -86,10 +86,10 @@ const NightLight: React.FC<{strength: number}> = ({strength}) => (
   <div
     style={{
       position: 'absolute',
-      left: 445,
-      top: 470,
-      width: 590,
-      height: 760,
+      left: 325,
+      top: 640,
+      width: 730,
+      height: 860,
       opacity: strength,
       background:
         'radial-gradient(ellipse at 82% 44%, rgba(255,239,190,.42), rgba(255,239,190,.16) 38%, transparent 69%)',
@@ -111,12 +111,12 @@ export const MidnightScene: React.FC = () => {
 
       <Character
         expression="sleepy"
-        width={310}
-        left={interpolate(frame, [0, 3.15 * fps], [-190, 235], {
+        width={375}
+        left={interpolate(frame, [0, 3.15 * fps], [-340, 160], {
           ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
-        top={1000}
+        top={858}
         headTilt={7}
         lean={7}
         bob={Math.sin(walk * Math.PI * 2) * 6}
@@ -129,11 +129,11 @@ export const MidnightScene: React.FC = () => {
         style={{
           position: 'absolute',
           left: 105,
-          top: 1350,
+          top: 1335,
           fontSize: 21,
           fontWeight: 800,
           letterSpacing: 5,
-          color: 'rgba(246,240,229,.27)',
+          color: 'rgba(32,37,31,.48)',
           opacity: interpolate(frame, [0.8 * fps, 1.25 * fps], [0, 1], clamp),
         }}
       >
@@ -176,8 +176,8 @@ export const ApproachScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: 470,
-          top: 870,
+          left: 475,
+          top: 880,
           width: 74,
           height: 74,
           borderRadius: 999,
@@ -218,9 +218,9 @@ export const OpenFridgeScene: React.FC = () => {
       <Fridge {...NIGHT_FRIDGE} open={open} />
       <Character
         expression={open > 0.72 ? 'surprised' : 'curious'}
-        width={330}
-        left={195}
-        top={985}
+        width={395}
+        left={138}
+        top={845}
         rightArm={-70}
         headTilt={interpolate(frame, [0.55 * fps, 1.8 * fps], [-3, 5], clamp)}
         lean={interpolate(frame, [0.55 * fps, 1.8 * fps], [0, 4], clamp)}
@@ -231,8 +231,8 @@ export const OpenFridgeScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: 745,
-          top: 390,
+          left: 775,
+          top: 600,
           width: 18,
           height: 18,
           borderRadius: 999,
@@ -266,9 +266,9 @@ export const InvestigationScene: React.FC = () => {
       <Fridge {...NIGHT_FRIDGE} open={1} />
       <Character
         expression={expression}
-        width={345}
-        left={188}
-        top={985}
+        width={390}
+        left={144}
+        top={845}
         headTilt={interpolate(frame, [0, 1.2 * fps, 2.3 * fps, 3.2 * fps], [-5, 7, -8, 3], clamp)}
         lean={interpolate(frame, [0, 2.4 * fps], [0, 7], clamp)}
         rightArm={frame > 1.5 * fps ? -108 : -30}
@@ -340,12 +340,12 @@ export const CloseFridgeScene: React.FC = () => {
       <Fridge {...NIGHT_FRIDGE} open={close} />
       <Character
         expression="deadpan"
-        width={315}
-        left={interpolate(frame, [1.0 * fps, 2.75 * fps], [205, -190], {
+        width={375}
+        left={interpolate(frame, [1.0 * fps, 2.75 * fps], [160, -350], {
           ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
-        top={1010}
+        top={858}
         flip
         headTilt={-3}
         bob={frame > 1.0 * fps ? Math.sin(walk * Math.PI * 2) * 5 : 0}
@@ -369,8 +369,8 @@ export const FiveMinutesScene: React.FC = () => {
       <Fridge {...NIGHT_FRIDGE} />
       <Character
         expression="curious"
-        width={315}
-        left={interpolate(frame, [1.25 * fps, 3.3 * fps], [-180, 225], {
+        width={375}
+        left={interpolate(frame, [1.25 * fps, 3.3 * fps], [-340, 160], {
           ...clamp,
           easing: Easing.bezier(0.22, 1, 0.36, 1),
         })}
@@ -430,9 +430,9 @@ export const SameAgainScene: React.FC = () => {
       <Fridge {...NIGHT_FRIDGE} open={open} />
       <Character
         expression="deadpan"
-        width={330}
-        left={195}
-        top={985}
+        width={385}
+        left={145}
+        top={850}
         rightArm={-70}
         headTilt={interpolate(frame, [1.55 * fps, 3.0 * fps], [0, 10], clamp)}
         light={open}
@@ -813,9 +813,9 @@ export const EndingScene: React.FC = () => {
 
       <Character
         expression={frame < 2.4 * fps ? 'thinking' : frame < 4.55 * fps ? 'realization' : 'deadpan'}
-        width={325}
-        left={205}
-        top={995}
+        width={385}
+        left={145}
+        top={850}
         rightArm={interpolate(frame, [0, 1.4 * fps, 3.05 * fps, 4.3 * fps], [-70, -70, -18, -70], clamp)}
         headTilt={interpolate(frame, [0, 1.45 * fps, 2.8 * fps, 4.3 * fps], [4, -7, 6, -3], clamp)}
         light={reopen}
