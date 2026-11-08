@@ -91,7 +91,8 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    </>;
  }
  case 'spam':{
-   const timings=[.35,1.15,1.7,2.12,2.46,2.78,3.04,3.25];
+   // The first click occurred in the previous scene; seven more make eight in total.
+   const timings=[.35,1.15,1.7,2.12,2.46,2.78,3.25];
    const hits=timings.filter(s=>t>=s).length;
    const isDown=Math.max(0,...timings.map(s=>pulse(t,s,.16)));
    const lean=hits<2?3:hits<4?11:hits<8?18:26;
@@ -101,7 +102,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
       expression={hits<3?'doubtful':hits<7?'annoyed':'surprised'} tilt={lean*.4} lean={lean}
       arm={hits<7?69:78} leftArm={-28} impatient={hits>=3} scarf={Math.sin(t*16)*15}/>}/>
     <PressFinger x={950} y={1068} progress={isDown} size={.68}/>
-    {hits>0&&<Count value={'×'+(hits<2?1:hits<4?2:hits<8?4:8)} x={650} y={558}
+    {hits>0&&<Count value={'×'+(hits<1?1:hits<3?2:hits<7?4:8)} x={650} y={558}
       scale={1+pulse(t,timings[Math.max(0,hits-1)],.22)*.13}/>}
     {hits>=6&&<Note x={125} y={654}>INI DIA USAHANYA!</Note>}
    </>;
