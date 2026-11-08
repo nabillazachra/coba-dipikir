@@ -1,9 +1,10 @@
-name: Episode 003 Visual QA (draft branch only)
+name: Episode 003 Visual QA (revision branches)
 
 on:
   push:
     branches:
       - fix/episode-003-visual-cheerful-audio
+      - fix/e003-distance-arrow-v2
   workflow_dispatch:
 
 permissions:

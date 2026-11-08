@@ -87,20 +87,34 @@ export const DifferenceScene:React.FC=()=>{
 export const DistanceScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
  const stretch=tween(f,[.2*fps,2.7*fps],[0,1]);
- const right=548+stretch*42;
+ // PriceTag's actual outer width includes 32px padding and 10px border.
+ // Reserve an intentional 98-123px gap for one coherent vector arrow.
+ const tagWidth=365;
+ const right=575+stretch*25;
+ const leftTagRight=70+tagWidth+42;
+ const arrowWidth=82;
+ const arrowX=(leftTagRight+right-arrowWidth)/2;
+ const appear=tween(f,[.22*fps,.65*fps],[0,1]);
  return <SceneCanvas>
   <TopText size={80}>KOK RASANYA<br/><span style={{color:ORANGE}}>JAUH BANGET?</span></TopText>
-  <PriceTag x={70} y={563} width={380} text="Rp99.000" highlight/>
-  <PriceTag x={right} y={563} width={375} text="Rp100.000"/>
-  <div style={{
-    position:'absolute',left:420,top:698,width:Math.max(30,right-420),
-    borderTop:'8px dashed '+ORANGE,
-    opacity:stretch,transformOrigin:'left center',
-  }}/>
-  <div style={{
-    position:'absolute',left:479,top:662,fontSize:46,fontWeight:950,color:ORANGE,
-    opacity:stretch,
-  }}>↔</div>
+  <PriceTag x={70} y={563} width={tagWidth} text="Rp99.000" highlight/>
+  <PriceTag x={right} y={563} width={tagWidth} text="Rp100.000"/>
+  <svg viewBox="0 0 100 72" width={arrowWidth} height={60}
+    aria-label="Perbandingan dua harga"
+    style={{
+      position:'absolute',left:arrowX,top:591,zIndex:5,
+      overflow:'visible',
+      opacity:appear,
+      transform:'scale('+(0.86+appear*.14)+')',
+      transformOrigin:'center center',
+    }}>
+    <g fill="none" stroke={ORANGE} strokeWidth="8"
+      strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 36 H79"/>
+      <path d="M39 18 L21 36 L39 54"/>
+      <path d="M61 18 L79 36 L61 54"/>
+    </g>
+  </svg>
   <Actor x={350} y={748} width={330} expression="doubtful"
     tilt={stretch*14-7} rightArm={-70} leftArm={45}
     gazeX={stretch*12-6} scarf={Math.sin(f/8)*4}/>
