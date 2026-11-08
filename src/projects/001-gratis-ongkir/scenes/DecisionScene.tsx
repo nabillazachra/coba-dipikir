@@ -30,7 +30,7 @@ export const DecisionScene: React.FC = () => {
           translate: interpolate(frame, [0, 0.6 * fps, 1.8 * fps], ['0px 80px', '0px 0px', '170px 250px'], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: [Easing.spring({damping: 190}), Easing.bezier(0.16, 1, 0.3, 1)],
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
           }),
           scale: interpolate(frame, [0, 0.6 * fps, 1.8 * fps], [0.92, 1, 0.64], {
             extrapolateLeft: 'clamp',
