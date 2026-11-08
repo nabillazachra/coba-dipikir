@@ -79,6 +79,36 @@ export const HookScene: React.FC = () => {
               borderRadius: 24,
             }}
           />
+          <div
+            style={{
+              position: 'absolute',
+              left: 105,
+              top: 20,
+              width: 82,
+              height: 82,
+              borderRadius: 18,
+              backgroundColor: '#FFFDF8',
+              border: `4px solid ${brand.colors.ink}`,
+              rotate: '-8deg',
+              opacity: interpolate(frame, [0.45 * fps, 0.9 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+              translate: interpolate(frame, [0.45 * fps, 0.9 * fps], ['0px -50px', '0px 0px'], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              right: 108,
+              top: 12,
+              width: 96,
+              height: 96,
+              borderRadius: 20,
+              backgroundColor: '#E7D9C6',
+              border: `4px solid ${brand.colors.ink}`,
+              rotate: '7deg',
+              opacity: interpolate(frame, [0.7 * fps, 1.1 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+              translate: interpolate(frame, [0.7 * fps, 1.1 * fps], ['0px -60px', '0px 0px'], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+            }}
+          />
           <div style={{position: 'absolute', left: 80, bottom: -36, width: 64, height: 64, borderRadius: 40, backgroundColor: brand.colors.ink}} />
           <div style={{position: 'absolute', right: 80, bottom: -36, width: 64, height: 64, borderRadius: 40, backgroundColor: brand.colors.ink}} />
         </div>
@@ -111,9 +141,27 @@ export const HookScene: React.FC = () => {
         </div>
       </div>
 
+      <div
+        style={{
+          position: 'absolute',
+          right: 120,
+          top: 520,
+          border: `2px solid ${brand.colors.orange}`,
+          borderRadius: 999,
+          padding: '10px 16px',
+          color: brand.colors.orange,
+          fontSize: 23,
+          fontWeight: 800,
+          rotate: '6deg',
+          opacity: interpolate(frame, [1.7 * fps, 2.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        hemat... katanya
+      </div>
+
       <Subtitle>
-        Nambah belanja 35 ribu supaya nggak bayar ongkir 10 ribu.
-        <br />Pernah?
+        Nambah belanja 35 ribu cuma biar ongkir 10 ribu hilang.
+        <br />Nah, pernah?
       </Subtitle>
     </SceneBase>
   );
