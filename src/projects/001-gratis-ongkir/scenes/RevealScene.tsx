@@ -171,9 +171,9 @@ export const RevealScene: React.FC = () => {
         <div style={{fontSize:100,fontWeight:950,letterSpacing:-4,color:brand.colors.orange,lineHeight:.95,marginTop:8}}>+25K</div>
       </div>
 
-      {frame < 1.9 * fps ? (
+      {frame < 2.25 * fps ? (
         <Subtitle>{voiceText('05-menang')}</Subtitle>
-      ) : frame < 4.85 * fps ? (
+      ) : frame < 5.05 * fps ? (
         <Subtitle>{voiceText('05-total')}</Subtitle>
       ) : (
         <Subtitle>{voiceText('05-punch')}</Subtitle>
