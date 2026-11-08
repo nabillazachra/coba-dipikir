@@ -10,6 +10,7 @@ type Props = {
   readonly bob?: number;
   readonly flip?: boolean;
   readonly opacity?: number;
+  readonly cropBottom?: number;
 };
 
 // An exact crop from the supplied Coba Dipikir character sheet.
@@ -23,6 +24,7 @@ export const OriginalCharacter: React.FC<Props> = ({
   bob = 0,
   flip = false,
   opacity = 1,
+  cropBottom = .23,
 }) => (
   <CanvasImage
     src={publicAsset('characters/ep2-front34.png')}
@@ -38,6 +40,8 @@ export const OriginalCharacter: React.FC<Props> = ({
       translate: `0px ${bob}px`,
       scale: flip ? '-1 1' : '1 1',
       opacity,
+      // Intentional editorial bust crop: prioritize face/gesture over tiny legs.
+      clipPath: `inset(0 0 ${Math.round(cropBottom * 100)}% 0)`,
       imageRendering: 'auto',
       pointerEvents: 'none',
       filter: 'drop-shadow(0 10px 0 rgba(32,37,31,.07))',
