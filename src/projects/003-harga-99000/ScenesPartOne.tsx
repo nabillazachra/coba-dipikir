@@ -68,14 +68,14 @@ export const DifferenceScene:React.FC=()=>{
     borderRadius:10,backgroundColor:PAPER,opacity:.6,
   }}/>
   <div style={{
-    position:'absolute',left:85,right:110,top:1015,
-    color:ORANGE,textAlign:'center',fontWeight:950,
-    fontSize:176,letterSpacing:-8,
+    position:'absolute',left:94,width:535,top:1015,
+    color:ORANGE,textAlign:'left',fontWeight:950,
+    fontSize:137,letterSpacing:-5,
     transform:'scale('+(.66+p*.34)+')',
     opacity:p,
     textShadow:'0 13px 0 rgba(0,0,0,.17)',
   }}>Rp1.000</div>
-  <Actor x={725} y={1160} width={220}
+  <Actor x={646} y={930} width={335}
     expression={p>.6?'deadpan':'thinking'} tilt={p>.6?-8:6}
     gazeX={p>.6?-7:5} blink={p>.3&&p<.45?1:0}/>
   <div style={{position:'absolute',left:450,top:1295,width:260,height:24,
@@ -120,7 +120,7 @@ export const LeftDigitScene:React.FC=()=>{
  return <SceneCanvas store={false}>
   <TopText eyebrow="LIHAT ANGKA DEPANNYA" size={71}>MATA KITA<br/><span style={{color:ORANGE}}>KE SINI DULU.</span></TopText>
   <div style={{
-    position:'absolute',left:104,top:630,fontSize:156,
+    position:'absolute',left:104,top:630,fontSize:138,
     fontWeight:950,letterSpacing:-6,color:INK,
     lineHeight:1,
   }}>
@@ -130,7 +130,7 @@ export const LeftDigitScene:React.FC=()=>{
     }}>9</span><span style={{opacity:.38}}>9.000</span>
   </div>
   <div style={{
-    position:'absolute',left:104,top:919,fontSize:156,
+    position:'absolute',left:104,top:919,fontSize:138,
     fontWeight:950,letterSpacing:-6,color:INK,
     lineHeight:1,
   }}>
@@ -144,7 +144,7 @@ export const LeftDigitScene:React.FC=()=>{
     backgroundColor:ORANGE,opacity:.55,
     boxShadow:'0 0 17px rgba(233,107,60,.45)',
   }}/>
-  <Actor x={649} y={842} width={350} expression="curious"
+  <Actor x={702} y={845} width={342} expression="curious"
     tilt={tween(f,[0,3*fps,5.4*fps],[-9,9,-6])}
     gazeX={tween(f,[0,2.2*fps,4.8*fps],[-8,8,-8])}
     rightArm={55}/>
