@@ -326,7 +326,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
  case 'ending':{
    const touch=pulse(t,3.28,.24);
    const temptation=range(t,5.0,7.5);
-   const spam=[8.15,8.43,8.67,8.84,9.03].map(s=>pulse(t,s,.11));
+   const spam=[8.47,8.70,8.93,9.16,9.37].map(s=>pulse(t,s,.11));
    const down=Math.max(touch,...spam);
    return <>
     <Heading eyebrow="LAIN KALI COBA…" size={70}>PENCET<br/><span style={{color:ORANGE}}>SEKALI AJA.</span></Heading>
@@ -347,7 +347,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
       <Panel x={609} y={619} scale={1.17} pressed={down}/>
       <PressFinger x={820} y={1056} progress={t<7.9?temptation*.84:down} size={1.06}/>
       <Note x={162} y={1114} large color={GREEN}>tahan…</Note>
-      {t>7.75&&<Count value="×8" x={718} y={553} scale={1+pulse(t,8.9,.32)*.16}/>}
+      {t>9.31&&<Count value="×8" x={718} y={553} scale={1+pulse(t,9.37,.32)*.16}/>}
     </>}
    </>;
  }
