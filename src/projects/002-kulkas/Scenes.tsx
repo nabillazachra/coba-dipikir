@@ -107,6 +107,25 @@ export const MidnightScene: React.FC = () => {
   return (
     <SceneBase>
       <DigitalClock time="00:13" />
+      <div
+        style={{
+          position: 'absolute',
+          right: 111,
+          top: 205,
+          width: 420,
+          fontSize: 47,
+          fontWeight: 950,
+          lineHeight: .98,
+          letterSpacing: -1.8,
+          color: brand.colors.ink,
+          opacity: interpolate(frame, [0.25 * fps, 0.7 * fps], [0, 1], clamp),
+          translate: interpolate(frame, [0.25 * fps, 0.7 * fps], ['0px 18px','0px 0px'], clamp),
+        }}
+      >
+        LAGI-LAGI…
+        <br />
+        <span style={{color: brand.colors.orange}}>KE DAPUR.</span>
+      </div>
       <Fridge {...NIGHT_FRIDGE} />
 
       <Character
