@@ -87,7 +87,7 @@ export const CommercePhone: React.FC<CommercePhoneProps> = ({
             fontWeight: 900,
           }}
         >
-          1
+          {extraPrice ? 2 : 1}
         </div>
       </div>
 
