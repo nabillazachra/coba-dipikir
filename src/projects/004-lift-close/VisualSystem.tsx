@@ -150,7 +150,7 @@ export const PressFinger:React.FC<{x:number;y:number;progress:number;angle?:numb
 })=>{
  const p=Math.max(0,Math.min(1,progress));
  return <div style={{position:'absolute',left:x-(left?0:220),top:y-55,width:260,height:170,
-   zIndex:22,transform:'translateX('+(p*45*(left?-1:1))+'px) rotate('+angle+'deg) scale('+size+')',
+   zIndex:22,transform:'translateX('+((left?1:-1)*(1-p)*52)+'px) rotate('+angle+'deg) scale('+size+')',
    transformOrigin:'85% 50%'}}>
     <svg viewBox="0 0 260 170" width="100%" height="100%">
       <path d="M-4 111 Q45 110 73 100 L161 64 Q176 56 189 64 L227 84 Q239 91 232 102 Q226 114 212 109 L186 105 L174 121 L112 154 Q84 163 63 146 L-3 147 Z"
