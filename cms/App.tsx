@@ -87,7 +87,7 @@ export const App: React.FC = () => {
           height: selected.height,
           container: 'mp4',
           videoCodec: 'h264',
-          muted: true,
+          muted: false,
         });
 
         if (!active) return;
@@ -153,7 +153,7 @@ export const App: React.FC = () => {
         },
         container: 'mp4',
         videoCodec: 'h264',
-        muted: true,
+        muted: false,
         signal: controller.signal,
         onProgress: ({progress}) => {
           const normalized = Math.max(0, Math.min(1, progress));
@@ -516,7 +516,7 @@ export const App: React.FC = () => {
                 <div><span>Resolution</span><strong>{selected.width} × {selected.height}</strong></div>
                 <div><span>Frame rate</span><strong>{selected.fps} FPS</strong></div>
                 <div><span>Duration</span><strong>{formatDuration(selected)}</strong></div>
-                <div><span>Audio</span><strong>Muted</strong></div>
+                <div><span>Audio</span><strong>VO + SFX ready</strong></div>
                 <div><span>Output</span><strong>{selected.id}.mp4</strong></div>
               </div>
 
