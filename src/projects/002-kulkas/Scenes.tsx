@@ -561,8 +561,8 @@ export const NotHungryScene: React.FC = () => {
         <Character
           expression="curious"
           width={220}
-          left={0}
-          top={0}
+          left={275}
+          top={115}
           headTilt={-5}
           blink={blinkAt(frame, fps)}
         />
