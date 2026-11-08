@@ -10,7 +10,9 @@
     "cms:build": "vite build",
     "cms:preview": "vite preview",
     "voice:generate": "node scripts/generate-voiceover.mjs",
-    "audio:bed": "node scripts/generate-soundbed.mjs"
+    "audio:bed": "node scripts/generate-soundbed.mjs",
+    "render:e002": "remotion render E002-Kenapa-Buka-Kulkas renders/002-kulkas.mp4",
+    "audio:ep2-sfx": "node scripts/generate-episode2-sfx.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
