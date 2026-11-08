@@ -66,6 +66,18 @@ jobs:
       - name: Build CMS
         run: npm run cms:build
 
+      - name: QA episode 002 rendered frames
+        continue-on-error: true
+        run: |
+          for frame in 60 300 1050; do
+            npx remotion still E002-Kenapa-Buka-Kulkas /tmp/ep2-qa-${frame}.png --frame=${frame}
+            ffmpeg -y -loglevel error -i /tmp/ep2-qa-${frame}.png -vf scale=405:-2 -c:v libwebp -quality 52 /tmp/ep2-qa-${frame}.webp
+            echo "EP2_QA_FRAME_${frame}_BEGIN"
+            base64 -w0 /tmp/ep2-qa-${frame}.webp
+            echo
+            echo "EP2_QA_FRAME_${frame}_END"
+          done
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
