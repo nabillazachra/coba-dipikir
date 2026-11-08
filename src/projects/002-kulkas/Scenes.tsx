@@ -533,9 +533,10 @@ export const QuestionScene: React.FC = () => {
       {/* Use top-level layers: nested SVG percentage sizing made character vanish. */}
       <Fridge left={565} top={778} width={395} open={open} />
       <OriginalCharacter
-        width={365}
-        left={120}
-        top={810}
+        width={590}
+        left={44}
+        top={680}
+        cropBottom={.28}
         tilt={glance * .65}
         bob={Math.sin(frame/13)*5}
       />
@@ -827,9 +828,10 @@ export const HabitLoopScene: React.FC = () => {
       {/* A loop demonstrated by acting, not a tiny character on a diagram. */}
       <Fridge left={595} top={835} width={370} open={doorOpen} />
       <OriginalCharacter
-        width={360}
-        left={135}
-        top={815}
+        width={570}
+        left={57}
+        top={740}
+        cropBottom={.29}
         tilt={interpolate(
           frame,[0,1*fps,2.0*fps,3.4*fps,4.2*fps],
           [10,-7,5,-5,8],clamp)}
