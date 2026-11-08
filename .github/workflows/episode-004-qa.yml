@@ -1,0 +1,67 @@
+name: Episode 004 Visual QA (feature branch)
+on:
+  push:
+    branches:
+      - feat/episode-004-lift-close
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install -r requirements-voice.txt mutagen==1.47.0 imageio-ffmpeg==0.6.0 Pillow
+      - name: Build episode 004 assets
+        run: |
+          node scripts/generate-voiceover.mjs --project=004-lift-close
+          npm run audio:ep4-sfx
+          python scripts/measure-episode4-voice.py
+      - name: Verify TypeScript and CMS
+        run: |
+          npx tsc --noEmit
+          npm run cms:build
+      - name: Storyboard stills
+        run: |
+          mkdir -p /tmp/e004
+          for frame in 16 44 167 275 348 477 609 684 779 929 1067 1240 1452 1614 1746 1905 2043 2244 2328 2352 2394; do
+            npx remotion still E004-Close-Lift /tmp/e004/e004-${frame}.png --frame=${frame} --log=error
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image,ImageDraw
+          frames=[16,44,167,275,348,477,609,684,779,929,1067,1240,1452,1614,1746,1905,2043,2244,2328,2352,2394]
+          W,H=235,418
+          sheet=Image.new('RGB',(3*(W+12)+14,7*(H+30)+14),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,n in enumerate(frames):
+              im=Image.open(f'/tmp/e004/e004-{n}.png').convert('RGB')
+              im.thumbnail((W,H))
+              x=14+(i%3)*(W+12)
+              y=26+(i//3)*(H+30)
+              sheet.paste(im,(x,y))
+              d.text((x,y-19),f'SCENE {i+1} @ {n/30:.1f}s',fill='#20251f')
+          out=io.BytesIO()
+          sheet.save(out,format='WEBP',quality=51,method=6)
+          print('E004_QA_BEGIN')
+          print(base64.b64encode(out.getvalue()).decode('ascii'))
+          print('E004_QA_END')
+          PY
+      - name: Upload storyboard frames
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode004-qa-contact
+          path: /tmp/e004
+          retention-days: 7

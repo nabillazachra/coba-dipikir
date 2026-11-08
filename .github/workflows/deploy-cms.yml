@@ -62,6 +62,12 @@ jobs:
       - name: Generate episode 3 price SFX
         run: npm run audio:ep3-sfx
 
+      - name: Generate episode 4 elevator SFX
+        run: npm run audio:ep4-sfx
+
+      - name: Measure and synchronize episode 4 voice
+        run: python scripts/measure-episode4-voice.py
+
       - name: Measure actual VO and synchronize episode 3 subtitles
         run: |
           python -m pip install --quiet mutagen==1.47.0 imageio-ffmpeg==0.6.0
@@ -98,6 +104,33 @@ jobs:
           print('E003_QA_BEGIN')
           print(base64.b64encode(out.getvalue()).decode('ascii'))
           print('E003_QA_END')
+          PY
+
+      - name: Visual QA - Episode 4 storyboard contact sheet
+        run: |
+          mkdir -p /tmp/e004
+          for frame in 44 167 275 348 477 609 684 779 929 1067 1240 1452 1614 1746 1905 2043 2244 2394; do
+            npx remotion still E004-Close-Lift /tmp/e004/e004-${frame}.png --frame=${frame}
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image,ImageDraw
+          frames=[44,167,275,348,477,609,684,779,929,1067,1240,1452,1614,1746,1905,2043,2244,2394]
+          W,H=215,383
+          sheet=Image.new('RGB',(3*(W+12)+14,6*(H+30)+14),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,n in enumerate(frames):
+              im=Image.open(f'/tmp/e004/e004-{n}.png').convert('RGB')
+              im.thumbnail((W,H))
+              x=14+(i%3)*(W+12)
+              y=26+(i//3)*(H+30)
+              sheet.paste(im,(x,y))
+              d.text((x,y-19),f'SCENE {i+1} @ {n/30:.1f}s',fill='#20251f')
+          out=io.BytesIO()
+          sheet.save(out,format='WEBP',quality=49,method=6)
+          print('E004_QA_BEGIN')
+          print(base64.b64encode(out.getvalue()).decode('ascii'))
+          print('E004_QA_END')
           PY
 
       - name: Setup Pages

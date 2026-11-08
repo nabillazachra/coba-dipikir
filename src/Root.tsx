@@ -10,6 +10,7 @@ import {RevealScene} from './projects/001-gratis-ongkir/scenes/RevealScene';
 import {ClosingScene} from './projects/001-gratis-ongkir/scenes/ClosingScene';
 import {KulkasEpisode} from './projects/002-kulkas/Composition';
 import {Harga99000Episode} from './projects/003-harga-99000/Composition';
+import {LiftCloseEpisode} from './projects/004-lift-close/Composition';
 
 export const RemotionRoot: React.FC = () => (
   <Folder name="Coba-Dipikir">
@@ -48,6 +49,16 @@ export const RemotionRoot: React.FC = () => (
         id="E003-Harga-99000"
         component={Harga99000Episode}
         durationInFrames={1860}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+    </Folder>
+    <Folder name="Episode-004-Close-Lift">
+      <Composition
+        id="E004-Close-Lift"
+        component={LiftCloseEpisode}
+        durationInFrames={2439}
         fps={30}
         width={1080}
         height={1920}
