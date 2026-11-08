@@ -167,7 +167,7 @@ export const PriceTag:React.FC<{
       border:'5px solid '+(highlight?ORANGE:INK),
       backgroundColor:color??(highlight?'#FFF0E7':'#FFFCF6'),
       boxShadow:highlight?'8px 10px 0 rgba(233,107,60,.15)':'7px 9px 0 rgba(32,37,31,.12)',
-      fontSize:text.length>10?68:77,
+      fontSize:Math.min(75,Math.floor((width-54)/(text.length*.62))),
       fontFamily:FONT,
       lineHeight:1.05,
       textAlign:'center',
