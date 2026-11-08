@@ -48,12 +48,12 @@ export const HookScene: React.FC = () => {
           translate: interpolate(frame, [0, 0.65 * fps], ['0px 70px', '0px 0px'], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 180}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
           }),
           scale: interpolate(frame, [0, 0.65 * fps], [0.88, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 180}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
             output: 'perceptual-scale',
           }),
         }}
