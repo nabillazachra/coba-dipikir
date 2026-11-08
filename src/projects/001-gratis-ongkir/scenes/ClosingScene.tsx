@@ -14,6 +14,33 @@ export const ClosingScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
+          left: 155,
+          top: 250,
+          width: 255,
+          height: 340,
+          border: `3px solid ${brand.colors.rule}`,
+          borderRadius: 26,
+          rotate: '-8deg',
+          opacity: interpolate(frame, [0, 0.8 * fps, 3.4 * fps, 4.2 * fps], [0, 0.38, 0.38, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          right: 180,
+          top: 265,
+          width: 255,
+          height: 340,
+          border: `3px solid ${brand.colors.rule}`,
+          borderRadius: 26,
+          rotate: '9deg',
+          opacity: interpolate(frame, [0.2 * fps, 1 * fps, 3.4 * fps, 4.2 * fps], [0, 0.28, 0.28, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      />
+
+      <div
+        style={{
+          position: 'absolute',
           left: 345,
           top: 310,
           width: 300,
@@ -70,9 +97,25 @@ export const ClosingScene: React.FC = () => {
           }
         />
       </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 84,
+          right: 170,
+          top: 1060,
+          textAlign: 'center',
+          color: brand.colors.muted,
+          fontSize: 27,
+          fontWeight: 760,
+          opacity: interpolate(frame, [1.3 * fps, 2 * fps, 3.4 * fps, 4.2 * fps], [0, 1, 1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        promo mengubah keputusan... atau cuma kelihatan begitu?
+      </div>
+
       <Subtitle>
-        Kalau barangnya perlu, bisa masuk akal.
-        <br />Tapi tanpa promo, barang itu tetap kamu beli?
+        Kalau barangnya memang perlu, ya masuk akal.
+        <br />Tapi coba jujur... tanpa promo, tetap dibeli?
       </Subtitle>
     </SceneBase>
   );
