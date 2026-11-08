@@ -54,6 +54,9 @@ jobs:
         if: steps.voice-cache.outputs.cache-hit != 'true'
         run: npm run voice:generate
 
+      - name: Generate sound bed
+        run: npm run audio:bed
+
       - name: Render MP4
         run: >-
           npx remotion render src/index.ts
