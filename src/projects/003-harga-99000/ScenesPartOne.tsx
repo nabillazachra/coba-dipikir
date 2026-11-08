@@ -14,7 +14,7 @@ export const CompareScene:React.FC=()=>{
     scale={tween(f,[0,.8*fps],[.77,1])}/>
   <ProductBox x={132} y={834} width={310} bounce={Math.sin(f/12)*2}/>
   <ProductBox x={641} y={834} width={310} bounce={Math.sin(f/12)*2}/>
-  <Actor x={tween(f,[0,.7*fps],[405,388])} y={1030} width={290}
+  <Actor x={tween(f,[0,.7*fps],[370,351])} y={925} width={390}
     expression={f<1.35*fps?'neutral':'curious'} tilt={tilt} gazeX={eye}
     leftArm={tween(f,[1.35*fps,2.2*fps,2.6*fps],[12,-66,12])}
     rightArm={tween(f,[2.3*fps,3.5*fps],[-10,64])}
@@ -105,7 +105,7 @@ export const DistanceScene:React.FC=()=>{
     position:'absolute',left:479,top:778,fontSize:46,fontWeight:950,color:ORANGE,
     opacity:stretch,
   }}>↔</div>
-  <Actor x={370} y={1032} width={338} expression="doubtful"
+  <Actor x={320} y={851} width={420} expression="doubtful"
     tilt={stretch*14-7} rightArm={-70} leftArm={45}
     gazeX={stretch*12-6} scarf={Math.sin(f/8)*4}/>
   <ProductBox x={120} y={1101} width={256} opacity={.75}/>
@@ -144,7 +144,7 @@ export const LeftDigitScene:React.FC=()=>{
     backgroundColor:ORANGE,opacity:.55,
     boxShadow:'0 0 17px rgba(233,107,60,.45)',
   }}/>
-  <Actor x={677} y={927} width={270} expression="curious"
+  <Actor x={649} y={842} width={350} expression="curious"
     tilt={tween(f,[0,3*fps,5.4*fps],[-9,9,-6])}
     gazeX={tween(f,[0,2.2*fps,4.8*fps],[-8,8,-8])}
     rightArm={55}/>
@@ -162,7 +162,7 @@ export const BrainScene:React.FC=()=>{
   <TopText eyebrow="OTAK KITA CEPAT MENYEDERHANAKAN" size={67}>
     KESANNYA<br/><span style={{color:ORANGE}}>MASUK KATEGORI.</span>
   </TopText>
-  <Actor x={78} y={929} width={425}
+  <Actor x={78} y={835} width={425}
     expression={phase===0?'happy':'worried'}
     tilt={phase===0?-10:9} gazeX={phase===0?9:-8}
     leftArm={phase===0?20:34} rightArm={phase===0?64:-20}
