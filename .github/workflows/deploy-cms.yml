@@ -30,6 +30,12 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Generate CMS auth verifier
+        env:
+          CMS_EMAIL: ${{ secrets.CMS_EMAIL }}
+          CMS_PASSWORD: ${{ secrets.CMS_PASSWORD }}
+        run: node scripts/generate-auth-env.mjs
+
       - name: Build CMS
         run: npm run cms:build
 
