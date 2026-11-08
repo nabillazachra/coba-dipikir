@@ -101,9 +101,12 @@ export const LiftLocation:React.FC<{
 })=><Camera zoom={zoom} panX={panX} panY={panY}>
  <ElevatorShell night={night} floor={floor} lighting={lighting}/>
  {hero&&behind&&hero}
- {person}
  <Door x={119} y={154} w={640} h={489} open={open} sensor={sensor} dark={night}/>
+ {/* The door component paints its own opaque shaft background. Passengers must
+     be composited AFTER that backdrop or they disappear even when open=1. */}
+ {person}
  {showPanel&&<Panel x={787} y={143} scale={.99} pressed={pressed}/>}
+
  {hero&&!behind&&hero}
  <div style={{position:'absolute',left:95,top:630,width:707,height:13,borderRadius:5,
  background:night?'rgba(253,212,167,.18)':'rgba(98,110,102,.16)'}}/>
