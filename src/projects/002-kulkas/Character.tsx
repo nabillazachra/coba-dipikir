@@ -30,6 +30,7 @@ type CharacterProps = {
   readonly blink?: number;
   readonly opacity?: number;
   readonly light?: number;
+  readonly gazeX?: number;
 };
 
 const pointFrom = (x: number, y: number, length: number, angleDeg: number) => {
@@ -53,6 +54,7 @@ export const Character: React.FC<CharacterProps> = ({
   blink = 0,
   opacity = 1,
   light = 0,
+  gazeX = 0,
 }) => {
   const leftHand = pointFrom(100, 235, 78, leftArm);
   const rightHand = pointFrom(200, 235, 78, rightArm);
@@ -141,8 +143,8 @@ export const Character: React.FC<CharacterProps> = ({
               transform={`rotate(${-scarfSwing * 0.55} 105 232)`}
             />
 
-            <rect x="113" y={eyeY - browLift} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
-            <rect x="176" y={eyeY + browLift * 0.2} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
+            <rect x={113 + gazeX} y={eyeY - browLift} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
+            <rect x={176 + gazeX} y={eyeY + browLift * 0.2} width="11" height={eyeHeight} rx="6" fill={brand.colors.ink} />
 
             {expression === 'curious' || expression === 'thinking' || expression === 'doubtful' || expression === 'worried' ? (
               <>
