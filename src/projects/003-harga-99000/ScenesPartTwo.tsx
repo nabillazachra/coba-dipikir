@@ -8,15 +8,15 @@ export const EffectScene:React.FC=()=>{
  const stamp=tween(f,[.25*fps,.7*fps],[.65,1]);
  return <SceneCanvas store={false}>
   <div style={{
-    position:'absolute',left:102,right:100,top:367,
-    padding:'28px 32px',
-    transform:'rotate(-4deg) scale('+stamp+')',
-    border:'9px solid '+ORANGE,borderRadius:25,
+    position:'absolute',left:98,right:98,top:387,
+    padding:'25px 20px',boxSizing:'border-box',
+    transform:'rotate(-2deg) scale('+stamp+')',
+    border:'8px solid '+ORANGE,borderRadius:24,
     color:ORANGE,backgroundColor:'#FFF8EE',
-    textAlign:'center',letterSpacing:1.5,fontSize:78,fontWeight:950,
+    textAlign:'center',whiteSpace:'nowrap',letterSpacing:-1.8,fontSize:61,fontWeight:900,
     boxShadow:'12px 13px 0 rgba(233,107,60,.11)',
   }}>LEFT-DIGIT EFFECT</div>
-  <Actor x={100} y={826} width={440} expression="realization"
+  <Actor x={85} y={820} width={450} expression="realization"
     tilt={tween(f,[0,1.3*fps,3.8*fps],[-7,6,-5])}
     rightArm={71} gazeX={8} scarf={Math.sin(f/7)*5}/>
   <div style={{
@@ -69,23 +69,23 @@ export const OtherPricesScene:React.FC=()=>{
   <TopText eyebrow="DI MANA-MANA KETEMU" size={68}>
     HARGANYA<br/><span style={{color:ORANGE}}>NYARIS BULAT.</span>
   </TopText>
-  <HangTag x={105} y={700} value="Rp19.900" rotate={-4}
+  <HangTag x={105} y={606} value="Rp19.900" rotate={-2}
     opacity={tween(f,[0,.4*fps],[0,1])}/>
-  <HangTag x={630} y={717} value="Rp49.900" rotate={5}
+  <HangTag x={105} y={792} value="Rp49.900" rotate={2}
     opacity={tween(f,[.45*fps,.85*fps],[0,1])}/>
-  <HangTag x={100} y={967} value="Rp199.900" rotate={4}
+  <HangTag x={105} y={978} value="Rp199.900" rotate={-2}
     opacity={tween(f,[1.0*fps,1.4*fps],[0,1])}/>
-  <HangTag x={590+push+wobble} y={1006}
-    value="Rp99.900" rotate={-5+progress*8} active
+  <HangTag x={105+push*.52+wobble*.45} y={1164}
+    value="Rp99.900" rotate={-2+progress*4} active
     opacity={tween(f,[1.4*fps,1.8*fps],[0,1])}/>
-  <Actor x={290} y={1040} width={360}
+  <Actor x={570} y={822} width={420}
     expression={f>4.3*fps?'surprised':'doubtful'}
     tilt={f>4.3*fps?13:-8}
     rightArm={f>2.6*fps?75:12}
     leftArm={f>4.3*fps?-44:20}
     lean={f>4.4*fps?-11:f>2.5*fps?13:0}
     scarf={Math.sin(f/6)*6}/>
-  <EditorNote text={f>4.3*fps?'MENTAL BALIK!':'dikit lagi bulat…'} x={460} y={1285}/>
+  <EditorNote text={f>4.3*fps?'MENTAL BALIK!':'dikit lagi bulat…'} x={615} y={1220}/>
  </SceneCanvas>;
 };
 
