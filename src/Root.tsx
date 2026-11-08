@@ -8,6 +8,7 @@ import {PromoTemptationScene} from './projects/001-gratis-ongkir/scenes/PromoTem
 import {DecisionScene} from './projects/001-gratis-ongkir/scenes/DecisionScene';
 import {RevealScene} from './projects/001-gratis-ongkir/scenes/RevealScene';
 import {ClosingScene} from './projects/001-gratis-ongkir/scenes/ClosingScene';
+import {KulkasEpisode} from './projects/002-kulkas/Composition';
 
 export const RemotionRoot: React.FC = () => (
   <Folder name="Coba-Dipikir">
@@ -29,6 +30,17 @@ export const RemotionRoot: React.FC = () => (
         <Composition id="E001-S05-Reveal" component={RevealScene} durationInFrames={240} fps={30} width={1080} height={1920} />
         <Composition id="E001-S06-Penutup" component={ClosingScene} durationInFrames={270} fps={30} width={1080} height={1920} />
       </Folder>
+    </Folder>
+
+    <Folder name="Episode-002-Kenapa-Buka-Kulkas">
+      <Composition
+        id="E002-Kenapa-Buka-Kulkas"
+        component={KulkasEpisode}
+        durationInFrames={1590}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
     </Folder>
   </Folder>
 );
