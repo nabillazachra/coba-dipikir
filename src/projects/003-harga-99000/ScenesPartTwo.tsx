@@ -78,7 +78,7 @@ export const OtherPricesScene:React.FC=()=>{
   <HangTag x={590+push+wobble} y={1006}
     value="Rp99.900" rotate={-5+progress*8} active
     opacity={tween(f,[1.4*fps,1.8*fps],[0,1])}/>
-  <Actor x={273} y={1107} width={360}
+  <Actor x={273} y={912} width={360}
     expression={f>4.3*fps?'surprised':'doubtful'}
     tilt={f>4.3*fps?13:-8}
     rightArm={f>2.6*fps?75:12}
@@ -97,7 +97,7 @@ export const CalculatorScene:React.FC=()=>{
   <TopText eyebrow="BUKAN BERARTI TERTIPU" size={69}>
     KITA TETAP<br/><span style={{color:ORANGE}}>BISA NGITUNG.</span>
   </TopText>
-  <Actor x={95} y={920} width={485}
+  <Actor x={95} y={735} width={485}
     expression={typing?'thinking':'neutral'}
     tilt={tween(f,[0,2.3*fps,4.2*fps],[-9,10,-6])}
     rightArm={typing?70:5} leftArm={typing?-55:10}
