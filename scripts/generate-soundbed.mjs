@@ -2,7 +2,7 @@ import {mkdirSync, writeFileSync} from 'node:fs';
 import {dirname} from 'node:path';
 
 const sampleRate = 44100;
-const durationSeconds = 36;
+const durationSeconds = 39;
 const samples = sampleRate * durationSeconds;
 const data = new Float32Array(samples);
 
