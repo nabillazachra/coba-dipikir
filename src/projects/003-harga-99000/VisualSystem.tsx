@@ -50,26 +50,18 @@ export const SceneCanvas: React.FC<{
     {store ? (
       <>
         <div style={{
-          position:'absolute',left:0,right:0,top:1345,height:12,
+          position:'absolute',left:0,right:0,top:1208,height:8,
           backgroundColor:dark?'#D9CBB7':'#C7B49F',
         }}/>
         <div style={{
-          position:'absolute',left:0,right:0,top:1357,height:563,
-          background:dark?'linear-gradient(#2E3530,#222925)':'linear-gradient(#E6D9C9,#D5C5B5)',
+          position:'absolute',left:0,right:0,top:1216,height:222,
+          background:dark?'linear-gradient(#2E3530,#262C28)':'linear-gradient(#E9DECF,#F0E7DA)',
         }}/>
         <div style={{
-          position:'absolute',left:0,right:0,top:1432,height:4,
-          backgroundColor:dark?'#4A554B':'rgba(32,37,31,.13)',
+          position:'absolute',left:0,right:0,top:1438,bottom:0,
+          backgroundColor:dark?INK:PAPER,
         }}/>
-        <div style={{
-          position:'absolute',left:110,right:110,top:1530,height:3,
-          backgroundColor:dark?'#39443D':'rgba(32,37,31,.08)',
-        }}/>
-        {/* Illustrated retail context without a slide/card container. */}
-        <div style={{
-          position:'absolute',left:95,top:485,width:890,height:24,
-          borderRadius:16,backgroundColor:dark?'#435048':'#DCC4A6',opacity:.65,
-        }}/>
+        {/* Keep the typography band completely clear of set dressing. */}
       </>
     ) : null}
     {children}
@@ -85,19 +77,19 @@ export const TopText: React.FC<{
 }> = ({eyebrow,children,align='left',size=81,dark=false}) => (
   <div style={{
     position:'absolute',
-    left:96,right:154,top:308,
+    left:92,right:92,top:308,
     textAlign:align,
     color:dark?PAPER:INK,
     fontFamily:FONT,
     zIndex:6,
   }}>
     {eyebrow ? <div style={{
-      fontSize:24,fontWeight:900,letterSpacing:4,
-      color:ORANGE,marginBottom:22,
+      fontSize:23,fontWeight:850,letterSpacing:3.2,
+      color:ORANGE,marginBottom:16,
     }}>{eyebrow}</div> : null}
     <div style={{
-      fontSize:size,fontWeight:950,
-      lineHeight:1.01,letterSpacing:-3.2,
+      fontSize:size,fontWeight:900,
+      lineHeight:1.08,letterSpacing:-2.3,
     }}>{children}</div>
   </div>
 );
@@ -193,14 +185,22 @@ export const Actor: React.FC<{
   x,y,width=350,expression='neutral',tilt=0,lean=0,
   leftArm=12,rightArm=-12,blink=0,walk=0,scarf=0,flip=false,bob=0,
   gazeX=0,
-}) => (
-  <Character
-    left={x} top={y} width={width} expression={expression}
+}) => {
+  const frame=useCurrentFrame();
+  // Anchor the larger actor to the same floor point, not the original top-left.
+  const scale=1.14;
+  return <Character
+    left={x-width*(scale-1)/2}
+    top={y-width*(scale-1)*1.4}
+    width={width*scale}
+    expression={expression}
     headTilt={tilt} lean={lean} leftArm={leftArm} rightArm={rightArm}
-    blink={blink} step={walk} scarfSwing={scarf} flip={flip} bob={bob}
+    blink={Math.max(blink,frame%109>105?1:0)}
+    step={walk} scarfSwing={scarf} flip={flip}
+    bob={bob+Math.sin(frame/11)*3}
     gazeX={gazeX}
-  />
-);
+  />;
+};
 
 export const Burst: React.FC<{
   x:number;y:number;visible:number;

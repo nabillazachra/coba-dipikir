@@ -21,11 +21,12 @@ export const EpisodeCaptions:React.FC=()=>{
   const highlight=cue.highlight;
   const idx=highlight?value.toLowerCase().indexOf(highlight.toLowerCase()):-1;
   const dark=now>=8.4&&now<13.6;
+  const entry=Math.min(1,Math.max(0,(now-cue.at)/.13));
   return <div style={{
     position:'absolute',
-    left:92,right:146,
-    bottom:365,
-    minHeight:95,
+    left:70,right:70,
+    top:1242,
+    height:184,
     display:'flex',
     justifyContent:'center',
     alignItems:'center',
@@ -34,18 +35,22 @@ export const EpisodeCaptions:React.FC=()=>{
     fontFamily:brand.fontFamily,
   }}>
     <div style={{
-      maxWidth:860,
+      maxWidth:920,
+      boxSizing:'border-box',
       color:dark?'#FFFDF8':brand.colors.ink,
+      backgroundColor:dark?'rgba(32,37,31,.94)':'rgba(255,253,248,.95)',
+      border:'2px solid '+(dark?'rgba(255,253,248,.14)':'rgba(32,37,31,.07)'),
+      borderRadius:20,
+      boxShadow:'0 8px 22px rgba(32,37,31,.09)',
       fontFamily:brand.fontFamily,
-      fontSize:45,
-      fontWeight:900,
-      lineHeight:1.13,
+      fontSize:41,
+      fontWeight:850,
+      lineHeight:1.16,
       textAlign:'center',
-      letterSpacing:-.8,
-      textShadow:dark
-        ?'0 5px 10px rgba(0,0,0,.82),0 2px 2px rgba(0,0,0,.65)'
-        :'0 3px 4px rgba(246,240,229,.95),0 1px 0 #FFFDF8',
-      padding:'12px 12px',
+      letterSpacing:-.65,
+      padding:'14px 26px',
+      opacity:entry,
+      transform:'translateY('+((1-entry)*10)+'px)',
     }}>
       {idx>=0&&highlight ? <>
         {value.slice(0,idx)}

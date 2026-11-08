@@ -1,0 +1,67 @@
+name: Episode 003 Visual QA (draft branch only)
+
+on:
+  push:
+    branches:
+      - fix/episode-003-visual-cheerful-audio
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install project and QA dependencies
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install -r requirements-voice.txt Pillow mutagen==1.47.0 imageio-ffmpeg==0.6.0
+      - name: Rebuild Episode 003 voice and cheerful SFX
+        run: |
+          node scripts/generate-voiceover.mjs --project=003-harga-99000
+          npm run audio:ep3-sfx
+          python scripts/measure-episode3-voice.py
+      - name: Check TypeScript and CMS build
+        run: |
+          npx tsc --noEmit
+          npm run cms:build
+      - name: Render storyboard frames for review
+        run: |
+          mkdir -p /tmp/e003-qa
+          for frame in 53 187 320 468 627 815 1004 1166 1302 1459 1641 1821; do
+            npx remotion still E003-Harga-99000 "/tmp/e003-qa/${frame}.png" --frame=${frame} --log=error
+          done
+          python - <<'PY'
+          import base64
+          from PIL import Image, ImageDraw
+          frames=[53,187,320,468,627,815,1004,1166,1302,1459,1641,1821]
+          w,h=240,427
+          sheet=Image.new('RGB',(4*(w+10)+10,3*(h+30)+10),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,frame in enumerate(frames):
+              im=Image.open(f'/tmp/e003-qa/{frame}.png').convert('RGB')
+              im.thumbnail((w,h))
+              x=10+(i%4)*(w+10)
+              y=26+(i//4)*(h+30)
+              sheet.paste(im,(x,y))
+              d.text((x,y-18),f'#{i+1} {frame/30:.1f}s',fill='#20251f')
+          sheet.save('/tmp/e003-qa/contact.webp',format='WEBP',quality=46,method=6)
+          print('E003_QA_IMAGE_BEGIN')
+          print(base64.b64encode(open('/tmp/e003-qa/contact.webp','rb').read()).decode('ascii'))
+          print('E003_QA_IMAGE_END')
+          PY
+      - name: Upload QA storyboard images
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-003-visual-qa
+          path: /tmp/e003-qa/
+          retention-days: 7
