@@ -2,11 +2,19 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
-import {CommercePhone} from '../CommercePhone';
+import {SceneHeader} from '../SceneHeader';
 import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
-const Confetti = ({left, top, rotate, delay, frame, fps, color}: {
+const Confetti = ({
+  left,
+  top,
+  rotate,
+  delay,
+  frame,
+  fps,
+  color,
+}: {
   left: number;
   top: number;
   rotate: string;
@@ -17,158 +25,235 @@ const Confetti = ({left, top, rotate, delay, frame, fps, color}: {
 }) => (
   <div
     style={{
-      position:'absolute',
+      position: 'absolute',
       left,
       top,
-      width:18,
-      height:58,
-      borderRadius:8,
-      backgroundColor:color,
+      width: 16,
+      height: 52,
+      borderRadius: 7,
+      backgroundColor: color,
       rotate,
-      opacity:interpolate(frame,[delay*fps,(delay+.3)*fps,1.45*fps],[0,1,0],{
-        extrapolateLeft:'clamp',extrapolateRight:'clamp'
+      opacity: interpolate(frame, [delay * fps, (delay + 0.25) * fps, 1.55 * fps], [0, 1, 0], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
       }),
-      translate:interpolate(frame,[delay*fps,1.45*fps],['0px -80px','0px 120px'],{
-        extrapolateLeft:'clamp',extrapolateRight:'clamp'
-      })
+      translate: interpolate(frame, [delay * fps, 1.55 * fps], ['0px -60px', '0px 100px'], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      }),
     }}
   />
 );
+
+const CompareCard = ({
+  left,
+  label,
+  total,
+  detail,
+  accent,
+  frame,
+  fps,
+  delay,
+}: {
+  left: number;
+  label: string;
+  total: string;
+  detail: string;
+  accent: 'ink' | 'orange';
+  frame: number;
+  fps: number;
+  delay: number;
+}) => {
+  const borderColor = accent === 'orange' ? brand.colors.orange : brand.colors.ink;
+  const bg = accent === 'orange' ? '#FFF0EA' : '#FFFDF8';
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left,
+        top: 560,
+        width: 410,
+        height: 360,
+        padding: '32px 28px',
+        borderRadius: 32,
+        border: `4px solid ${borderColor}`,
+        backgroundColor: bg,
+        textAlign: 'center',
+        opacity: interpolate(frame, [delay * fps, (delay + 0.45) * fps], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        }),
+        translate: interpolate(frame, [delay * fps, (delay + 0.45) * fps], ['0px 55px', '0px 0px'], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: Easing.bezier(0.16, 1, 0.3, 1),
+        }),
+      }}
+    >
+      <div
+        style={{
+          fontSize: 21,
+          fontWeight: 850,
+          color: accent === 'orange' ? brand.colors.orange : brand.colors.muted,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{fontSize: 96, fontWeight: 950, letterSpacing: -4, marginTop: 28}}>{total}</div>
+      <div style={{height: 3, margin: '27px 24px 23px', backgroundColor: brand.colors.rule}} />
+      <div style={{fontSize: 22, fontWeight: 780, color: brand.colors.muted}}>{detail}</div>
+    </div>
+  );
+};
 
 export const RevealScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
-  const winOut = interpolate(frame,[1.45*fps,1.95*fps],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
-  const compareIn = interpolate(frame,[1.85*fps,2.4*fps],[0,1],{
-    extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.bezier(.16,1,.3,1)
+  const winOut = interpolate(frame, [1.55 * fps, 2.0 * fps], [1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  const compareIn = interpolate(frame, [1.85 * fps, 2.35 * fps], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
   });
 
   return (
     <SceneBase>
-      <div style={{position:'absolute',inset:0,opacity:winOut}}>
+      <div style={{position: 'absolute', inset: 0, opacity: winOut}}>
         <div
           style={{
-            position:'absolute',
-            left:150,
-            right:150,
-            top:330,
-            padding:'50px 36px',
-            borderRadius:44,
-            backgroundColor:'#E7F0E9',
-            border:`5px solid ${brand.colors.green}`,
-            textAlign:'center',
-            scale:interpolate(frame,[0,.55*fps],[.7,1],{
-              extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:145}),output:'perceptual-scale'
-            })
+            position: 'absolute',
+            left: 170,
+            right: 170,
+            top: 430,
+            padding: '54px 42px',
+            borderRadius: 42,
+            border: `5px solid ${brand.colors.green}`,
+            backgroundColor: '#E7F0E9',
+            textAlign: 'center',
+            scale: interpolate(frame, [0, 0.55 * fps], [0.76, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+              easing: Easing.spring({damping: 150}),
+              output: 'perceptual-scale',
+            }),
           }}
         >
-          <div style={{fontSize:30,fontWeight:850,color:brand.colors.green,letterSpacing:1.6}}>PROMO BERHASIL</div>
-          <div style={{fontSize:126,fontWeight:950,letterSpacing:-5,color:brand.colors.green,lineHeight:.9,marginTop:18}}>ONGKIR</div>
-          <div style={{fontSize:176,fontWeight:950,letterSpacing:-7,lineHeight:.9,marginTop:10}}>Rp0</div>
+          <div style={{fontSize: 27, fontWeight: 850, color: brand.colors.green, letterSpacing: 1.5}}>PROMO BERHASIL</div>
+          <div style={{fontSize: 112, fontWeight: 950, letterSpacing: -4.5, color: brand.colors.green, marginTop: 18}}>
+            ONGKIR
+          </div>
+          <div style={{fontSize: 164, fontWeight: 950, letterSpacing: -6, lineHeight: 0.9, marginTop: 5}}>Rp0</div>
         </div>
 
-        <Confetti left={130} top={250} rotate="-18deg" delay={.1} frame={frame} fps={fps} color={brand.colors.orange} />
-        <Confetti left={250} top={180} rotate="12deg" delay={.2} frame={frame} fps={fps} color={brand.colors.green} />
-        <Confetti left={845} top={230} rotate="22deg" delay={.25} frame={frame} fps={fps} color={brand.colors.orange} />
-        <Confetti left={930} top={330} rotate="-10deg" delay={.15} frame={frame} fps={fps} color={brand.colors.green} />
-        <Confetti left={480} top={170} rotate="32deg" delay={.35} frame={frame} fps={fps} color={brand.colors.orange} />
+        <Confetti left={145} top={360} rotate="-18deg" delay={0.1} frame={frame} fps={fps} color={brand.colors.orange} />
+        <Confetti left={275} top={300} rotate="12deg" delay={0.2} frame={frame} fps={fps} color={brand.colors.green} />
+        <Confetti left={825} top={320} rotate="22deg" delay={0.25} frame={frame} fps={fps} color={brand.colors.orange} />
+        <Confetti left={920} top={420} rotate="-10deg" delay={0.15} frame={frame} fps={fps} color={brand.colors.green} />
       </div>
 
-      <div
-        style={{
-          position:'absolute',
-          left:84,
-          top:145,
-          fontSize:27,
-          fontWeight:850,
-          color:brand.colors.orange,
-          letterSpacing:1.6,
-          opacity:compareIn
-        }}
-      >
-        EITS. TOTALNYA?
-      </div>
+      <div style={{opacity: compareIn}}>
+        <SceneHeader eyebrow="EITS. TOTALNYA?">
+          Bandingin
+          <br />dua jalur ini.
+        </SceneHeader>
 
-      <div
-        style={{
-          position:'absolute',
-          left:185,
-          top:265,
-          opacity:compareIn,
-          translate:interpolate(frame,[1.85*fps,2.45*fps],['0px 100px','0px 0px'],{
-            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.bezier(.16,1,.3,1)
-          }),
-          scale:interpolate(frame,[1.85*fps,2.45*fps],[.9,1],{
-            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:180}),output:'perceptual-scale'
-          })
-        }}
-      >
-        <CommercePhone
-          extraPrice="Rp35.000"
-          shippingPrice="Rp0"
-          totalPrice="Rp105.000"
-          promoLabel="Gratis ongkir"
+        <CompareCard
+          left={88}
+          label="CHECKOUT LANGSUNG"
+          total="80K"
+          detail="70K barang + 10K ongkir"
+          accent="ink"
+          frame={frame}
+          fps={fps}
+          delay={2.05}
         />
-      </div>
+        <CompareCard
+          left={558}
+          label="KEJAR PROMO"
+          total="105K"
+          detail="70K + 35K + ongkir 0"
+          accent="orange"
+          frame={frame}
+          fps={fps}
+          delay={2.35}
+        />
 
-      <div
-        style={{
-          position:'absolute',
-          left:95,
-          top:855,
-          width:245,
-          padding:'22px 22px',
-          borderRadius:26,
-          backgroundColor:'#FFFDF8',
-          border:`4px solid ${brand.colors.ink}`,
-          rotate:'-8deg',
-          textAlign:'center',
-          opacity:interpolate(frame,[2.8*fps,3.35*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
-        }}
-      >
-        <div style={{fontSize:20,fontWeight:850,color:brand.colors.muted}}>TANPA PROMO</div>
-        <div style={{fontSize:66,fontWeight:950,marginTop:5}}>80K</div>
-      </div>
+        <div
+          style={{
+            position: 'absolute',
+            left: 160,
+            right: 160,
+            top: 1010,
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
+            gap: 18,
+            alignItems: 'center',
+            opacity: interpolate(frame, [3.55 * fps, 4.0 * fps], [0, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+            }),
+          }}
+        >
+          <div
+            style={{
+              padding: '18px 20px',
+              borderRadius: 20,
+              backgroundColor: '#E7F0E9',
+              border: `3px solid ${brand.colors.green}`,
+              color: brand.colors.green,
+              textAlign: 'center',
+            }}
+          >
+            <div style={{fontSize: 19, fontWeight: 850}}>ONGKIR HEMAT</div>
+            <div style={{fontSize: 48, fontWeight: 950, marginTop: 3}}>-10K</div>
+          </div>
+          <div style={{fontSize: 42, fontWeight: 950}}>+</div>
+          <div
+            style={{
+              padding: '18px 20px',
+              borderRadius: 20,
+              backgroundColor: '#FFF0EA',
+              border: `3px solid ${brand.colors.orange}`,
+              color: brand.colors.orange,
+              textAlign: 'center',
+            }}
+          >
+            <div style={{fontSize: 19, fontWeight: 850}}>BELANJA TAMBAHAN</div>
+            <div style={{fontSize: 48, fontWeight: 950, marginTop: 3}}>+35K</div>
+          </div>
+        </div>
 
-      <div
-        style={{
-          position:'absolute',
-          right:70,
-          top:1045,
-          width:265,
-          padding:'22px 22px',
-          borderRadius:26,
-          backgroundColor:'#FFF0EA',
-          border:`4px solid ${brand.colors.orange}`,
-          rotate:'7deg',
-          textAlign:'center',
-          opacity:interpolate(frame,[3.4*fps,4.0*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
-        }}
-      >
-        <div style={{fontSize:20,fontWeight:850,color:brand.colors.orange}}>KEJAR PROMO</div>
-        <div style={{fontSize:66,fontWeight:950,marginTop:5}}>105K</div>
-      </div>
-
-      <div
-        style={{
-          position:'absolute',
-          left:145,
-          right:145,
-          top:1380,
-          padding:'25px 28px',
-          borderRadius:30,
-          backgroundColor:brand.colors.ink,
-          color:brand.colors.paper,
-          textAlign:'center',
-          opacity:interpolate(frame,[5.0*fps,5.55*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
-          scale:interpolate(frame,[5.0*fps,5.55*fps],[.75,1],{
-            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:150}),output:'perceptual-scale'
-          })
-        }}
-      >
-        <div style={{fontSize:22,fontWeight:820,color:'#C8C4BB'}}>SELISIH KELUAR</div>
-        <div style={{fontSize:100,fontWeight:950,letterSpacing:-4,color:brand.colors.orange,lineHeight:.95,marginTop:8}}>+25K</div>
+        <div
+          style={{
+            position: 'absolute',
+            left: 240,
+            right: 240,
+            top: 1245,
+            padding: '24px 26px',
+            borderRadius: 26,
+            backgroundColor: brand.colors.ink,
+            color: brand.colors.paper,
+            textAlign: 'center',
+            opacity: interpolate(frame, [4.95 * fps, 5.45 * fps], [0, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+            }),
+            scale: interpolate(frame, [4.95 * fps, 5.45 * fps], [0.82, 1], {
+              extrapolateLeft: 'clamp',
+              extrapolateRight: 'clamp',
+              easing: Easing.spring({damping: 155}),
+              output: 'perceptual-scale',
+            }),
+          }}
+        >
+          <div style={{fontSize: 20, fontWeight: 820, color: '#C8C4BB'}}>SELISIH KELUAR</div>
+          <div style={{fontSize: 92, fontWeight: 950, color: brand.colors.orange, lineHeight: 0.95, marginTop: 7}}>+25K</div>
+        </div>
       </div>
 
       {frame < 2.25 * fps ? (
