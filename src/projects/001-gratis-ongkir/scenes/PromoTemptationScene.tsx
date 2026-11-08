@@ -29,7 +29,7 @@ export const PromoTemptationScene: React.FC = () => {
           scale: interpolate(frame, [0, 0.45 * fps], [0.94, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
-            easing: Easing.spring({damping: 200}),
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
             output: 'perceptual-scale',
           }),
         }}
