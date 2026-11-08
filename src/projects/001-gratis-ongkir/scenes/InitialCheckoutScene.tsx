@@ -54,7 +54,7 @@ export const InitialCheckoutScene: React.FC = () => {
           fontSize: 22,
           fontWeight: 800,
           rotate: '4deg',
-          opacity: interpolate(frame, [0.7 * fps, 1.15 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [4.05 * fps, 4.55 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         belum ada drama
@@ -73,7 +73,7 @@ export const InitialCheckoutScene: React.FC = () => {
           color: brand.colors.muted,
           fontSize: 34,
           fontWeight: 800,
-          opacity: interpolate(frame, [1.1 * fps, 1.7 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [3.2 * fps, 3.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         <span>70k</span><span>+</span><span>10k</span><span>=</span>
