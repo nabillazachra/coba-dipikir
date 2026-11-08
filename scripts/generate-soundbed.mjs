@@ -2,7 +2,7 @@ import {mkdirSync, writeFileSync} from 'node:fs';
 import {dirname} from 'node:path';
 
 const sampleRate = 44100;
-const durationSeconds = 39;
+const durationSeconds = 55;
 const samples = sampleRate * durationSeconds;
 const data = new Float32Array(samples);
 
@@ -49,7 +49,7 @@ for (let t = 0; t < durationSeconds; t += 1) {
   addHat(t + 0.5);
 }
 
-[2, 6, 10, 14, 17, 22, 25, 29].forEach((t, index) => {
+[2, 6, 10, 14, 17, 22, 25, 29, 34, 38, 43, 47, 51].forEach((t, index) => {
   addPluck(t, [392, 440, 494, 440][index % 4], 0.035);
 });
 
