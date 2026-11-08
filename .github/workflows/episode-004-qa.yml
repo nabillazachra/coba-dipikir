@@ -60,6 +60,30 @@ jobs:
           print(base64.b64encode(out.getvalue()).decode('ascii'))
           print('E004_QA_END')
           PY
+      - name: Action sequencing QA - door slide, sensor and button beats
+        run: |
+          for frame in 399 432 466 492 663 678 695 710 1338 1366 1400 1449 2255 2307 2347 2373; do
+            npx remotion still E004-Close-Lift /tmp/e004/e004-action-${frame}.png --frame=${frame} --log=error
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image,ImageDraw
+          frames=[399,432,466,492,663,678,695,710,1338,1366,1400,1449,2255,2307,2347,2373]
+          w,h=235,418
+          sheet=Image.new('RGB',(4*(w+12)+12,4*(h+31)+12),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,n in enumerate(frames):
+              im=Image.open(f'/tmp/e004/e004-action-{n}.png').convert('RGB')
+              im.thumbnail((w,h))
+              x=12+(i%4)*(w+12);y=27+(i//4)*(h+31)
+              sheet.paste(im,(x,y))
+              d.text((x,y-18),f'{n/30:.2f}s',fill='#20251f')
+          out=io.BytesIO()
+          sheet.save(out,format='WEBP',quality=52,method=6)
+          print('E004_MOTION_QA_BEGIN')
+          print(base64.b64encode(out.getvalue()).decode('ascii'))
+          print('E004_MOTION_QA_END')
+          PY
       - name: Upload storyboard frames
         uses: actions/upload-artifact@v4
         with:
