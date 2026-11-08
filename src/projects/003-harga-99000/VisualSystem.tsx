@@ -50,20 +50,16 @@ export const SceneCanvas: React.FC<{
     {store ? (
       <>
         <div style={{
-          position:'absolute',left:0,right:0,top:1345,height:12,
+          position:'absolute',left:0,right:0,top:1208,height:8,
           backgroundColor:dark?'#D9CBB7':'#C7B49F',
         }}/>
         <div style={{
-          position:'absolute',left:0,right:0,top:1357,height:563,
-          background:dark?'linear-gradient(#2E3530,#222925)':'linear-gradient(#E6D9C9,#D5C5B5)',
+          position:'absolute',left:0,right:0,top:1216,height:222,
+          background:dark?'linear-gradient(#2E3530,#262C28)':'linear-gradient(#E9DECF,#F0E7DA)',
         }}/>
         <div style={{
-          position:'absolute',left:0,right:0,top:1432,height:4,
-          backgroundColor:dark?'#4A554B':'rgba(32,37,31,.13)',
-        }}/>
-        <div style={{
-          position:'absolute',left:110,right:110,top:1530,height:3,
-          backgroundColor:dark?'#39443D':'rgba(32,37,31,.08)',
+          position:'absolute',left:0,right:0,top:1438,bottom:0,
+          backgroundColor:dark?INK:PAPER,
         }}/>
         {/* Keep the typography band completely clear of set dressing. */}
       </>
