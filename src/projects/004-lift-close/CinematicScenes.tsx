@@ -25,7 +25,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
       BURU-BURU<br/><Accent night>MASUK LIFT?</Accent>
     </FilmTitle>}
     {early?<ButtonMacro night press={hop(t,.38,.30)} finger={hop(t,.38,.30)}
-       camera={1.14} count={8} spotlight/>:
+       camera={1.14} count={8} spotlight agitation={1}/>:
      <>
        <LiftLocation night open={range(t,1.04,1.59,.24,1)}
          zoom={1.01+entering*.055} panX={entering*-17}
@@ -93,7 +93,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>
     <ButtonMacro night press={active} finger={active}
       camera={zoom} shake={hits>3?Math.sin(t*43)*hits*1.6:0}
-      count={hits?count:undefined} spotlight={hits>=2}/>
+      agitation={hits/7} count={hits?count:undefined} spotlight={hits>=2}/>
     {hits>=6&&<LightBurst x={850} y={1080} on={.7+hop(t,3.25,.25)*.3}
       color={warm} size={165}/>}
    </>;
@@ -244,11 +244,11 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>
     <Camera zoom={1.04+crossing*.05} panX={-12}>
       <ElevatorShell/>
-      <Actor x={-100+480*crossing} y={308} width={230}
+      <Actor x={-90+350*crossing} y={308} width={230}
         expression="happy" walk={t*3.1} scarf={6}/>
       <Door x={120} y={150} w={640} h={490} open={open} sensor={false}/>
       <SensorBeam pulse={t>1.8?Math.min(1,range(t,1.7,2.2)+hop(t,3,.6)):.25}/>
-      <Actor x={365} y={175} width={390}
+      <Actor x={490} y={175} width={360}
         expression={t>3?'surprised':'annoyed'}
         tilt={t>3?-19:10} gaze={-9}
         arm={t>3?78:44} leftArm={t>3?-68:2} impatient={t<3}
@@ -390,7 +390,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
         impatient={t>4.8}/>}/>:<ButtonMacro night
        camera={1.20+tempting*.10} finger={t<7.9?tempting*.86:slam}
        press={slam} shake={t>7.8?Math.sin(t*35)*5:Math.sin(t*11)*tempting*3}
-       showActor spotlight/>}
+       showActor spotlight agitation={tempting} reaction={t>8.83}/>}
     {t>4&&<Marker x={111} y={1192} night size={t>6?45:35}>
        {t>9.31?'GAGAL.':t>6.8?'TAAAHAN…':'tenang…'}
     </Marker>}
