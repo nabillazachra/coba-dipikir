@@ -3,6 +3,9 @@ import {GratisOngkirEpisode} from './projects/001-gratis-ongkir/Composition';
 import {projectConfig as gratisOngkirConfig} from './projects/001-gratis-ongkir/project.config';
 import {KulkasEpisode} from './projects/002-kulkas/Composition';
 import {projectConfig as kulkasConfig} from './projects/002-kulkas/project.config';
+import {Harga99000Episode} from './projects/003-harga-99000/Composition';
+import {projectConfig as harga99000Config} from './projects/003-harga-99000/project.config';
+import {scenePlan as harga99000Scenes} from './projects/003-harga-99000/timeline';
 
 export type ProjectStatus = 'idea' | 'draft' | 'review' | 'published';
 
@@ -83,5 +86,27 @@ export const projectRegistry: ProjectRegistryEntry[] = [
       {id: 'habit', title: 'Habit Loop', label: 'Bosan → buka → cek → tutup', startFrame: 1260, durationInFrames: 150},
       {id: 'ending', title: 'Ending', label: 'Bukan makanan · menemukan sesuatu', startFrame: 1410, durationInFrames: 180},
     ],
+  },
+  {
+    id: harga99000Config.id,
+    episode: harga99000Config.episode,
+    title: harga99000Config.title,
+    coverText: harga99000Config.coverText,
+    category: harga99000Config.category,
+    status: harga99000Config.status,
+    compositionId: 'E003-Harga-99000',
+    width: harga99000Config.width,
+    height: harga99000Config.height,
+    fps: harga99000Config.fps,
+    durationInFrames: harga99000Config.durationInFrames,
+    folder: 'src/projects/003-harga-99000',
+    component: Harga99000Episode,
+    scenes: harga99000Scenes.map((scene) => ({
+      id: scene.id,
+      title: scene.title,
+      label: scene.label,
+      startFrame: Math.round(scene.start * harga99000Config.fps),
+      durationInFrames: Math.round((scene.end - scene.start) * harga99000Config.fps),
+    })),
   },
 ];
