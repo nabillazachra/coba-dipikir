@@ -92,8 +92,9 @@ const NightLight: React.FC<{strength: number}> = ({strength}) => (
       height: 860,
       opacity: strength,
       background:
-        'radial-gradient(ellipse at 82% 44%, rgba(255,239,190,.42), rgba(255,239,190,.16) 38%, transparent 69%)',
-      clipPath: 'polygon(37% 9%, 100% 0, 100% 100%, 18% 84%)',
+        'linear-gradient(270deg, rgba(255,201,98,.54) 0%, rgba(255,221,142,.34) 43%, rgba(255,238,197,.05) 100%)',
+      clipPath: 'polygon(51% 10%, 100% 1%, 100% 98%, 6% 86%)',
+      filter: 'blur(6px)',
       pointerEvents: 'none',
     }}
   />
