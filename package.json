@@ -16,7 +16,8 @@
     "remotion": "4.0.534",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "@remotion/player": "4.0.534"
+    "@remotion/player": "4.0.534",
+    "@remotion/web-renderer": "4.0.534"
   },
   "devDependencies": {
     "@types/react": "19.1.10",
