@@ -36,15 +36,15 @@ jobs:
       - name: Storyboard stills
         run: |
           mkdir -p /tmp/e004
-          for frame in 44 167 275 348 477 609 684 779 929 1067 1240 1452 1614 1746 1905 2043 2244 2394; do
+          for frame in 16 44 167 275 348 477 609 684 779 929 1067 1240 1452 1614 1746 1905 2043 2244 2328 2352 2394; do
             npx remotion still E004-Close-Lift /tmp/e004/e004-${frame}.png --frame=${frame} --log=error
           done
           python - <<'PY'
           import base64,io
           from PIL import Image,ImageDraw
-          frames=[44,167,275,348,477,609,684,779,929,1067,1240,1452,1614,1746,1905,2043,2244,2394]
+          frames=[16,44,167,275,348,477,609,684,779,929,1067,1240,1452,1614,1746,1905,2043,2244,2328,2352,2394]
           W,H=235,418
-          sheet=Image.new('RGB',(3*(W+12)+14,6*(H+30)+14),'#f6f0e5')
+          sheet=Image.new('RGB',(3*(W+12)+14,7*(H+30)+14),'#f6f0e5')
           d=ImageDraw.Draw(sheet)
           for i,n in enumerate(frames):
               im=Image.open(f'/tmp/e004/e004-{n}.png').convert('RGB')
