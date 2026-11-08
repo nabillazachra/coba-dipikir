@@ -22,7 +22,7 @@ assert ids == [id_ for id_, _ in entries], "VO ID order differs from subtitle sc
 measured = {}
 errors = []
 for i, (id_, start) in enumerate(entries):
-    path = VO / f"{id_}.mp3"
+    path = VOICE / f"{id_}.mp3"
     if not path.exists():
         raise FileNotFoundError(path)
     duration = float(MP3(path).info.length)
