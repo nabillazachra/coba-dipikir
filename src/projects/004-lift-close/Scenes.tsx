@@ -56,7 +56,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    return <>
     <Heading eyebrow="UDAH PILIH LANTAI 12" size={73}>TAPI PINTUNYA…<br/><span style={{color:ORANGE}}>SANTAI.</span></Heading>
     <Lift open={1} character={<Actor x={336} y={733} width={365}
-      expression={annoyed?'doubtful':'curious'} tilt={annoyed?9:-8}
+      expression={annoyed?'annoyed':'curious'} tilt={annoyed?9:-8}
       impatient={annoyed} gaze={t%1.4>.8?9:-8}
       arm={annoyed?26:0} leftArm={30}/>}/>
     {t>2.8&&<Note x={102} y={625} large>…</Note>}
@@ -85,7 +85,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <Heading eyebrow="TOMBOLNYA DIPENCET" size={73}>KLIK.<br/><span style={{color:ORANGE}}>…</span></Heading>
     <Lift open={1} pressed={push}
       character={<Actor x={286} y={741} width={370} expression={t<1.1?'excited':'deadpan'}
-        arm={t<1?'61':21} tilt={t<1?-6:7} gaze={t<1?11:0}/>}/>
+        arm={t<1?61:21} tilt={t<1?-6:7} gaze={t<1?11:0}/>}/>
     <PressFinger x={941} y={1067} progress={push*.85} size={.61}/>
     {t>1.1&&<Note x={98} y={677} rotate={-5}>masih terbuka.</Note>}
    </>;
@@ -98,7 +98,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    return <>
     <Heading eyebrow="KALAU BELUM BERGERAK…" size={76}>PENCET<br/><span style={{color:ORANGE}}>LAGI. LAGI.</span></Heading>
     <Lift open={1} pressed={isDown} character={<Actor x={310+lean*.5} y={725} width={360}
-      expression={hits<3?'doubtful':hits<7?'worried':'surprised'} tilt={lean*.4} lean={lean}
+      expression={hits<3?'doubtful':hits<7?'annoyed':'surprised'} tilt={lean*.4} lean={lean}
       arm={hits<7?69:78} leftArm={-28} impatient={hits>=3} scarf={Math.sin(t*16)*15}/>}/>
     <PressFinger x={950} y={1068} progress={isDown} size={.68}/>
     {hits>0&&<Count value={'×'+(hits<2?1:hits<4?2:hits<8?4:8)} x={650} y={558}
@@ -220,7 +220,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <Heading eyebrow="EH, ADA YANG LEWAT!" size={72}>SENSOR<br/><span style={{color:ORANGE}}>BILANG: BUKA!</span></Heading>
     <Lift open={doorOpen} sensor={t>1.7} person={t>1.9}
       character={<Actor x={330} y={747} width={363}
-      expression={t>3.25?'surprised':'worried'} lean={t>3.25?-10:0}
+      expression={t>3.25?'surprised':'annoyed'} lean={t>3.25?-10:0}
       tilt={t>3.25?-15:6} arm={t>3.25?73:34} leftArm={t>3.25?-76:15}
       impatient={t<3.2}/>}/>
     {t>2.9&&<Note x={116} y={1180} large>BEEP! ↶</Note>}
@@ -242,7 +242,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    return <>
     <Heading eyebrow="PERTANYAAN SEBENARNYA" size={73}>KENAPA<br/><span style={{color:ORANGE}}>KITA SPAM?</span></Heading>
     <Lift open={1} pressed={pulse(t,1.1,.21)+pulse(t,2.05,.23)+pulse(t,3.13,.24)}
-      character={<Actor x={324} y={749} width={347} expression="doubtful"
+      character={<Actor x={324} y={749} width={347} expression="annoyed"
          impatient tilt={t*4} gaze={10} arm={64}/>}/>
     <Frame x={90} y={561} w={370} h={138} fill="#FFFCF6">
       <div style={{fontSize:24,fontWeight:900,letterSpacing:2.2,color:GREEN,margin:'17px 24px 12px'}}>SABAR</div>
@@ -262,7 +262,6 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
        border:'6px solid '+INK,borderRadius:35,background:'#EBE7DD'}}/>
     <div style={{position:'absolute',left:551,top:603,width:438,height:595,
        border:'6px solid '+(active?ORANGE:INK),borderRadius:35,background:'#F6E2D2'}}/>
-    <SmallStamp x={0} y={0} text="" left={154} top={648}/>
     <div style={{position:'absolute',left:177,top:650,fontWeight:950,fontSize:36,color:GREEN}}>NUNGGU</div>
     <div style={{position:'absolute',left:635,top:650,fontWeight:950,fontSize:36,color:ORANGE}}>MENCET</div>
     <Actor x={160} y={780} width={290} expression="worried" tilt={-9}/>
