@@ -43,7 +43,11 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
  case 'enter':{
    const walk=range(t,.1,2.0);
    return <>
-     <Heading eyebrow="EPISODE 004 · KEJADIAN SEHARI-HARI" size={68}>BURU-BURU<br/><span style={{color:ORANGE}}>MASUK LIFT?</span></Heading>
+     {t<1.02?
+      <Heading eyebrow="EPISODE 004 · COBA DIPIKIR" size={67}>
+        DIPENCET <span style={{color:ORANGE}}>8 KALI.</span><br/>PINTUNYA SANTAI.
+      </Heading>:
+      <Heading eyebrow="KENAL SITUASINYA?" size={68}>BURU-BURU<br/><span style={{color:ORANGE}}>MASUK LIFT?</span></Heading>}
      <Lift open={1} pressed={0} character={<Actor x={140+235*walk} y={734} width={340}
          expression="worried" walk={t*3.1} lean={15} gaze={8} arm={-48} scarf={Math.sin(t*8)*13}/>}/>
      <Clock x={730} y={551} size={95} angle={t*13}/>
@@ -57,7 +61,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <Heading eyebrow="UDAH PILIH LANTAI 12" size={73}>TAPI PINTUNYA…<br/><span style={{color:ORANGE}}>SANTAI.</span></Heading>
     <Lift open={1} character={<Actor x={336} y={733} width={365}
       expression={annoyed?'annoyed':'curious'} tilt={annoyed?9:-8}
-      impatient={annoyed} gaze={t%1.4>.8?9:-8}
+      impatient={annoyed} walk={annoyed?t*1.9:0} gaze={t%1.4>.8?9:-8}
       arm={annoyed?26:0} leftArm={30}/>}/>
     {t>2.8&&<Note x={102} y={625} large>…</Note>}
     <Clock x={670} y={576} size={89} angle={t*20}/>
@@ -100,7 +104,7 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <Heading eyebrow="KALAU BELUM BERGERAK…" size={76}>PENCET<br/><span style={{color:ORANGE}}>LAGI. LAGI.</span></Heading>
     <Lift open={1} pressed={isDown} character={<Actor x={310+lean*.5} y={725} width={360}
       expression={hits<3?'doubtful':hits<7?'annoyed':'surprised'} tilt={lean*.4} lean={lean}
-      arm={hits<7?69:78} leftArm={-28} impatient={hits>=3} scarf={Math.sin(t*16)*15}/>}/>
+      arm={hits<7?69:78} leftArm={-28} impatient={hits>=3} walk={hits>=3?t*2.8:0} scarf={Math.sin(t*16)*15}/>}/>
     <PressFinger x={950} y={1068} progress={isDown} size={.68}/>
     {hits>0&&<Count value={'×'+(hits<1?1:hits<3?2:hits<7?4:8)} x={650} y={558}
       scale={1+pulse(t,timings[Math.max(0,hits-1)],.22)*.13}/>}
@@ -203,9 +207,13 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    const prog=Math.max(0,1-t/5.5);
    return <>
     <Heading eyebrow="SEBELUM PINTU BERGERAK" size={73}>ADA WAKTU<br/><span style={{color:ORANGE}}>UNTUK MASUK.</span></Heading>
-    <Lift open={1} person={t>2.45}
-      character={<Actor x={326} y={746} width={329} expression={t>2.5?'realization':'doubtful'}
-       tilt={t>2.6?8:-8} gaze={t>2.5?-8:9} arm={-15}/>}/>
+    <Lift open={1}
+      character={<>
+        <Actor x={326} y={746} width={329} expression={t>2.5?'realization':'doubtful'}
+          tilt={t>2.6?8:-8} gaze={t>2.5?-8:9} arm={-15}/>
+        {t>2.1&&<Actor x={100+110*range(t,2.15,4.5)} y={918} width={153}
+          expression="happy" walk={t*2.7} arm={15} scarf={4}/>}
+      </>}/>
     <Frame x={100} y={556} w={510} h={126} fill="#FFF9F0" border="#667066">
       <div style={{fontSize:22,fontWeight:900,letterSpacing:2,color:GREEN,margin:'14px 25px'}}>DOOR DWELL TIME</div>
       <div style={{margin:'1px 24px',height:27,borderRadius:10,background:'#E3DED5',overflow:'hidden'}}>
@@ -219,11 +227,15 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    const doorOpen=t<1.65?range(t,.25,1.6,1,.34):t<3.45?range(t,1.7,3.38,.34,1):1;
    return <>
     <Heading eyebrow="EH, ADA YANG LEWAT!" size={72}>SENSOR<br/><span style={{color:ORANGE}}>BILANG: BUKA!</span></Heading>
-    <Lift open={doorOpen} sensor={t>1.7} person={t>1.9}
-      character={<Actor x={330} y={747} width={363}
-      expression={t>3.25?'surprised':'annoyed'} lean={t>3.25?-10:0}
-      tilt={t>3.25?-15:6} arm={t>3.25?73:34} leftArm={t>3.25?-76:15}
-      impatient={t<3.2}/>}/>
+    <Lift open={doorOpen} sensor={t>1.7}
+      character={<>
+        <Actor x={330} y={747} width={363}
+          expression={t>3.25?'surprised':'annoyed'} lean={t>3.25?-10:0}
+          tilt={t>3.25?-15:6} arm={t>3.25?73:34} leftArm={t>3.25?-76:15}
+          impatient={t<3.2}/>
+        {t>1.6&&<Actor x={78+170*range(t,1.7,3.5)} y={902} width={157}
+          expression="happy" walk={t*3.2} arm={-24} scarf={5}/>}
+      </>}/>
     {t>2.9&&<Note x={116} y={1180} large>BEEP! ↶</Note>}
     <BlinkDot x={675} y={830} visible={t>1.7?.9:0}/>
    </>;
@@ -234,6 +246,8 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <MiniDoor x={73} letter="A" delayLabel="cepat" open={range(t,.3,1.6,1,.35)}/>
     <MiniDoor x={401} letter="B" delayLabel="lebih lama" open={range(t,1.7,3.4,1,.62)}/>
     <MiniDoor x={732} letter="C" delayLabel="beda timing" open={range(t,2.7,4.1,1,.75)}/>
+    <Actor x={70+590*range(t,.3,4.05)} y={1035} width={125}
+      expression="curious" walk={t*3.5} tilt={-4} scarf={3}/>
     <Note x={140} y={1200} rotate={-3} color={GREEN}>kondisinya beda.</Note>
    </>;
  }
@@ -308,13 +322,25 @@ const ElevatorScenes:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    const down=Math.max(touch,...spam);
    return <>
     <Heading eyebrow="LAIN KALI COBA…" size={70}>PENCET<br/><span style={{color:ORANGE}}>SEKALI AJA.</span></Heading>
-    <Lift open={t>9.05?range(t,9.1,9.95,1,.65):1} pressed={down}
-      character={<Actor x={325} y={735} width={362} expression={t<3.4?'thinking':t<7.5?'doubtful':'surprised'}
-        tilt={t<7?5:10} gaze={11} arm={t>5?65:14}
-        impatient={t>6.8} scarf={Math.sin(t*12)*6}/>}/>
-    <PressFinger x={952} y={1060} progress={t<7.9?touch*.85+temptation*.6:down} size={.68}/>
-    {t>3.6&&<Note x={95} y={1115} color={GREEN}>tenang… tenang…</Note>}
-    {t>7.75&&<Count value="×8" x={650} y={562} scale={1+pulse(t,8.9,.32)*.16}/>}
+    {t<5.7?<>
+      <Lift open={1} pressed={touch}
+        character={<Actor x={325} y={735} width={362}
+          expression={t<3.4?'thinking':'doubtful'}
+          tilt={5} gaze={11} arm={t>3.0?45:14}
+          impatient={t>4.8} scarf={Math.sin(t*12)*6}/>}/>
+      <PressFinger x={952} y={1060} progress={touch*.85} size={.68}/>
+      {t>3.6&&<Note x={95} y={1115} color={GREEN}>tenang… tenang…</Note>}
+    </>:<>
+      <div style={{position:'absolute',left:82,top:585,width:917,height:642,
+         border:'7px solid '+INK,borderRadius:40,background:'#D8DDD3',
+         boxShadow:'11px 16px 0 rgba(32,37,31,.09)'}}/>
+      <Actor x={134} y={775} width={335} expression={t<7.9?'doubtful':'surprised'}
+        tilt={10+Math.sin(t*14)*4} arm={68} impatient scarf={Math.sin(t*13)*7}/>
+      <Panel x={609} y={619} scale={1.17} pressed={down}/>
+      <PressFinger x={820} y={1056} progress={t<7.9?temptation*.84:down} size={1.06}/>
+      <Note x={162} y={1114} large color={GREEN}>tahan…</Note>
+      {t>7.75&&<Count value="×8" x={718} y={553} scale={1+pulse(t,8.9,.32)*.16}/>}
+    </>}
    </>;
  }
  case 'brand':{
