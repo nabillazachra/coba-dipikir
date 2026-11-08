@@ -154,7 +154,7 @@ export const PriceTag:React.FC<{
     transform:'scale('+scale+') rotate('+rotate+'deg)',
     transformOrigin:'50% 50%',
     zIndex:4,
-    opacity:dim?.33:1,
+    opacity:dim ? 0.33 : 1,
   }}>
     <div style={{
       position:'absolute',
