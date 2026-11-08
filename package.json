@@ -8,7 +8,8 @@
     "render:e001": "remotion render E001-Gratis-Ongkir renders/001-gratis-ongkir.mp4",
     "cms": "vite",
     "cms:build": "vite build",
-    "cms:preview": "vite preview"
+    "cms:preview": "vite preview",
+    "voice:generate": "node scripts/generate-voiceover.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
