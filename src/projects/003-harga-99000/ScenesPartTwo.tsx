@@ -149,11 +149,6 @@ export const OtherPricesScene:React.FC=()=>{
       letterSpacing:-3.2,whiteSpace:'nowrap',
     }}>Rp99.900</div>
   </div>
-  <div style={{
-    position:'absolute',left:600,top:798,width:300,
-    textAlign:'center',fontWeight:850,fontSize:32,
-    color:GREEN,opacity:highlight,
-  }}>sedikit lagi 100 ribu…</div>
   <Actor x={614} y={827} width={277}
     expression={f>4.2*fps?'surprised':'doubtful'}
     tilt={f>4.2*fps?11:-8}
@@ -253,13 +248,6 @@ export const ImpressionScene:React.FC=()=>{
         leftArm={i===0?-23:34}
         rightArm={i===0?32:-28}
         lean={i===0?-3:8} scarf={Math.sin(f/8)*3}/>
-      <div style={{
-        position:'absolute',left:entry.x+40,top:1143,width:372,height:49,
-        display:'flex',alignItems:'center',justifyContent:'center',
-        backgroundColor:'#FFFDF8',borderRadius:16,
-        color:entry.text,fontSize:31,fontWeight:900,
-        boxShadow:'0 4px 0 rgba(32,37,31,.09)',
-      }}>{i===0?'90 RIBUAN':'100 RIBU'}</div>
     </React.Fragment>
   ))}
   <div style={{
