@@ -30,8 +30,28 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install dependencies
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Node dependencies
         run: npm install --no-audit --no-fund
+
+      - name: Restore generated voiceover cache
+        id: voice-cache
+        uses: actions/cache@v4
+        with:
+          path: public/audio
+          key: ${{ runner.os }}-voice-${{ hashFiles('src/projects/**/voiceover.config.ts', 'requirements-voice.txt') }}
+
+      - name: Install Edge TTS
+        if: steps.voice-cache.outputs.cache-hit != 'true'
+        run: pip install -r requirements-voice.txt
+
+      - name: Generate voiceover
+        if: steps.voice-cache.outputs.cache-hit != 'true'
+        run: npm run voice:generate
 
       - name: Generate CMS auth verifier
         if: ${{ env.CMS_EMAIL != '' && env.CMS_PASSWORD != '' }}
