@@ -8,45 +8,127 @@ import {SceneBase} from './SceneBase';
 export const DecisionScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const reveal = interpolate(frame, [3.5 * fps, 4.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+
+  const itemIn = interpolate(frame, [0, 0.55 * fps], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+  });
+
+  const successIn = interpolate(frame, [2.45 * fps, 3.15 * fps], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+  });
+
+  const detailIn = interpolate(frame, [3.3 * fps, 4.05 * fps], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
 
   return (
     <SceneBase>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 190, fontSize: 76, lineHeight: 1.02, fontWeight: 900, letterSpacing: -2.5}}>
-        Ketemu barang
-        <br />Rp35.000.
-      </div>
       <div
         style={{
           position: 'absolute',
-          left: 170,
-          top: 520,
-          width: 560,
-          height: 470,
-          border: `4px solid ${brand.colors.ink}`,
-          borderRadius: 38,
-          backgroundColor: brand.colors.white,
-          padding: 34,
-          translate: interpolate(frame, [0, 0.6 * fps, 1.8 * fps], ['0px 80px', '0px 0px', '170px 250px'], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
-          scale: interpolate(frame, [0, 0.6 * fps, 1.8 * fps], [0.92, 1, 0.64], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            output: 'perceptual-scale',
-          }),
+          left: 84,
+          right: 170,
+          top: 180,
+          fontSize: 74,
+          lineHeight: 1.02,
+          fontWeight: 900,
+          letterSpacing: -2.5,
         }}
       >
-        <div style={{height: 255, borderRadius: 28, backgroundColor: '#E7D9C6', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <div style={{width: 160, height: 190, border: `6px solid ${brand.colors.ink}`, borderRadius: '34px 34px 52px 52px', position: 'relative'}}>
-            <div style={{position: 'absolute', width: 86, height: 42, border: `6px solid ${brand.colors.ink}`, borderBottom: 0, borderRadius: '50px 50px 0 0', left: 31, top: -35}} />
+        Ketemu barang
+        <br />Rp35.000.
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          left: 84,
+          right: 170,
+          top: 500,
+          height: 360,
+          display: 'grid',
+          gridTemplateColumns: '300px 1fr',
+          gap: 34,
+          alignItems: 'center',
+          border: `3px solid ${brand.colors.ink}`,
+          borderRadius: 34,
+          backgroundColor: brand.colors.white,
+          padding: 34,
+          opacity: itemIn,
+          translate: `0px ${Math.round((1 - itemIn) * 36)}px`,
+        }}
+      >
+        <div
+          style={{
+            height: 292,
+            borderRadius: 26,
+            backgroundColor: '#E7D9C6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: 132,
+              height: 168,
+              border: `6px solid ${brand.colors.ink}`,
+              borderRadius: '30px 30px 44px 44px',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                width: 72,
+                height: 34,
+                border: `6px solid ${brand.colors.ink}`,
+                borderBottom: 0,
+                borderRadius: '44px 44px 0 0',
+                left: 24,
+                top: -31,
+              }}
+            />
           </div>
         </div>
-        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 30, fontSize: 38, fontWeight: 850}}>
-          <span>Barang tambahan</span>
-          <span style={{fontVariantNumeric: 'tabular-nums'}}>Rp35.000</span>
+
+        <div>
+          <div
+            style={{
+              fontSize: 27,
+              fontWeight: 760,
+              color: brand.colors.muted,
+              marginBottom: 12,
+            }}
+          >
+            BARANG TAMBAHAN
+          </div>
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: 920,
+              letterSpacing: -2.2,
+              lineHeight: 1,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            Rp35.000
+          </div>
+          <div
+            style={{
+              marginTop: 20,
+              fontSize: 30,
+              fontWeight: 700,
+              color: brand.colors.orange,
+            }}
+          >
+            Masuk keranjang
+          </div>
         </div>
       </div>
 
@@ -55,24 +137,45 @@ export const DecisionScene: React.FC = () => {
           position: 'absolute',
           left: 84,
           right: 170,
-          top: 1030,
-          opacity: interpolate(frame, [1.5 * fps, 2.3 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          top: 960,
+          opacity: interpolate(frame, [1.15 * fps, 1.9 * fps], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          }),
         }}
       >
         <div
           style={{
-            height: 34,
+            height: 32,
             borderRadius: 40,
             overflow: 'hidden',
             backgroundColor: '#E5DED3',
             border: `2px solid ${brand.colors.ink}`,
           }}
         >
-          <div style={{height: '100%', width: `${interpolate(frame, [1.4 * fps, 2.8 * fps], [70, 100], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}%`, backgroundColor: brand.colors.green}} />
+          <div
+            style={{
+              height: '100%',
+              width: `${interpolate(frame, [1.2 * fps, 2.45 * fps], [70, 100], {
+                extrapolateLeft: 'clamp',
+                extrapolateRight: 'clamp',
+              })}%`,
+              backgroundColor: brand.colors.green,
+            }}
+          />
         </div>
-        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 18, fontSize: 31, fontWeight: 750}}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: 16,
+            fontSize: 28,
+            fontWeight: 720,
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
           <span>Rp105.000 belanja</span>
-          <span>✓ minimum terpenuhi</span>
+          <span style={{color: brand.colors.green}}>minimum terpenuhi ✓</span>
         </div>
       </div>
 
@@ -81,17 +184,55 @@ export const DecisionScene: React.FC = () => {
           position: 'absolute',
           left: 84,
           right: 170,
-          top: 1220,
+          top: 1165,
           textAlign: 'center',
-          opacity: interpolate(frame, [2.4 * fps, 3.15 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: successIn,
+          scale: interpolate(frame, [2.45 * fps, 3.15 * fps], [0.94, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+            easing: Easing.bezier(0.16, 1, 0.3, 1),
+            output: 'perceptual-scale',
+          }),
         }}
       >
-        <div style={{fontSize: 102, fontWeight: 950, letterSpacing: -3.2, color: brand.colors.green}}>GRATIS</div>
-        <div style={{fontSize: 50, fontWeight: 800, marginTop: 10}}>ongkir Rp0</div>
-        <div style={{fontSize: 37, fontWeight: 750, color: brand.colors.orange, marginTop: 22, opacity: reveal, translate: `0px ${20 - reveal * 20}px`}}>
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'baseline',
+            gap: 18,
+            padding: '20px 34px',
+            borderRadius: 26,
+            backgroundColor: '#E7F0E9',
+            border: `3px solid ${brand.colors.green}`,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 79,
+              fontWeight: 950,
+              letterSpacing: -2.8,
+              color: brand.colors.green,
+            }}
+          >
+            GRATIS
+          </span>
+          <span style={{fontSize: 41, fontWeight: 820}}>ongkir Rp0</span>
+        </div>
+
+        <div
+          style={{
+            marginTop: 24,
+            fontSize: 33,
+            fontWeight: 760,
+            color: brand.colors.orange,
+            opacity: detailIn,
+            translate: `0px ${Math.round((1 - detailIn) * 14)}px`,
+          }}
+        >
           (setelah tambah belanja)
         </div>
       </div>
+
       <SimulationNote />
       <Subtitle>
         Ketemu barang 35 ribu. Tambah.
