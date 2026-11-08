@@ -102,7 +102,7 @@ export const CalculatorScene:React.FC=()=>{
   <TopText eyebrow="BUKAN BERARTI TERTIPU" size={69}>
     KITA TETAP<br/><span style={{color:ORANGE}}>BISA NGITUNG.</span>
   </TopText>
-  <Actor x={95} y={735} width={485}
+  <Actor x={95} y={708} width={354}
     expression={typing?'thinking':'neutral'}
     tilt={tween(f,[0,2.3*fps,4.2*fps],[-9,10,-6])}
     rightArm={typing?70:5} leftArm={typing?-55:10}
@@ -134,8 +134,8 @@ export const CalculatorScene:React.FC=()=>{
    </div>
   </div>
   <div style={{
-    position:'absolute',left:570,top:1225,
-    fontSize:52,fontWeight:950,letterSpacing:-2,
+    position:'absolute',left:540,top:1170,
+    fontSize:36,fontWeight:950,letterSpacing:-1,
     color:GREEN,
     opacity:tween(f,[2.4*fps,2.8*fps],[0,1]),
   }}>SELISIH: Rp1.000</div>
@@ -202,16 +202,16 @@ export const EndingScene:React.FC=()=>{
   <PriceTag x={78} y={665} width={416} text="Rp99.000" highlight
     scale={final?1.07:1}/>
   <PriceTag x={571} y={665} width={422} text="Rp100.000"/>
-  <ProductBox x={130} y={885} width={335} highlighted/>
-  <ProductBox x={632} y={885} width={335}/>
-  <Actor x={stop?moved-14:moved} y={1000} width={330}
+  <ProductBox x={130} y={849} width={276} highlighted/>
+  <ProductBox x={632} y={849} width={276}/>
+  <Actor x={stop?moved-14:moved} y={743} width={331}
     expression={final?'deadpan':stop?'realization':'thinking'}
     tilt={stop?6:-7} gazeX={final?8:stop?0:-8}
     leftArm={final?-40:20} rightArm={final?70:-45}
     scarf={Math.sin(f/8)*4}
     lean={stop?0:-5}/>
   {stop?<div style={{
-    position:'absolute',left:648,top:1310,
+    position:'absolute',left:635,top:535,
     backgroundColor:'#FFF9F0',
     border:'4px solid '+INK,borderRadius:22,
     padding:'12px 14px',fontSize:34,fontWeight:900,
