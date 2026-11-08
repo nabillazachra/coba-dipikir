@@ -1,0 +1,11 @@
+{
+  "note":"Fallback values only; the Episode 004 build measures real trimmed MP3 lengths and rewrites this file.",
+  "durations": {
+    "s01":1.9,"s02a":1.35,"s02b":1.15,"s02c":0.7,"s03":1.4,"s04":0.7,
+    "s05a":1.4,"s05b":0.95,"s05c":1.5,"s06a":1.4,"s06b":1.4,"s07a":0.7,
+    "s07b":0.7,"s08":2.7,"s09a":1.55,"s09b":2.35,"s10a":2.05,"s10b":0.7,
+    "s10c":1.6,"s11a":2.45,"s11b":2.45,"s12a":2.35,"s12b":3.6,"s13":3.2,
+    "s14":3.1,"s15a":2.05,"s15b":1.8,"s15c":1.5,"s17a":2.5,"s17b":1.4,
+    "s17c":1.65,"s17d":1.6
+  }
+}
