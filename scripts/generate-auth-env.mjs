@@ -20,5 +20,5 @@ const lines = [
   '',
 ];
 
-writeFileSync('.env.production', lines.join('\n'));
+writeFileSync('cms/.env.production', lines.join('\n'));
 console.log('CMS auth verifier generated.');
