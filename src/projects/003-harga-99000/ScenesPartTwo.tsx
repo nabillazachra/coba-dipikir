@@ -128,8 +128,8 @@ export const OtherPricesScene:React.FC=()=>{
         padding:'6px 8px',borderRadius:8,backgroundColor:'#E1EBDD',
       }}>{String(i+1).padStart(2,'0')}</span>
       <span style={{
-        fontSize:62,fontWeight:950,whiteSpace:'nowrap',
-        letterSpacing:-3,color:INK,
+        fontSize:price.length>=9?48:55,fontWeight:950,whiteSpace:'nowrap',
+        letterSpacing:-2.4,color:INK,
       }}>{price}</span>
     </div>;
   })}
@@ -162,7 +162,7 @@ export const OtherPricesScene:React.FC=()=>{
 export const CalculatorScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
  const typing=f>1.2*fps;
- const count=tween(f,[1.2*fps,2.7*fps],[0,1000]);
+ const display=f<1.2*fps?'100.000':f<2*fps?'−99.000':'1.000';
  return <SceneCanvas store={false}>
   <TopText eyebrow="BUKAN BERARTI TERTIPU" size={69}>
     KITA TETAP<br/><span style={{color:ORANGE}}>BISA NGITUNG.</span>
@@ -184,7 +184,7 @@ export const CalculatorScene:React.FC=()=>{
     backgroundColor:'#F8F7E4',border:'6px solid '+INK,
     borderRadius:22,textAlign:'right',padding:'28px 20px',
     fontSize:70,fontWeight:950,letterSpacing:-3,
-   }}>{Math.round(count).toLocaleString('id-ID')}</div>
+   }}>{display}</div>
    <div style={{
     padding:'14px 35px',display:'grid',
     gridTemplateColumns:'repeat(3, 1fr)',gap:17,
