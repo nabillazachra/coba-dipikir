@@ -50,7 +50,7 @@ const HangTag:React.FC<{value:string;x:number;y:number;rotate?:number;active?:bo
     backgroundColor:active?'#FFF0E6':'#FFFAF2',
     borderRadius:'24px 26px 22px 27px',
     boxShadow:'7px 12px 0 rgba(32,37,31,.1)',
-    fontSize:62,fontWeight:950,letterSpacing:-2.4,
+    fontSize:Math.min(62,Math.floor((343-32)/(value.length*.62))),fontWeight:950,letterSpacing:-2.0,
   }}>{value}</div>
   <div style={{
     position:'absolute',left:157,top:11,
@@ -78,7 +78,7 @@ export const OtherPricesScene:React.FC=()=>{
   <HangTag x={590+push+wobble} y={1006}
     value="Rp99.900" rotate={-5+progress*8} active
     opacity={tween(f,[1.4*fps,1.8*fps],[0,1])}/>
-  <Actor x={273} y={912} width={360}
+  <Actor x={290} y={1040} width={360}
     expression={f>4.3*fps?'surprised':'doubtful'}
     tilt={f>4.3*fps?13:-8}
     rightArm={f>2.6*fps?75:12}
