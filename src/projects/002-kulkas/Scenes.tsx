@@ -558,17 +558,9 @@ export const NotHungryScene: React.FC = () => {
           </div>
         </div>
 
-        <Character
-          expression="curious"
-          width={220}
-          left={275}
-          top={115}
-          headTilt={-5}
-          blink={blinkAt(frame, fps)}
-        />
-
         <div
           style={{
+            gridColumn: 3,
             height: 330,
             borderRadius: 34,
             border: `4px solid ${brand.colors.green}`,
@@ -596,6 +588,14 @@ export const NotHungryScene: React.FC = () => {
             <div style={{fontSize: 25, fontWeight: 900}}>BOSAN</div>
           </div>
         </div>
+        <Character
+          expression="curious"
+          width={235}
+          left={360}
+          top={106}
+          headTilt={-5}
+          blink={blinkAt(frame, fps)}
+        />
       </div>
 
       <PaperSubtitle text={voiceText('09-not-hungry')} highlight="nggak selalu" />
@@ -831,7 +831,7 @@ export const EndingScene: React.FC = () => {
           fontSize: 24,
           fontWeight: 850,
           letterSpacing: 2.2,
-          color: 'rgba(246,240,229,.42)',
+          color: 'rgba(32,37,31,.52)',
           opacity: interpolate(frame, [0.2 * fps, 0.65 * fps], [0, 1], clamp),
         }}
       >
