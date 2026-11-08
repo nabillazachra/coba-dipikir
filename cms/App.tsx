@@ -3,10 +3,8 @@ import {Player} from '@remotion/player';
 import {canRenderMediaOnWeb, renderMediaOnWeb} from '@remotion/web-renderer';
 import {projectRegistry, type ProjectRegistryEntry} from '../src/project-registry';
 
-const formatDuration = (project: ProjectRegistryEntry) => {
-  const seconds = Math.round(project.durationInFrames / project.fps);
-  return `${seconds} detik`;
-};
+type StudioTab = 'preview' | 'edit' | 'render';
+type RenderState = 'idle' | 'checking' | 'ready' | 'rendering' | 'done' | 'unsupported' | 'error';
 
 const statusLabel: Record<ProjectRegistryEntry['status'], string> = {
   idea: 'Idea',
@@ -15,11 +13,39 @@ const statusLabel: Record<ProjectRegistryEntry['status'], string> = {
   published: 'Published',
 };
 
-type RenderState = 'idle' | 'checking' | 'ready' | 'rendering' | 'done' | 'unsupported' | 'error';
+const formatDuration = (project: ProjectRegistryEntry) => {
+  const seconds = Math.round(project.durationInFrames / project.fps);
+  return `${seconds}s`;
+};
+
+const formatSceneTime = (frame: number, fps: number) => {
+  const totalSeconds = frame / fps;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+};
+
+const StudioIcon = ({type}: {type: StudioTab | 'library' | 'github'}) => {
+  const paths: Record<string, React.ReactNode> = {
+    preview: <><path d="M4 6.5h16v11H4z"/><path d="m10 9 5 3-5 3z"/></>,
+    edit: <><path d="m4 16 9.7-9.7 4 4L8 20H4z"/><path d="m12.7 7.3 4 4"/></>,
+    render: <><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></>,
+    library: <><path d="M5 4h14v16H5z"/><path d="M9 4v16"/></>,
+    github: <><path d="M9 19c-4.5 1.4-4.5-2.5-6-3"/><path d="M15 22v-3.9c0-1.1.1-1.6-.5-2.3 3.1-.3 6.5-1.5 6.5-7a5.4 5.4 0 0 0-1.5-3.8 5 5 0 0 0-.1-3.8S18.2.8 15 2.7a13 13 0 0 0-6 0C5.8.8 4.6 1.2 4.6 1.2A5 5 0 0 0 4.5 5 5.4 5.4 0 0 0 3 8.8c0 5.5 3.4 6.7 6.5 7-.6.6-.6 1.2-.5 2.3V22"/></>,
+  };
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      {paths[type]}
+    </svg>
+  );
+};
 
 export const App: React.FC = () => {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(projectRegistry[0]?.id ?? '');
+  const [activeTab, setActiveTab] = useState<StudioTab>('preview');
+  const [selectedSceneId, setSelectedSceneId] = useState(projectRegistry[0]?.scenes[0]?.id ?? '');
   const [renderState, setRenderState] = useState<RenderState>('checking');
   const [renderProgress, setRenderProgress] = useState(0);
   const [renderMessage, setRenderMessage] = useState('Memeriksa kemampuan browser...');
@@ -41,9 +67,13 @@ export const App: React.FC = () => {
   const selected =
     projectRegistry.find((project) => project.id === selectedId) ?? projectRegistry[0];
 
+  const selectedScene =
+    selected?.scenes.find((scene) => scene.id === selectedSceneId) ?? selected?.scenes[0];
+
   useEffect(() => {
     if (!selected) return;
 
+    setSelectedSceneId(selected.scenes[0]?.id ?? '');
     let active = true;
 
     const check = async () => {
@@ -71,7 +101,7 @@ export const App: React.FC = () => {
             .map((issue) => issue.message)
             .join(' ');
           setRenderState('unsupported');
-          setRenderMessage(errors || 'Browser ini belum mendukung render MP4.');
+          setRenderMessage(errors || 'Browser belum mendukung render MP4.');
         }
       } catch (error) {
         if (!active) return;
@@ -81,7 +111,6 @@ export const App: React.FC = () => {
     };
 
     check();
-
     return () => {
       active = false;
     };
@@ -154,187 +183,411 @@ export const App: React.FC = () => {
     }
   };
 
-  const cancelRender = () => {
-    abortControllerRef.current?.abort();
+  const selectProject = (id: string) => {
+    setSelectedId(id);
+    setActiveTab('preview');
+    if (downloadUrl) {
+      URL.revokeObjectURL(downloadUrl);
+      setDownloadUrl(null);
+    }
   };
 
-  const downloadFilename = `${selected.id}.mp4`;
-
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-block">
-          <div className="eyebrow">VIDEO RENDERER</div>
-          <h1>Coba Dipikir</h1>
-          <p>Preview, render, dan download episode tanpa local setup.</p>
+    <div className="studio-shell">
+      <aside className="studio-sidebar">
+        <div className="studio-brand">
+          <div className="brand-mark">( )</div>
+          <div>
+            <strong>Coba Dipikir</strong>
+            <span>Content Studio</span>
+          </div>
         </div>
 
-        <label className="search-box">
-          <span>Cari episode</span>
+        <div className="sidebar-section-label">Workspace</div>
+        <nav className="sidebar-nav">
+          <button className="sidebar-nav-item active" type="button">
+            <StudioIcon type="library" />
+            <span>Episodes</span>
+            <b>{projectRegistry.length}</b>
+          </button>
+        </nav>
+
+        <div className="sidebar-section-label episode-heading">
+          <span>Library</span>
+          <span>{filteredProjects.length}</span>
+        </div>
+
+        <div className="episode-search">
+          <span>⌕</span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="gratis ongkir, belanja..."
+            placeholder="Cari episode..."
           />
-        </label>
+        </div>
 
-        <div className="project-count">{filteredProjects.length} episode</div>
-
-        <div className="project-list">
+        <div className="episode-list">
           {filteredProjects.map((project) => (
             <button
               key={project.id}
-              className={`project-card ${project.id === selected.id ? 'active' : ''}`}
-              onClick={() => {
-                setSelectedId(project.id);
-                if (downloadUrl) {
-                  URL.revokeObjectURL(downloadUrl);
-                  setDownloadUrl(null);
-                }
-              }}
               type="button"
+              className={`episode-item ${project.id === selected.id ? 'active' : ''}`}
+              onClick={() => selectProject(project.id)}
             >
-              <div className="project-card-topline">
-                <span>#{String(project.episode).padStart(3, '0')}</span>
-                <span className={`status status-${project.status}`}>
-                  {statusLabel[project.status]}
-                </span>
+              <div className="episode-index">{String(project.episode).padStart(3, '0')}</div>
+              <div className="episode-copy">
+                <strong>{project.title}</strong>
+                <span>{project.coverText}</span>
               </div>
-              <strong>{project.title}</strong>
-              <small>{project.coverText}</small>
+              <span className={`status-dot status-${project.status}`} title={statusLabel[project.status]} />
             </button>
           ))}
         </div>
+
+        <div className="sidebar-footer">
+          <a
+            href="https://github.com/nabillazachra/coba-dipikir"
+            target="_blank"
+            rel="noreferrer"
+            className="repo-link"
+          >
+            <StudioIcon type="github" />
+            <span>GitHub Repository</span>
+          </a>
+          <div className="sidebar-version">Studio v0.2</div>
+        </div>
       </aside>
 
-      <main className="workspace">
-        <header className="workspace-header">
-          <div>
-            <div className="eyebrow">
-              EPISODE #{String(selected.episode).padStart(3, '0')}
-            </div>
-            <h2>{selected.title}</h2>
-            <p>{selected.coverText}</p>
+      <main className="studio-main">
+        <header className="studio-topbar">
+          <div className="breadcrumb">
+            <span>Episodes</span>
+            <i>/</i>
+            <strong>#{String(selected.episode).padStart(3, '0')} {selected.title}</strong>
           </div>
-
-          <div className="header-actions">
+          <div className="topbar-actions">
+            <span className={`project-status project-status-${selected.status}`}>
+              <span />
+              {statusLabel[selected.status]}
+            </span>
             <a
-              className="button button-secondary"
+              className="icon-button"
               href={`https://github.com/nabillazachra/coba-dipikir/tree/main/${selected.folder}`}
               target="_blank"
               rel="noreferrer"
+              title="Buka source di GitHub"
             >
-              Buka files
+              <StudioIcon type="github" />
             </a>
           </div>
         </header>
 
-        <div className="workspace-grid">
-          <section className="preview-panel panel">
-            <div className="panel-heading">
-              <div>
-                <span className="panel-kicker">PREVIEW</span>
-                <h3>Remotion Player</h3>
-              </div>
-              <span className="ratio-badge">9:16</span>
+        <section className="project-hero">
+          <div>
+            <div className="project-eyebrow">
+              EPISODE #{String(selected.episode).padStart(3, '0')} · {selected.category.toUpperCase()}
             </div>
+            <h1>{selected.title}</h1>
+            <p>{selected.coverText}</p>
+          </div>
+          <div className="project-metrics">
+            <div><strong>{formatDuration(selected)}</strong><span>Duration</span></div>
+            <div><strong>{selected.width}×{selected.height}</strong><span>Canvas</span></div>
+            <div><strong>{selected.fps}</strong><span>FPS</span></div>
+          </div>
+        </section>
 
-            <div className="phone-stage">
-              <div className="player-wrap">
+        <nav className="studio-tabs">
+          {([
+            ['preview', 'Preview'],
+            ['edit', 'Edit'],
+            ['render', 'Render & Download'],
+          ] as const).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={activeTab === id ? 'active' : ''}
+              onClick={() => setActiveTab(id)}
+            >
+              <StudioIcon type={id} />
+              {label}
+              {id === 'render' && downloadUrl ? <span className="tab-ready-dot" /> : null}
+            </button>
+          ))}
+        </nav>
+
+        {activeTab === 'preview' ? (
+          <div className="preview-layout">
+            <section className="stage-card">
+              <div className="card-toolbar">
+                <div>
+                  <span className="toolbar-label">LIVE PREVIEW</span>
+                  <strong>{selected.compositionId}</strong>
+                </div>
+                <div className="toolbar-pills">
+                  <span>9:16</span>
+                  <span>MP4</span>
+                </div>
+              </div>
+
+              <div className="video-stage">
+                <div className="player-frame">
+                  <Player
+                    component={selected.component}
+                    durationInFrames={selected.durationInFrames}
+                    fps={selected.fps}
+                    compositionWidth={selected.width}
+                    compositionHeight={selected.height}
+                    controls
+                    loop
+                    style={{width: '100%', height: '100%'}}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <aside className="preview-inspector">
+              <section className="inspector-card">
+                <div className="inspector-title">
+                  <div>
+                    <span>SCENES</span>
+                    <strong>{selected.scenes.length} scenes</strong>
+                  </div>
+                  <span className="duration-chip">{formatDuration(selected)}</span>
+                </div>
+
+                <div className="scene-list">
+                  {selected.scenes.map((scene, index) => (
+                    <button
+                      key={scene.id}
+                      type="button"
+                      className={`scene-row ${selectedScene?.id === scene.id ? 'active' : ''}`}
+                      onClick={() => setSelectedSceneId(scene.id)}
+                    >
+                      <span className="scene-number">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="scene-copy">
+                        <strong>{scene.title}</strong>
+                        <small>{scene.label}</small>
+                      </span>
+                      <span className="scene-time">
+                        {formatSceneTime(scene.startFrame, selected.fps)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section className="inspector-card selected-scene-card">
+                <span className="toolbar-label">SELECTED SCENE</span>
+                <h3>{selectedScene?.title}</h3>
+                <p>{selectedScene?.label}</p>
+                <div className="scene-meta">
+                  <div>
+                    <span>Start</span>
+                    <strong>{selectedScene ? formatSceneTime(selectedScene.startFrame, selected.fps) : '-'}</strong>
+                  </div>
+                  <div>
+                    <span>Length</span>
+                    <strong>{selectedScene ? Math.round(selectedScene.durationInFrames / selected.fps) : 0}s</strong>
+                  </div>
+                </div>
+                <button className="secondary-action" type="button" onClick={() => setActiveTab('edit')}>
+                  Open in Edit
+                </button>
+              </section>
+            </aside>
+          </div>
+        ) : null}
+
+        {activeTab === 'edit' ? (
+          <div className="edit-layout">
+            <aside className="edit-scenes-panel">
+              <div className="panel-heading-block">
+                <span>SCENE NAVIGATOR</span>
+                <strong>{selected.scenes.length} scenes</strong>
+              </div>
+              <div className="scene-list compact">
+                {selected.scenes.map((scene, index) => (
+                  <button
+                    key={scene.id}
+                    type="button"
+                    className={`scene-row ${selectedScene?.id === scene.id ? 'active' : ''}`}
+                    onClick={() => setSelectedSceneId(scene.id)}
+                  >
+                    <span className="scene-number">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="scene-copy"><strong>{scene.title}</strong><small>{scene.label}</small></span>
+                  </button>
+                ))}
+              </div>
+            </aside>
+
+            <section className="edit-canvas-card">
+              <div className="card-toolbar">
+                <div>
+                  <span className="toolbar-label">EDIT PREVIEW</span>
+                  <strong>{selectedScene?.title ?? 'Scene'}</strong>
+                </div>
+                <span className="editor-badge">Structured editor</span>
+              </div>
+              <div className="editor-stage">
+                <div className="editor-player-frame">
+                  <Player
+                    component={selected.component}
+                    durationInFrames={selected.durationInFrames}
+                    fps={selected.fps}
+                    compositionWidth={selected.width}
+                    compositionHeight={selected.height}
+                    controls
+                    style={{width: '100%', height: '100%'}}
+                  />
+                </div>
+              </div>
+              <div className="timeline-shell">
+                <div className="timeline-ruler">
+                  <span>0:00</span><span>0:10</span><span>0:20</span><span>0:30</span><span>0:40</span>
+                </div>
+                <div className="timeline-track">
+                  {selected.scenes.map((scene, index) => (
+                    <button
+                      key={scene.id}
+                      type="button"
+                      className={`timeline-clip clip-${(index % 3) + 1} ${selectedScene?.id === scene.id ? 'active' : ''}`}
+                      style={{flexGrow: scene.durationInFrames}}
+                      onClick={() => setSelectedSceneId(scene.id)}
+                    >
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <strong>{scene.title}</strong>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <aside className="property-panel">
+              <div className="panel-heading-block">
+                <span>PROPERTIES</span>
+                <strong>{selectedScene?.title ?? 'Scene'}</strong>
+              </div>
+
+              <div className="property-group">
+                <label>Scene name</label>
+                <input value={selectedScene?.title ?? ''} readOnly />
+              </div>
+              <div className="property-group two-column">
+                <div>
+                  <label>Start</label>
+                  <input value={selectedScene ? formatSceneTime(selectedScene.startFrame, selected.fps) : ''} readOnly />
+                </div>
+                <div>
+                  <label>Duration</label>
+                  <input value={selectedScene ? `${Math.round(selectedScene.durationInFrames / selected.fps)} sec` : ''} readOnly />
+                </div>
+              </div>
+              <div className="property-group">
+                <label>Content note</label>
+                <textarea value={selectedScene?.label ?? ''} readOnly rows={3} />
+              </div>
+
+              <div className="editor-info">
+                <strong>Visual editor foundation ready</strong>
+                <p>
+                  Scene selection, timeline, preview, dan property panel sudah disiapkan.
+                  Kontrol posisi, scale, text, dan timing akan kita hubungkan ke schema Remotion berikutnya.
+                </p>
+              </div>
+            </aside>
+          </div>
+        ) : null}
+
+        {activeTab === 'render' ? (
+          <div className="render-layout">
+            <section className="render-main-card">
+              <div className="render-heading">
+                <div>
+                  <span className="toolbar-label">FINAL OUTPUT</span>
+                  <h2>Render video</h2>
+                  <p>Render langsung dari browser. Tidak perlu local setup.</p>
+                </div>
+                <div className="format-badge">MP4 · H.264</div>
+              </div>
+
+              <div className="render-summary">
+                <div><span>Composition</span><strong>{selected.compositionId}</strong></div>
+                <div><span>Resolution</span><strong>{selected.width} × {selected.height}</strong></div>
+                <div><span>Frame rate</span><strong>{selected.fps} FPS</strong></div>
+                <div><span>Duration</span><strong>{formatDuration(selected)}</strong></div>
+                <div><span>Audio</span><strong>Muted</strong></div>
+                <div><span>Output</span><strong>{selected.id}.mp4</strong></div>
+              </div>
+
+              <div className={`render-console render-console-${renderState}`}>
+                <div className="render-console-top">
+                  <div>
+                    <span className="render-indicator" />
+                    <strong>{renderMessage}</strong>
+                  </div>
+                  <span>{Math.round(renderProgress * 100)}%</span>
+                </div>
+                <div className="progress-track large">
+                  <div className="progress-fill" style={{width: `${Math.round(renderProgress * 100)}%`}} />
+                </div>
+              </div>
+
+              <div className="render-actions">
+                {renderState === 'rendering' ? (
+                  <button className="button button-secondary" type="button" onClick={() => abortControllerRef.current?.abort()}>
+                    Cancel render
+                  </button>
+                ) : (
+                  <button
+                    className="button button-primary render-primary"
+                    type="button"
+                    onClick={startRender}
+                    disabled={renderState === 'checking' || renderState === 'unsupported'}
+                  >
+                    Render MP4
+                  </button>
+                )}
+
+                {downloadUrl ? (
+                  <a className="button button-download" href={downloadUrl} download={`${selected.id}.mp4`}>
+                    Download MP4
+                  </a>
+                ) : null}
+
+                {renderState === 'unsupported' || renderState === 'error' ? (
+                  <a
+                    className="button button-secondary"
+                    href="https://github.com/nabillazachra/coba-dipikir/actions/workflows/render-video.yml"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Cloud render
+                  </a>
+                ) : null}
+              </div>
+            </section>
+
+            <aside className="render-side-card">
+              <div className="render-preview-mini">
                 <Player
                   component={selected.component}
                   durationInFrames={selected.durationInFrames}
                   fps={selected.fps}
                   compositionWidth={selected.width}
                   compositionHeight={selected.height}
-                  controls
-                  loop
+                  controls={false}
                   style={{width: '100%', height: '100%'}}
                 />
               </div>
-            </div>
-          </section>
-
-          <aside className="details-column">
-            <section className="panel details-panel">
-              <div className="panel-heading compact">
-                <div>
-                  <span className="panel-kicker">VIDEO</span>
-                  <h3>Output</h3>
-                </div>
+              <div className="render-side-copy">
+                <span>READY TO EXPORT</span>
+                <strong>{selected.title}</strong>
+                <p>{selected.coverText}</p>
               </div>
-
-              <dl className="metadata-grid">
-                <div><dt>Status</dt><dd>{statusLabel[selected.status]}</dd></div>
-                <div><dt>Durasi</dt><dd>{formatDuration(selected)}</dd></div>
-                <div><dt>Resolusi</dt><dd>{selected.width} × {selected.height}</dd></div>
-                <div><dt>FPS</dt><dd>{selected.fps}</dd></div>
-                <div><dt>Format</dt><dd>MP4 · H.264</dd></div>
-                <div><dt>Composition</dt><dd>{selected.compositionId}</dd></div>
-              </dl>
-            </section>
-
-            <section className="panel render-panel">
-              <span className="panel-kicker">BROWSER RENDER</span>
-              <h3>Render MP4</h3>
-              <p>
-                Video dirender langsung di browser menggunakan Remotion. Tidak perlu Node,
-                FFmpeg, atau Remotion Studio di laptop.
-              </p>
-
-              <div className={`render-status render-status-${renderState}`}>
-                <div className="render-status-row">
-                  <span>{renderMessage}</span>
-                  {renderState === 'rendering' ? <strong>{Math.round(renderProgress * 100)}%</strong> : null}
-                </div>
-                <div className="progress-track">
-                  <div className="progress-fill" style={{width: `${Math.round(renderProgress * 100)}%`}} />
-                </div>
-              </div>
-
-              {renderState === 'rendering' ? (
-                <button className="button button-secondary full-width" type="button" onClick={cancelRender}>
-                  Batalkan render
-                </button>
-              ) : (
-                <button
-                  className="button button-primary full-width"
-                  type="button"
-                  onClick={startRender}
-                  disabled={renderState === 'checking' || renderState === 'unsupported'}
-                >
-                  Render video
-                </button>
-              )}
-
-              {downloadUrl ? (
-                <a
-                  className="button button-download full-width"
-                  href={downloadUrl}
-                  download={downloadFilename}
-                >
-                  Download MP4
-                </a>
-              ) : null}
-
-              {renderState === 'unsupported' || renderState === 'error' ? (
-                <a
-                  className="button button-secondary full-width"
-                  href="https://github.com/nabillazachra/coba-dipikir/actions/workflows/render-video.yml"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Gunakan cloud render
-                </a>
-              ) : null}
-
-              <small className="helper-text">
-                Untuk episode tanpa audio, render saat ini dibuat muted. Audio bisa ditambahkan
-                kemudian saat aset voice-over dan musik sudah tersedia.
-              </small>
-            </section>
-          </aside>
-        </div>
+            </aside>
+          </div>
+        ) : null}
       </main>
     </div>
   );
