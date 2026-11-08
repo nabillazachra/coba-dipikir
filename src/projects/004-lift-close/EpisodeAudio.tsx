@@ -11,7 +11,8 @@ const voice=(id:string)=>publicAsset('audio/004-lift-close/voiceover/'+id+'.mp3'
 type Cue={id:string;file:string;at:number;volume:number;rate?:number};
 // Escalation: distinct click pitches/velocities, machine gag and deliberate silence.
 const cues:Cue[]=[
- {id:'entry-ding',file:'elevator-ding',at:.1,volume:.23},
+ {id:'teaser-heavy-click',file:'click-heavy',at:.32,volume:.23},
+ {id:'entry-ding',file:'elevator-ding',at:1.13,volume:.22},
  {id:'walk-in',file:'footstep',at:1.25,volume:.2},
  {id:'floor-12',file:'floor-beep',at:2.63,volume:.17},
  {id:'hum',file:'hum',at:3.3,volume:.16},
