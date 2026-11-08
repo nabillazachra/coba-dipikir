@@ -199,7 +199,7 @@ export const CalculatorScene:React.FC=()=>{
    </div>
   </div>
   <div style={{
-    position:'absolute',left:540,top:1170,
+    position:'absolute',left:558,top:557,
     fontSize:36,fontWeight:950,letterSpacing:-1,
     color:GREEN,
     opacity:tween(f,[2.4*fps,2.8*fps],[0,1]),
@@ -262,19 +262,19 @@ export const ImpressionScene:React.FC=()=>{
 
 export const EndingScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
- const moved=tween(f,[.1*fps,1.4*fps],[435,272]);
+ const moved=tween(f,[.1*fps,1.4*fps],[455,396]);
  const stop=f>=3.2*fps;
  const final=f>=6.3*fps;
  return <SceneCanvas>
   <TopText eyebrow="LAIN KALI KETEMU BEGINI" size={64}>
     ANGKANYA<br/><span style={{color:ORANGE}}>BISA NGECOH KESAN.</span>
   </TopText>
-  <PriceTag x={78} y={665} width={416} text="Rp99.000" highlight
+  <PriceTag x={78} y={557} width={416} text="Rp99.000" highlight
     scale={final?1.07:1}/>
-  <PriceTag x={571} y={665} width={422} text="Rp100.000"/>
-  <ProductBox x={130} y={849} width={276} highlighted/>
-  <ProductBox x={632} y={849} width={276}/>
-  <Actor x={stop?moved-14:moved} y={743} width={331}
+  <PriceTag x={571} y={557} width={422} text="Rp100.000"/>
+  <ProductBox x={110} y={857} width={245} highlighted/>
+  <ProductBox x={728} y={857} width={245}/>
+  <Actor x={stop?moved-14:moved} y={748} width={300}
     expression={final?'deadpan':stop?'realization':'thinking'}
     tilt={stop?6:-7} gazeX={final?8:stop?0:-8}
     leftArm={final?-40:20} rightArm={final?70:-45}
