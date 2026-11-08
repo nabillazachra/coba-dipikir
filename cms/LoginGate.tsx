@@ -55,7 +55,7 @@ type LoginGateProps = {
 const LoginBrand = () => (
   <div className="login-brand-panel">
     <div className="login-brand-top">
-      <div className="login-brand-mark">( )</div>
+      <img className="login-brand-logo" src={`${import.meta.env.BASE_URL}brand/coba-dipikir-logo.webp`} alt="Coba Dipikir" />
       <div>
         <strong>Coba Dipikir</strong>
         <span>Content Studio</span>

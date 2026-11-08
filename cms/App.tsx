@@ -196,7 +196,7 @@ export const App: React.FC = () => {
     <div className="studio-shell">
       <aside className="studio-sidebar">
         <div className="studio-brand">
-          <div className="brand-mark">( )</div>
+          <img className="brand-logo" src={`${import.meta.env.BASE_URL}brand/coba-dipikir-logo.webp`} alt="Coba Dipikir" />
           <div>
             <strong>Coba Dipikir</strong>
             <span>Content Studio</span>

@@ -50,16 +50,15 @@ svg { width: 18px; height: 18px; flex: 0 0 auto; }
   padding: 6px 6px 22px;
 }
 
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background: var(--orange);
-  color: var(--paper);
-  font-weight: 900;
-  letter-spacing: -1px;
+.brand-logo {
+  width: 50px;
+  height: 50px;
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 15px;
+  object-fit: cover;
+  background: var(--paper);
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
 }
 
 .studio-brand strong {
@@ -1060,18 +1059,15 @@ svg { width: 18px; height: 18px; flex: 0 0 auto; }
   gap: 13px;
 }
 
-.login-brand-mark {
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  border-radius: 13px;
-  background: var(--orange);
-  color: #fff7ef;
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  box-shadow: 0 8px 22px rgba(233,107,60,.22);
+.login-brand-logo {
+  width: 58px;
+  height: 58px;
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  object-fit: cover;
+  background: #f6f0e5;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
 }
 
 .login-brand-top strong {
