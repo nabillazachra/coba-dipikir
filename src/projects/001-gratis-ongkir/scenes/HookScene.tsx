@@ -2,6 +2,7 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
+import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
 export const HookScene: React.FC = () => {
@@ -141,10 +142,7 @@ export const HookScene: React.FC = () => {
         35K <span style={{color:brand.colors.muted}}>&gt;</span> 10K
       </div>
 
-      <Subtitle>
-        Gratis ongkir memang enak. Tapi... nambah 35 ribu
-        <br />buat ngilangin ongkir 10 ribu?
-      </Subtitle>
+      <Subtitle>{voiceText('01-hook')}</Subtitle>
     </SceneBase>
   );
 };
