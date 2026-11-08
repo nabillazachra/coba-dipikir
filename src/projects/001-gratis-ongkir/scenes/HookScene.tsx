@@ -134,7 +134,7 @@ export const HookScene: React.FC = () => {
               height: 6,
               backgroundColor: brand.colors.orange,
               rotate: '-3deg',
-              scale: `${interpolate(frame, [1.2 * fps, 1.65 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})} 1`,
+              scale: `${interpolate(frame, [3.0 * fps, 3.45 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})} 1`,
               transformOrigin: 'left center',
             }}
           />
@@ -153,7 +153,7 @@ export const HookScene: React.FC = () => {
           fontSize: 23,
           fontWeight: 800,
           rotate: '6deg',
-          opacity: interpolate(frame, [1.7 * fps, 2.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [4.35 * fps, 4.85 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         hemat... katanya
