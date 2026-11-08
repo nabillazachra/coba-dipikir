@@ -24,9 +24,9 @@ export const EpisodeCaptions:React.FC=()=>{
   const entry=Math.min(1,Math.max(0,(now-cue.at)/.13));
   return <div style={{
     position:'absolute',
-    left:92,right:92,
-    bottom:350,
-    minHeight:95,
+    left:70,right:70,
+    top:1242,
+    height:184,
     display:'flex',
     justifyContent:'center',
     alignItems:'center',
@@ -35,7 +35,7 @@ export const EpisodeCaptions:React.FC=()=>{
     fontFamily:brand.fontFamily,
   }}>
     <div style={{
-      maxWidth:826,
+      maxWidth:920,
       boxSizing:'border-box',
       color:dark?'#FFFDF8':brand.colors.ink,
       backgroundColor:dark?'rgba(32,37,31,.94)':'rgba(255,253,248,.95)',
@@ -43,12 +43,12 @@ export const EpisodeCaptions:React.FC=()=>{
       borderRadius:20,
       boxShadow:'0 8px 22px rgba(32,37,31,.09)',
       fontFamily:brand.fontFamily,
-      fontSize:43,
+      fontSize:41,
       fontWeight:850,
       lineHeight:1.16,
       textAlign:'center',
       letterSpacing:-.65,
-      padding:'14px 24px',
+      padding:'14px 26px',
       opacity:entry,
       transform:'translateY('+((1-entry)*10)+'px)',
     }}>
