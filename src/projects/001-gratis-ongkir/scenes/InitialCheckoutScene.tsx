@@ -1,8 +1,5 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
-import {ReceiptCard} from '../../../brand/components/ReceiptCard';
-import {SimulationNote} from '../../../brand/components/SimulationNote';
-import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -10,81 +7,70 @@ export const InitialCheckoutScene: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
+  const card = (delay: number) => interpolate(frame, [delay * fps, (delay + 0.4) * fps], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.spring({damping: 190}),
+  });
+
   return (
     <SceneBase>
-      <div style={{position: 'absolute', left: 84, top: 170, fontSize: 34, fontWeight: 750, color: brand.colors.orange}}>
-        BELANJA AWAL
+      <div style={{position:'absolute',left:84,top:165,fontSize:28,fontWeight:850,color:brand.colors.orange,letterSpacing:1.5}}>
+        TANPA PROMO
       </div>
-      <div style={{position: 'absolute', left: 84, right: 170, top: 235, fontSize: 78, fontWeight: 900, lineHeight: 1.02, letterSpacing: -2.5}}>
-        Sebelum promonya
-        <br />ikut campur.
+      <div style={{position:'absolute',left:84,right:110,top:225,fontSize:86,fontWeight:950,lineHeight:.98,letterSpacing:-3.2}}>
+        Sebenarnya
+        <br />udah simpel.
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 84,
-          top: 585,
-          opacity: interpolate(frame, [0, 0.55 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          translate: interpolate(frame, [0, 0.55 * fps], ['0px 58px', '0px 0px'], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-            easing: Easing.bezier(0.16, 1, 0.3, 1),
-          }),
-        }}
-      >
-        <ReceiptCard
-          title="Checkout langsung"
-          lines={[
-            {label: 'Barang', value: 'Rp70.000'},
-            {label: 'Ongkir', value: 'Rp10.000'},
-            {label: 'Total', value: 'Rp80.000', emphasis: 'accent'},
-          ]}
-          width={800}
-        />
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          right: 120,
-          top: 505,
-          padding: '10px 16px',
-          border: `2px solid ${brand.colors.green}`,
-          borderRadius: 14,
-          color: brand.colors.green,
-          fontSize: 22,
-          fontWeight: 800,
-          rotate: '4deg',
-          opacity: interpolate(frame, [4.05 * fps, 4.55 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-        }}
-      >
-        belum ada drama
+
+      <div style={{position:'absolute',left:90,right:90,top:560,display:'grid',gridTemplateColumns:'1fr 90px 1fr',gap:18,alignItems:'center'}}>
+        <div style={{opacity:card(.2),scale:card(.2),background:'#FFFDF8',border:`4px solid ${brand.colors.ink}`,borderRadius:32,padding:'42px 30px',textAlign:'center'}}>
+          <div style={{fontSize:25,fontWeight:800,color:brand.colors.muted}}>BARANG</div>
+          <div style={{fontSize:70,fontWeight:950,marginTop:8}}>70K</div>
+        </div>
+        <div style={{fontSize:56,fontWeight:900,textAlign:'center',opacity:card(.65)}}>+</div>
+        <div style={{opacity:card(.95),scale:card(.95),background:'#FFFDF8',border:`4px solid ${brand.colors.ink}`,borderRadius:32,padding:'42px 30px',textAlign:'center'}}>
+          <div style={{fontSize:25,fontWeight:800,color:brand.colors.muted}}>ONGKIR</div>
+          <div style={{fontSize:70,fontWeight:950,marginTop:8}}>10K</div>
+        </div>
       </div>
 
       <div
         style={{
-          position: 'absolute',
-          left: 150,
-          right: 220,
-          top: 1135,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 22,
-          color: brand.colors.muted,
-          fontSize: 34,
-          fontWeight: 800,
-          opacity: interpolate(frame, [3.2 * fps, 3.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          position:'absolute',left:120,right:120,top:980,
+          display:'flex',alignItems:'center',justifyContent:'center',gap:26,
+          opacity:interpolate(frame,[1.9*fps,2.45*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+          translate:interpolate(frame,[1.9*fps,2.45*fps],['0px 35px','0px 0px'],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
         }}
       >
-        <span>70k</span><span>+</span><span>10k</span><span>=</span>
-        <span style={{color: brand.colors.orange, fontSize: 42}}>80k</span>
+        <div style={{width:80,height:3,backgroundColor:brand.colors.rule}} />
+        <div style={{fontSize:46,fontWeight:900,color:brand.colors.muted}}>=</div>
+        <div style={{width:80,height:3,backgroundColor:brand.colors.rule}} />
       </div>
 
-      <SimulationNote />
-      <Subtitle>
-        Awalnya simpel. Barang 70 ribu, ongkir 10 ribu.
-        <br />Totalnya 80 ribu. Aman.
-      </Subtitle>
+      <div
+        style={{
+          position:'absolute',left:120,right:120,top:1110,
+          backgroundColor:brand.colors.ink,color:brand.colors.paper,borderRadius:34,
+          padding:'34px 40px',textAlign:'center',
+          opacity:interpolate(frame,[2.35*fps,2.9*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+          scale:interpolate(frame,[2.35*fps,2.9*fps],[0.9,1],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:180}),output:'perceptual-scale'
+          })
+        }}
+      >
+        <div style={{fontSize:28,fontWeight:800,color:'#BEBEB6'}}>TOTAL</div>
+        <div style={{fontSize:98,fontWeight:950,letterSpacing:-3,marginTop:4}}>80K</div>
+      </div>
+
+      <div style={{
+        position:'absolute',right:110,top:1460,padding:'12px 18px',
+        borderRadius:999,border:`2px solid ${brand.colors.green}`,color:brand.colors.green,
+        fontSize:24,fontWeight:850,rotate:'-4deg',
+        opacity:interpolate(frame,[3.5*fps,4.1*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+      }}>
+        selesai.
+      </div>
     </SceneBase>
   );
 };
