@@ -92,7 +92,7 @@ export const RevealScene: React.FC = () => {
           alignItems: 'center',
           fontSize: 74,
           fontWeight: 930,
-          opacity: interpolate(frame, [3.2 * fps, 4.0 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [6.0 * fps, 6.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
           scale: interpolate(frame, [3.2 * fps, 4.0 * fps], [0.88, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
@@ -115,7 +115,7 @@ export const RevealScene: React.FC = () => {
           height: 2,
           backgroundColor: brand.colors.orange,
           rotate: '-5deg',
-          opacity: interpolate(frame, [3.6 * fps, 4.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [6.05 * fps, 6.75 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       />
 
