@@ -64,3 +64,9 @@ export const voiceoverConfig = {
     },
   ],
 } as const;
+
+
+export type VoiceoverSceneId = (typeof voiceoverConfig.scenes)[number]['id'];
+
+export const voiceText = (id: VoiceoverSceneId) =>
+  voiceoverConfig.scenes.find((scene) => scene.id === id)?.text ?? '';
