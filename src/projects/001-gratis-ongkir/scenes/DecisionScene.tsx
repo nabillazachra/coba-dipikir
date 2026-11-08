@@ -15,13 +15,13 @@ export const DecisionScene: React.FC = () => {
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
-  const successIn = interpolate(frame, [2.45 * fps, 3.15 * fps], [0, 1], {
+  const successIn = interpolate(frame, [4.6 * fps, 5.25 * fps], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
-  const detailIn = interpolate(frame, [3.3 * fps, 4.05 * fps], [0, 1], {
+  const detailIn = interpolate(frame, [5.15 * fps, 5.8 * fps], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -138,7 +138,7 @@ export const DecisionScene: React.FC = () => {
           left: 84,
           right: 170,
           top: 960,
-          opacity: interpolate(frame, [1.15 * fps, 1.9 * fps], [0, 1], {
+          opacity: interpolate(frame, [2.8 * fps, 3.4 * fps], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
           }),
@@ -156,7 +156,7 @@ export const DecisionScene: React.FC = () => {
           <div
             style={{
               height: '100%',
-              width: `${interpolate(frame, [1.2 * fps, 2.45 * fps], [70, 100], {
+              width: `${interpolate(frame, [3.0 * fps, 4.45 * fps], [70, 100], {
                 extrapolateLeft: 'clamp',
                 extrapolateRight: 'clamp',
               })}%`,
@@ -245,7 +245,7 @@ export const DecisionScene: React.FC = () => {
           fontSize: 21,
           fontWeight: 850,
           rotate: '-3deg',
-          opacity: interpolate(frame, [2.9 * fps, 3.5 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+          opacity: interpolate(frame, [5.0 * fps, 5.55 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
         }}
       >
         demi 10k...
