@@ -8,11 +8,11 @@ export const projectConfig = {
   width: 1080,
   height: 1920,
   fps: 30,
-  durationInFrames: 1350,
+  durationInFrames: 990,
   status: 'draft',
   narrative: {
-    hook: 'Nambah belanja 35 ribu cuma biar ongkir 10 ribu hilang. Nah, pernah?',
-    reveal: 'Demi hemat ongkir 10 ribu, total belanja justru naik 25 ribu.',
-    closingQuestion: 'Kalau nggak ada promo, tadi tetap dibeli?',
+    hook: 'Gratis ongkir?',
+    reveal: 'Hemat ongkir 10 ribu, tapi keluar 25 ribu lebih banyak.',
+    closingQuestion: 'Masih hemat?',
   },
 } as const;
