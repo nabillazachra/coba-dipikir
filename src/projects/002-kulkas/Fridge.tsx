@@ -202,6 +202,59 @@ export const Fridge: React.FC<FridgeProps> = ({
           backfaceVisibility: 'hidden',
         }}
       >
+        {/* Slight bevel so the door reads as a solid object, not a blank rectangle. */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: '18px 18px 20px 18px',
+            borderRadius: 22,
+            border: '2px solid rgba(255,255,255,.64)',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            right: 34,
+            top: 48,
+            width: 138,
+            height: 100,
+            borderRadius: 13,
+            border: `3px solid ${brand.colors.ink}`,
+            backgroundColor: '#FFF8EA',
+            rotate: '6deg',
+            boxShadow: '3px 5px 0 rgba(32,37,31,.12)',
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: -13,
+              left: 51,
+              width: 28,
+              height: 28,
+              borderRadius: 999,
+              border: `3px solid ${brand.colors.ink}`,
+              backgroundColor: brand.colors.orange,
+            }}
+          />
+          <div style={{position:'absolute',left:21,right:21,top:33,height:5,borderRadius:9,backgroundColor:'#A3A99E'}} />
+          <div style={{position:'absolute',left:21,right:44,top:52,height:5,borderRadius:9,backgroundColor:'#C1C7BA'}} />
+          <div style={{position:'absolute',left:21,right:60,top:71,height:5,borderRadius:9,backgroundColor:'#C1C7BA'}} />
+        </div>
+        <div
+          style={{
+            position:'absolute',
+            right:40,
+            top:'66%',
+            width:44,
+            height:44,
+            borderRadius:999,
+            border:`3px solid ${brand.colors.ink}`,
+            backgroundColor:brand.colors.orange,
+          }}
+        />
+
         <div
           style={{
             position: 'absolute',
@@ -235,6 +288,9 @@ export const Fridge: React.FC<FridgeProps> = ({
           }}
         />
       </div>
+      {/* Low-profile feet anchor the refrigerator to the shared floor plane. */}
+      <div style={{position:'absolute',left:28,bottom:-13,width:72,height:18,borderRadius:8,backgroundColor:brand.colors.ink}} />
+      <div style={{position:'absolute',right:28,bottom:-13,width:72,height:18,borderRadius:8,backgroundColor:brand.colors.ink}} />
     </div>
   );
 };
