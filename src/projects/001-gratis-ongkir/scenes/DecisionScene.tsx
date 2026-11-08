@@ -233,10 +233,28 @@ export const DecisionScene: React.FC = () => {
         </div>
       </div>
 
+      <div
+        style={{
+          position: 'absolute',
+          right: 105,
+          top: 1080,
+          padding: '9px 15px',
+          border: `2px solid ${brand.colors.orange}`,
+          borderRadius: 14,
+          color: brand.colors.orange,
+          fontSize: 21,
+          fontWeight: 850,
+          rotate: '-3deg',
+          opacity: interpolate(frame, [2.9 * fps, 3.5 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        demi 10k...
+      </div>
+
       <SimulationNote />
       <Subtitle>
-        Ketemu barang 35 ribu. Tambah.
-        <br />Gratis ongkir!
+        Entah kenapa, ketemu barang 35 ribu.
+        <br />Ya sudah... masuk keranjang.
       </Subtitle>
     </SceneBase>
   );
