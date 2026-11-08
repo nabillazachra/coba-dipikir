@@ -5,45 +5,48 @@ import {brand} from '../../../brand/tokens';
 import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
-const ProductCard = ({label, price, left, rotate, active, frame, fps, delay}: {
+const ProductCard = ({x, label, price, delay, selected, frame, fps}: {
+  x: number;
   label: string;
   price: string;
-  left: number;
-  rotate: string;
-  active?: boolean;
+  delay: number;
+  selected?: boolean;
   frame: number;
   fps: number;
-  delay: number;
 }) => (
   <div
     style={{
       position:'absolute',
-      left,
-      top:560,
-      width:260,
-      height:360,
-      borderRadius:30,
-      backgroundColor:active ? '#FFF3EC' : '#FFFDF8',
-      border:`${active ? 5 : 3}px solid ${active ? brand.colors.orange : brand.colors.ink}`,
+      left:x,
+      top:585,
+      width:300,
+      height:430,
+      borderRadius:34,
+      backgroundColor:selected ? '#FFF0E8' : '#FFFDF8',
+      border:`${selected ? 5 : 3}px solid ${selected ? brand.colors.orange : brand.colors.ink}`,
       padding:22,
-      rotate,
-      opacity:interpolate(frame,[delay*fps,(delay+.35)*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
-      translate:interpolate(frame,[delay*fps,(delay+.35)*fps],['0px 70px','0px 0px'],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
-      scale:active
-        ? interpolate(frame,[2.05*fps,2.55*fps],[1,1.08],{
-            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:170}),output:'perceptual-scale'
+      opacity:interpolate(frame,[delay*fps,(delay+.4)*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+      translate:interpolate(frame,[delay*fps,(delay+.4)*fps],['0px 85px','0px 0px'],{
+        extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.bezier(.16,1,.3,1)
+      }),
+      scale:selected
+        ? interpolate(frame,[2.15*fps,2.75*fps],[1,1.08],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:155}),output:'perceptual-scale'
           })
         : 1,
-      boxShadow:active ? '0 18px 0 rgba(233,107,60,.14)' : '0 12px 0 rgba(32,37,31,.06)',
+      boxShadow:selected ? '0 22px 0 rgba(233,107,60,.15)' : '0 12px 0 rgba(32,37,31,.07)'
     }}
   >
-    <div style={{height:210,borderRadius:22,backgroundColor:active?'#F0C6B5':'#E7D9C6',display:'grid',placeItems:'center'}}>
-      <div style={{width:94,height:118,border:`5px solid ${brand.colors.ink}`,borderRadius:'24px 24px 34px 34px',position:'relative'}}>
-        <div style={{position:'absolute',left:18,top:-25,width:48,height:24,border:`5px solid ${brand.colors.ink}`,borderBottom:0,borderRadius:'30px 30px 0 0'}} />
-      </div>
+    <div style={{height:260,borderRadius:26,backgroundColor:selected?'#F2C9B7':'#E8D8C3',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',left:'50%',top:'50%',translate:'-50% -50%',width:112,height:138,border:`5px solid ${brand.colors.ink}`,borderRadius:'28px 28px 38px 38px'}} />
+      <div style={{position:'absolute',left:34,bottom:28,width:54,height:54,borderRadius:999,backgroundColor:'rgba(255,255,255,.55)'}} />
+      <div style={{position:'absolute',right:26,top:26,width:36,height:36,borderRadius:999,border:`3px solid ${brand.colors.ink}`}} />
     </div>
-    <div style={{marginTop:18,fontSize:21,fontWeight:800,color:brand.colors.muted}}>{label}</div>
-    <div style={{marginTop:5,fontSize:48,fontWeight:950}}>{price}</div>
+    <div style={{fontSize:21,fontWeight:820,color:brand.colors.muted,marginTop:18}}>{label}</div>
+    <div style={{fontSize:50,fontWeight:950,marginTop:5}}>{price}</div>
+    {selected ? (
+      <div style={{marginTop:12,fontSize:20,fontWeight:900,color:brand.colors.orange}}>pas banget buat promo 👀</div>
+    ) : null}
   </div>
 );
 
@@ -53,48 +56,91 @@ export const DecisionScene: React.FC = () => {
 
   return (
     <SceneBase>
-      <div style={{position:'absolute',left:84,top:165,fontSize:28,fontWeight:850,color:brand.colors.orange,letterSpacing:1.5}}>
+      <div style={{position:'absolute',left:84,top:150,fontSize:27,fontWeight:850,color:brand.colors.orange,letterSpacing:1.6}}>
         MULAI CARI-CARI
       </div>
-      <div style={{position:'absolute',left:84,right:90,top:225,fontSize:86,fontWeight:950,lineHeight:.98,letterSpacing:-3.3}}>
-        “Sekalian aja...”
+      <div style={{position:'absolute',left:84,right:95,top:205,fontSize:83,fontWeight:950,lineHeight:.97,letterSpacing:-3.2}}>
+        “Sekalian lihat
+        <br />yang lain deh...”
       </div>
 
-      <ProductCard label="opsi A" price="15K" left={70} rotate="-6deg" frame={frame} fps={fps} delay={.25} />
-      <ProductCard label="opsi B" price="20K" left={410} rotate="3deg" frame={frame} fps={fps} delay={.55} />
-      <ProductCard label="nah ini" price="35K" left={750} rotate="-2deg" active frame={frame} fps={fps} delay={.85} />
-
-      <div
-        style={{
-          position:'absolute',left:115,right:115,top:1035,
-          display:'grid',gridTemplateColumns:'1fr 150px 1fr',gap:20,alignItems:'center',
-          opacity:interpolate(frame,[2.45*fps,2.9*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
-        }}
-      >
-        <div style={{backgroundColor:'#FFFDF8',border:`3px solid ${brand.colors.ink}`,borderRadius:24,padding:'25px 28px'}}>
-          <div style={{fontSize:23,fontWeight:800,color:brand.colors.muted}}>SEBELUM</div>
-          <div style={{fontSize:64,fontWeight:950,marginTop:4}}>70K</div>
-        </div>
-        <div style={{fontSize:64,fontWeight:950,textAlign:'center',color:brand.colors.orange}}>→</div>
-        <div style={{backgroundColor:brand.colors.ink,color:brand.colors.paper,borderRadius:24,padding:'25px 28px'}}>
-          <div style={{fontSize:23,fontWeight:800,color:'#BDBDB5'}}>SESUDAH</div>
-          <div style={{fontSize:64,fontWeight:950,marginTop:4}}>105K</div>
+      <div style={{position:'absolute',left:58,right:58,top:515,height:560,overflow:'hidden'}}>
+        <div
+          style={{
+            position:'absolute',
+            inset:0,
+            translate:interpolate(frame,[0,2.6*fps],['80px 0px','-45px 0px'],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+          }}
+        >
+          <ProductCard x={20} label="yang lucu" price="15K" delay={.2} frame={frame} fps={fps} />
+          <ProductCard x={350} label="yang lumayan" price="20K" delay={.55} frame={frame} fps={fps} />
+          <ProductCard x={680} label="nah, ini dia" price="35K" delay={.9} selected frame={frame} fps={fps} />
         </div>
       </div>
 
       <div
         style={{
-          position:'absolute',left:180,right:180,top:1370,
-          borderRadius:999,backgroundColor:'#E7F0E9',border:`4px solid ${brand.colors.green}`,
-          color:brand.colors.green,padding:'22px 28px',textAlign:'center',
-          fontSize:50,fontWeight:950,
-          opacity:interpolate(frame,[3.5*fps,4.0*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
-          scale:interpolate(frame,[3.5*fps,4.0*fps],[.78,1],{
-            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:150}),output:'perceptual-scale'
+          position:'absolute',
+          left:205,
+          right:205,
+          top:1110,
+          borderRadius:28,
+          backgroundColor:brand.colors.ink,
+          color:brand.colors.paper,
+          padding:'24px 28px',
+          textAlign:'center',
+          fontSize:37,
+          fontWeight:920,
+          opacity:interpolate(frame,[2.75*fps,3.2*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+          scale:interpolate(frame,[2.75*fps,3.2*fps],[.88,1],{
+            extrapolateLeft:'clamp',extrapolateRight:'clamp',easing:Easing.spring({damping:180}),output:'perceptual-scale'
           })
         }}
       >
-        ONGKIR 0 ✓
+        + Tambah ke Keranjang
+      </div>
+
+      <div
+        style={{
+          position:'absolute',
+          left:495,
+          top:1203,
+          width:90,
+          height:90,
+          borderRadius:999,
+          backgroundColor:brand.colors.orange,
+          border:`4px solid ${brand.colors.ink}`,
+          display:'grid',
+          placeItems:'center',
+          color:brand.colors.white,
+          fontSize:42,
+          fontWeight:950,
+          opacity:interpolate(frame,[3.05*fps,3.5*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'}),
+          translate:interpolate(frame,[3.05*fps,3.5*fps],['80px -80px','0px 0px'],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+        }}
+      >
+        ✓
+      </div>
+
+      <div
+        style={{
+          position:'absolute',
+          left:125,
+          right:125,
+          top:1355,
+          display:'flex',
+          alignItems:'center',
+          justifyContent:'space-between',
+          padding:'20px 24px',
+          borderRadius:24,
+          backgroundColor:'#E7F0E9',
+          border:`3px solid ${brand.colors.green}`,
+          color:brand.colors.green,
+          opacity:interpolate(frame,[4.05*fps,4.55*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})
+        }}
+      >
+        <span style={{fontSize:24,fontWeight:850}}>Minimum tercapai</span>
+        <span style={{fontSize:46,fontWeight:950}}>105K ✓</span>
       </div>
 
       <Subtitle>{voiceText('04-keputusan')}</Subtitle>
