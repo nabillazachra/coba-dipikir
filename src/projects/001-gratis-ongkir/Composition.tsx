@@ -14,22 +14,22 @@ export const GratisOngkirEpisode: React.FC = () => {
   return (
     <>
       <Series>
-        <Series.Sequence name="01 Hook" durationInFrames={5 * fps} premountFor={fps}>
+        <Series.Sequence name="01 Hook" durationInFrames={5.8 * fps} premountFor={fps}>
           <HookScene />
         </Series.Sequence>
-        <Series.Sequence name="02 Belanja awal" durationInFrames={5.5 * fps} premountFor={fps}>
+        <Series.Sequence name="02 Belanja awal" durationInFrames={5.2 * fps} premountFor={fps}>
           <InitialCheckoutScene />
         </Series.Sequence>
-        <Series.Sequence name="03 Godaan promo" durationInFrames={5.5 * fps} premountFor={fps}>
+        <Series.Sequence name="03 Godaan promo" durationInFrames={5.8 * fps} premountFor={fps}>
           <PromoTemptationScene />
         </Series.Sequence>
-        <Series.Sequence name="04 Keputusan" durationInFrames={6 * fps} premountFor={fps}>
+        <Series.Sequence name="04 Keputusan" durationInFrames={6.2 * fps} premountFor={fps}>
           <DecisionScene />
         </Series.Sequence>
-        <Series.Sequence name="05 Reveal" durationInFrames={7.5 * fps} premountFor={fps}>
+        <Series.Sequence name="05 Reveal" durationInFrames={8.5 * fps} premountFor={fps}>
           <RevealScene />
         </Series.Sequence>
-        <Series.Sequence name="06 Penutup" durationInFrames={6.5 * fps} premountFor={fps}>
+        <Series.Sequence name="06 Penutup" durationInFrames={7 * fps} premountFor={fps}>
           <ClosingScene />
         </Series.Sequence>
       </Series>
