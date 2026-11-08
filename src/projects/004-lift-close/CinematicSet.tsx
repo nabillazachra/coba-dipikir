@@ -135,8 +135,10 @@ export const LightBurst:React.FC<{x:number;y:number;on:number;color?:string;size
  </svg>;
 
 export const ButtonMacro:React.FC<{press?:number;finger?:number;night?:boolean;camera?:number;
- showActor?:boolean;count?:number;shake?:number;spotlight?:boolean
-}>=({press=0,finger=0,night=false,camera=1,showActor=true,count,shake=0,spotlight=false})=>
+ showActor?:boolean;count?:number;shake?:number;spotlight?:boolean;
+ agitation?:number;reaction?:boolean
+}>=({press=0,finger=0,night=false,camera=1,showActor=true,count,shake=0,
+ spotlight=false,agitation=0,reaction=false})=>
  <Camera zoom={camera} panX={shake} panY={0}>
   <div style={{position:'absolute',left:28,top:10,width:1024,height:700,borderRadius:40,
  background:night?'linear-gradient(110deg,#465651,#2C3C3C)':
@@ -144,9 +146,11 @@ export const ButtonMacro:React.FC<{press?:number;finger?:number;night?:boolean;c
  boxShadow:'12px 17px 0 rgba(15,24,23,.15)',boxSizing:'border-box'}}/>
   <div style={{position:'absolute',left:76,top:50,width:740,height:17,
  background:night?'#899A85':'#F5F2E4',borderRadius:10,opacity:.65}}/>
-  {showActor&&<Actor x={59} y={132} width={470} expression={press>.4?'annoyed':'curious'}
-   tilt={press*12-5} gaze={11} arm={62+press*13} leftArm={-20}
-   impatient={press>.1} scarf={press*15}/>}
+  {showActor&&<Actor x={59} y={132} width={470}
+   expression={reaction?'surprised':agitation>.65?'annoyed':agitation>.3?'doubtful':press>.4?'realization':'curious'}
+   tilt={reaction?-16:press*12-5+agitation*8} gaze={reaction?-6:11}
+   lean={agitation*12} arm={62+press*13+agitation*8} leftArm={-20}
+   impatient={agitation>.24||press>.1} scarf={press*15+agitation*13}/>}
   <Panel x={585} y={46} scale={1.33} pressed={press}/>
   {spotlight&&<div style={{position:'absolute',left:687,top:456,width:180,height:176,
  border:'8px solid '+ORANGE,borderRadius:40,boxShadow:'0 0 38px rgba(233,107,60,.4)',
