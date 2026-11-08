@@ -2,6 +2,7 @@ import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
+import {voiceText} from '../voiceover.config';
 import {SceneBase} from './SceneBase';
 
 export const ClosingScene: React.FC = () => {
@@ -66,10 +67,7 @@ export const ClosingScene: React.FC = () => {
         </div>
       </div>
 
-      <Subtitle>
-        Kalau barangnya memang perlu, ya oke.
-        <br />Tapi kalau nggak ada promo... tadi tetap dibeli?
-      </Subtitle>
+      <Subtitle>{voiceText('06-penutup')}</Subtitle>
     </SceneBase>
   );
 };
