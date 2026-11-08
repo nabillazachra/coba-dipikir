@@ -23,6 +23,29 @@ export const RevealScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
+          left: 84,
+          right: 170,
+          top: 455,
+          height: 54,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 18,
+          borderTop: `2px solid ${brand.colors.rule}`,
+          borderBottom: `2px solid ${brand.colors.rule}`,
+          fontSize: 24,
+          fontWeight: 820,
+          opacity: interpolate(frame, [0.25 * fps, 0.8 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      >
+        <span style={{color: brand.colors.green}}>ongkir -10k</span>
+        <span style={{color: brand.colors.muted}}>tapi</span>
+        <span style={{color: brand.colors.orange}}>belanja +35k</span>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
           left: 70,
           top: 535,
           display: 'flex',
@@ -83,9 +106,22 @@ export const RevealScene: React.FC = () => {
       <div style={{position: 'absolute', left: 84, right: 170, top: 1382, textAlign: 'center', fontSize: 27, fontWeight: 670, color: brand.colors.muted}}>
         tambahan pengeluaran dibanding checkout langsung
       </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 445,
+          top: 1160,
+          width: 150,
+          height: 2,
+          backgroundColor: brand.colors.orange,
+          rotate: '-5deg',
+          opacity: interpolate(frame, [3.6 * fps, 4.2 * fps], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
+        }}
+      />
+
       <SimulationNote />
       <Subtitle>
-        Tapi totalnya sekarang 105 ribu.
+        Ongkirnya nol. Tapi totalnya 105 ribu.
         <br />Kita keluar 25 ribu lebih banyak.
       </Subtitle>
     </SceneBase>
