@@ -154,8 +154,8 @@ export const LeftDigitScene:React.FC=()=>{
 
 export const BrainScene:React.FC=()=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
- const phase=f<3.7*fps?0:1;
- const swap=tween(f,[3.62*fps,3.95*fps],[0,1]);
+ const phase=f<5.05*fps?0:1;
+ const swap=tween(f,[5.02*fps,5.38*fps],[0,1]);
  const top=phase===0?'Rp99.000':'Rp100.000';
  const perceived=phase===0?'90 ribuan':'100 ribu';
  return <SceneCanvas>
@@ -195,7 +195,7 @@ export const BrainScene:React.FC=()=>{
       zIndex:-1,
     }}/>
   </div>
-  <Burst x={815} y={1129} size={90} visible={tween(f,[4.1*fps,4.4*fps],[0,1])}/>
+  <Burst x={815} y={1129} size={90} visible={tween(f,[5.1*fps,5.45*fps],[0,1])}/>
   <EditorNote text={phase===0?'terasa satu kelompok':'eh, beda level?' } x={400} y={1237}/>
  </SceneCanvas>;
 };
