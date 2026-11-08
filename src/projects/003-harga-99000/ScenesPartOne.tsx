@@ -12,14 +12,14 @@ export const CompareScene:React.FC=()=>{
     highlight scale={tween(f,[0,.55*fps],[.78,1])}/>
   <PriceTag x={583} y={625} width={420} text="Rp100.000"
     scale={tween(f,[0,.8*fps],[.77,1])}/>
-  <ProductBox x={132} y={834} width={310} bounce={Math.sin(f/12)*2}/>
-  <ProductBox x={641} y={834} width={310} bounce={Math.sin(f/12)*2}/>
-  <Actor x={tween(f,[0,.7*fps],[370,351])} y={925} width={390}
+  <ProductBox x={132} y={820} width={290} bounce={Math.sin(f/12)*2}/>
+  <ProductBox x={641} y={820} width={290} bounce={Math.sin(f/12)*2}/>
+  <Actor x={tween(f,[0,.7*fps],[370,351])} y={738} width={335}
     expression={f<1.35*fps?'neutral':'curious'} tilt={tilt} gazeX={eye}
     leftArm={tween(f,[1.35*fps,2.2*fps,2.6*fps],[12,-66,12])}
     rightArm={tween(f,[2.3*fps,3.5*fps],[-10,64])}
     blink={f%90>84?1:0} scarf={Math.sin(f/9)*3}/>
-  <div style={{position:'absolute',left:410,top:1208,width:230,height:25,
+  <div style={{position:'absolute',left:410,top:1186,width:230,height:20,
     borderRadius:40,background:'rgba(32,37,31,.10)',filter:'blur(10px)'}}/>
  </SceneCanvas>;
 };
@@ -36,9 +36,9 @@ export const ChoiceScene:React.FC=()=>{
     scale={tween(f,[0,.45*fps],[1,1.08])}/>
   <PriceTag x={610} y={655} width={370} text="Rp100.000" dim
     scale={tween(f,[0,2.9*fps],[1,.88])}/>
-  <ProductBox x={132} y={889} width={385} tilt={tween(f,[0,1.12*fps],[0,-5])} highlighted/>
-  <ProductBox x={662} y={914} width={284} opacity={.45}/>
-  <Actor x={approach} y={tween(f,[0,1.2*fps],[1075,918])} width={384}
+  <ProductBox x={132} y={830} width={315} tilt={tween(f,[0,1.12*fps],[0,-5])} highlighted/>
+  <ProductBox x={662} y={852} width={265} opacity={.45}/>
+  <Actor x={approach} y={tween(f,[0,1.2*fps],[788,752])} width={320}
     expression={mood} tilt={f<2.62*fps?-9:12} leftArm={-58}
     rightArm={f<2.62*fps?72:19} scarf={Math.sin(f/7)*7} gazeX={f<2.6*fps?-5:4}/>
   <Burst x={460} y={855} size={96} visible={tween(f,[.7*fps,1.1*fps,2.3*fps,2.8*fps],[0,1,1,0])}/>
@@ -75,15 +75,11 @@ export const DifferenceScene:React.FC=()=>{
     opacity:p,
     textShadow:'0 13px 0 rgba(0,0,0,.17)',
   }}>Rp1.000</div>
-  <Actor x={646} y={930} width={335}
+  <Actor x={657} y={770} width={315}
     expression={p>.6?'deadpan':'thinking'} tilt={p>.6?-8:6}
     gazeX={p>.6?-7:5} blink={p>.3&&p<.45?1:0}/>
-  <div style={{position:'absolute',left:450,top:1295,width:260,height:24,
-    borderRadius:12,backgroundColor:'rgba(246,240,229,.12)'}}/>
-  <div style={{position:'absolute',left:480,top:1275,width:3,height:50,
-    backgroundColor:ORANGE,opacity:p}}/>
-  <div style={{position:'absolute',left:690,top:1275,width:3,height:50,
-    backgroundColor:ORANGE,opacity:p}}/>
+  <div style={{position:'absolute',left:100,top:1195,width:620,height:5,
+    borderRadius:12,backgroundColor:ORANGE,opacity:p*.55}}/>
   <div style={{position:'absolute',inset:0,backgroundColor:PAPER,opacity:flash*.12,pointerEvents:'none'}}/>
  </SceneCanvas>;
 };
@@ -105,11 +101,11 @@ export const DistanceScene:React.FC=()=>{
     position:'absolute',left:479,top:778,fontSize:46,fontWeight:950,color:ORANGE,
     opacity:stretch,
   }}>↔</div>
-  <Actor x={320} y={920} width={420} expression="doubtful"
+  <Actor x={350} y={748} width={330} expression="doubtful"
     tilt={stretch*14-7} rightArm={-70} leftArm={45}
     gazeX={stretch*12-6} scarf={Math.sin(f/8)*4}/>
-  <ProductBox x={120} y={1101} width={256} opacity={.75}/>
-  <ProductBox x={730} y={1118} width={240} opacity={.75}/>
+  <ProductBox x={120} y={975} width={198} opacity={.75}/>
+  <ProductBox x={760} y={975} width={198} opacity={.75}/>
  </SceneCanvas>;
 };
 
@@ -144,11 +140,11 @@ export const LeftDigitScene:React.FC=()=>{
     backgroundColor:ORANGE,opacity:.55,
     boxShadow:'0 0 17px rgba(233,107,60,.45)',
   }}/>
-  <Actor x={702} y={845} width={342} expression="curious"
+  <Actor x={702} y={745} width={322} expression="curious"
     tilt={tween(f,[0,3*fps,5.4*fps],[-9,9,-6])}
     gazeX={tween(f,[0,2.2*fps,4.8*fps],[-8,8,-8])}
     rightArm={55}/>
-  <EditorNote text="yang kiri duluan!" x={117} y={1208} rotate={-4}/>
+  <EditorNote text="yang kiri duluan!" x={120} y={1172} rotate={-4}/>
  </SceneCanvas>;
 };
 
@@ -162,7 +158,7 @@ export const BrainScene:React.FC=()=>{
   <TopText eyebrow="OTAK KITA CEPAT MENYEDERHANAKAN" size={67}>
     KESANNYA<br/><span style={{color:ORANGE}}>MASUK KATEGORI.</span>
   </TopText>
-  <Actor x={78} y={835} width={425}
+  <Actor x={78} y={720} width={345}
     expression={phase===0?'happy':'worried'}
     tilt={phase===0?-10:9} gazeX={phase===0?9:-8}
     leftArm={phase===0?20:34} rightArm={phase===0?64:-20}
@@ -196,6 +192,6 @@ export const BrainScene:React.FC=()=>{
     }}/>
   </div>
   <Burst x={815} y={1129} size={90} visible={tween(f,[5.1*fps,5.45*fps],[0,1])}/>
-  <EditorNote text={phase===0?'terasa satu kelompok':'eh, beda level?' } x={400} y={1237}/>
+
  </SceneCanvas>;
 };
