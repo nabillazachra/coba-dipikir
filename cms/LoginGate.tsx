@@ -52,6 +52,32 @@ type LoginGateProps = {
   children: React.ReactNode;
 };
 
+const LoginBrand = () => (
+  <div className="login-brand-panel">
+    <div className="login-brand-top">
+      <div className="login-brand-mark">( )</div>
+      <div>
+        <strong>Coba Dipikir</strong>
+        <span>Content Studio</span>
+      </div>
+    </div>
+
+    <div className="login-brand-copy">
+      <span className="login-overline">PRIVATE WORKSPACE</span>
+      <h1>Ide di chat.<br />Jadi video di sini.</h1>
+      <p>
+        Preview, revisi, render, dan download seluruh episode Coba Dipikir
+        dalam satu workspace.
+      </p>
+    </div>
+
+    <div className="login-brand-footer">
+      <span className="login-status-dot" />
+      <span>Personal studio · GitHub powered</span>
+    </div>
+  </div>
+);
+
 export const LoginGate: React.FC<LoginGateProps> = ({children}) => {
   const expectedEmail = useMemo(
     () => (import.meta.env.VITE_CMS_EMAIL ?? '').trim().toLowerCase(),
@@ -63,6 +89,7 @@ export const LoginGate: React.FC<LoginGateProps> = ({children}) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -97,7 +124,7 @@ export const LoginGate: React.FC<LoginGateProps> = ({children}) => {
       const passwordMatches = safeEqual(candidateHash, expectedPasswordHash);
 
       if (!emailMatches || !passwordMatches) {
-        setError('Email atau password salah.');
+        setError('Email atau password tidak cocok.');
         setPassword('');
         return;
       }
@@ -125,13 +152,38 @@ export const LoginGate: React.FC<LoginGateProps> = ({children}) => {
   if (!configured) {
     return (
       <div className="login-screen">
-        <div className="login-card">
-          <div className="eyebrow">COBA DIPIKIR</div>
-          <h1>Login belum dikonfigurasi</h1>
-          <p>
-            Tambahkan GitHub Actions Secrets <code>CMS_EMAIL</code> dan <code>CMS_PASSWORD</code>,
-            lalu jalankan deploy ulang.
-          </p>
+        <div className="login-shell">
+          <LoginBrand />
+          <div className="login-form-panel">
+            <div className="login-form-inner">
+              <span className="login-overline">SETUP REQUIRED</span>
+              <h2>Studio belum siap masuk</h2>
+              <p className="login-form-subtitle">
+                Kredensial belum terbaca pada build ini. Setelah konfigurasi GitHub selesai,
+                halaman ini otomatis berubah menjadi form login.
+              </p>
+
+              <div className="login-setup-note">
+                <div className="setup-number">01</div>
+                <div>
+                  <strong>CMS_EMAIL</strong>
+                  <span>Email pribadi untuk masuk</span>
+                </div>
+              </div>
+              <div className="login-setup-note">
+                <div className="setup-number">02</div>
+                <div>
+                  <strong>CMS_PASSWORD</strong>
+                  <span>Password pribadi untuk masuk</span>
+                </div>
+              </div>
+
+              <div className="login-config-state">
+                <span />
+                Waiting for credentials
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -140,41 +192,73 @@ export const LoginGate: React.FC<LoginGateProps> = ({children}) => {
   if (!authenticated) {
     return (
       <div className="login-screen">
-        <form className="login-card" onSubmit={submit}>
-          <div className="eyebrow">COBA DIPIKIR</div>
-          <h1>Masuk ke Video Renderer</h1>
-          <p>Gunakan email dan password pribadi kamu.</p>
+        <div className="login-shell">
+          <LoginBrand />
 
-          <label>
-            <span>Email</span>
-            <input
-              type="email"
-              autoComplete="username"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="nama@email.com"
-              required
-            />
-          </label>
+          <div className="login-form-panel">
+            <form className="login-form-inner" onSubmit={submit}>
+              <span className="login-overline">WELCOME BACK</span>
+              <h2>Masuk ke studio</h2>
+              <p className="login-form-subtitle">
+                Gunakan akun pribadi kamu untuk mengakses project Coba Dipikir.
+              </p>
 
-          <label>
-            <span>Password</span>
-            <input
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="••••••••••••"
-              required
-            />
-          </label>
+              <label className="login-field">
+                <span>Email</span>
+                <div className="login-input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16v12H4z" />
+                    <path d="m4 7 8 6 8-6" />
+                  </svg>
+                  <input
+                    type="email"
+                    autoComplete="username"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="nama@email.com"
+                    required
+                  />
+                </div>
+              </label>
 
-          {error ? <div className="login-error">{error}</div> : null}
+              <label className="login-field">
+                <span>Password</span>
+                <div className="login-input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="5" y="10" width="14" height="10" rx="2" />
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                  </svg>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Masukkan password"
+                    required
+                  />
+                  <button
+                    className="password-toggle"
+                    type="button"
+                    onClick={() => setShowPassword((value) => !value)}
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+              </label>
 
-          <button className="button button-primary login-submit" type="submit" disabled={submitting}>
-            {submitting ? 'Memeriksa...' : 'Masuk'}
-          </button>
-        </form>
+              {error ? <div className="login-error">{error}</div> : null}
+
+              <button className="login-primary-button" type="submit" disabled={submitting}>
+                <span>{submitting ? 'Memeriksa...' : 'Masuk ke Studio'}</span>
+                <span className="login-arrow">→</span>
+              </button>
+
+              <div className="login-session-note">
+                Session tersimpan selama {SESSION_HOURS} jam di browser ini.
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     );
   }
