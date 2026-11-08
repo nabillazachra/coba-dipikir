@@ -1,5 +1,6 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Player} from '@remotion/player';
+import {canRenderMediaOnWeb, renderMediaOnWeb} from '@remotion/web-renderer';
 import {projectRegistry, type ProjectRegistryEntry} from '../src/project-registry';
 
 const formatDuration = (project: ProjectRegistryEntry) => {
@@ -14,9 +15,16 @@ const statusLabel: Record<ProjectRegistryEntry['status'], string> = {
   published: 'Published',
 };
 
+type RenderState = 'idle' | 'checking' | 'ready' | 'rendering' | 'done' | 'unsupported' | 'error';
+
 export const App: React.FC = () => {
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(projectRegistry[0]?.id ?? '');
+  const [renderState, setRenderState] = useState<RenderState>('checking');
+  const [renderProgress, setRenderProgress] = useState(0);
+  const [renderMessage, setRenderMessage] = useState('Memeriksa kemampuan browser...');
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const filteredProjects = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -33,17 +41,132 @@ export const App: React.FC = () => {
   const selected =
     projectRegistry.find((project) => project.id === selectedId) ?? projectRegistry[0];
 
+  useEffect(() => {
+    if (!selected) return;
+
+    let active = true;
+
+    const check = async () => {
+      setRenderState('checking');
+      setRenderMessage('Memeriksa kemampuan browser...');
+      setRenderProgress(0);
+
+      try {
+        const result = await canRenderMediaOnWeb({
+          width: selected.width,
+          height: selected.height,
+          container: 'mp4',
+          videoCodec: 'h264',
+          muted: true,
+        });
+
+        if (!active) return;
+
+        if (result.canRender) {
+          setRenderState('ready');
+          setRenderMessage('Browser siap render MP4.');
+        } else {
+          const errors = result.issues
+            .filter((issue) => issue.severity === 'error')
+            .map((issue) => issue.message)
+            .join(' ');
+          setRenderState('unsupported');
+          setRenderMessage(errors || 'Browser ini belum mendukung render MP4.');
+        }
+      } catch (error) {
+        if (!active) return;
+        setRenderState('error');
+        setRenderMessage(error instanceof Error ? error.message : 'Gagal memeriksa browser.');
+      }
+    };
+
+    check();
+
+    return () => {
+      active = false;
+    };
+  }, [selected]);
+
+  useEffect(() => {
+    return () => {
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+      abortControllerRef.current?.abort();
+    };
+  }, [downloadUrl]);
+
   if (!selected) {
     return <div className="empty-state">Belum ada project Remotion.</div>;
   }
+
+  const startRender = async () => {
+    if (renderState === 'rendering') return;
+
+    if (downloadUrl) {
+      URL.revokeObjectURL(downloadUrl);
+      setDownloadUrl(null);
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    setRenderState('rendering');
+    setRenderProgress(0);
+    setRenderMessage('Menyiapkan frame...');
+
+    try {
+      const result = await renderMediaOnWeb({
+        composition: {
+          id: selected.compositionId,
+          component: selected.component,
+          width: selected.width,
+          height: selected.height,
+          fps: selected.fps,
+          durationInFrames: selected.durationInFrames,
+        },
+        container: 'mp4',
+        videoCodec: 'h264',
+        muted: true,
+        signal: controller.signal,
+        onProgress: ({progress}) => {
+          const normalized = Math.max(0, Math.min(1, progress));
+          setRenderProgress(normalized);
+          setRenderMessage(`Rendering... ${Math.round(normalized * 100)}%`);
+        },
+      });
+
+      const blob = await result.getBlob();
+      const url = URL.createObjectURL(blob);
+      setDownloadUrl(url);
+      setRenderProgress(1);
+      setRenderState('done');
+      setRenderMessage('Render selesai. MP4 siap di-download.');
+    } catch (error) {
+      if (controller.signal.aborted) {
+        setRenderState('ready');
+        setRenderProgress(0);
+        setRenderMessage('Render dibatalkan.');
+        return;
+      }
+
+      setRenderState('error');
+      setRenderMessage(error instanceof Error ? error.message : 'Render gagal.');
+    } finally {
+      abortControllerRef.current = null;
+    }
+  };
+
+  const cancelRender = () => {
+    abortControllerRef.current?.abort();
+  };
+
+  const downloadFilename = `${selected.id}.mp4`;
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-block">
-          <div className="eyebrow">VIDEO CMS</div>
+          <div className="eyebrow">VIDEO RENDERER</div>
           <h1>Coba Dipikir</h1>
-          <p>Yang biasa, belum tentu sederhana.</p>
+          <p>Preview, render, dan download episode tanpa local setup.</p>
         </div>
 
         <label className="search-box">
@@ -62,7 +185,13 @@ export const App: React.FC = () => {
             <button
               key={project.id}
               className={`project-card ${project.id === selected.id ? 'active' : ''}`}
-              onClick={() => setSelectedId(project.id)}
+              onClick={() => {
+                setSelectedId(project.id);
+                if (downloadUrl) {
+                  URL.revokeObjectURL(downloadUrl);
+                  setDownloadUrl(null);
+                }
+              }}
               type="button"
             >
               <div className="project-card-topline">
@@ -97,14 +226,6 @@ export const App: React.FC = () => {
             >
               Buka files
             </a>
-            <a
-              className="button button-primary"
-              href="https://github.com/nabillazachra/coba-dipikir/actions/workflows/render-video.yml"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Render MP4
-            </a>
           </div>
         </header>
 
@@ -138,41 +259,78 @@ export const App: React.FC = () => {
             <section className="panel details-panel">
               <div className="panel-heading compact">
                 <div>
-                  <span className="panel-kicker">PROJECT</span>
-                  <h3>Metadata</h3>
+                  <span className="panel-kicker">VIDEO</span>
+                  <h3>Output</h3>
                 </div>
               </div>
 
               <dl className="metadata-grid">
                 <div><dt>Status</dt><dd>{statusLabel[selected.status]}</dd></div>
-                <div><dt>Kategori</dt><dd>{selected.category}</dd></div>
                 <div><dt>Durasi</dt><dd>{formatDuration(selected)}</dd></div>
-                <div><dt>FPS</dt><dd>{selected.fps}</dd></div>
                 <div><dt>Resolusi</dt><dd>{selected.width} × {selected.height}</dd></div>
+                <div><dt>FPS</dt><dd>{selected.fps}</dd></div>
+                <div><dt>Format</dt><dd>MP4 · H.264</dd></div>
                 <div><dt>Composition</dt><dd>{selected.compositionId}</dd></div>
               </dl>
             </section>
 
             <section className="panel render-panel">
-              <span className="panel-kicker">RENDER</span>
-              <h3>MP4 via GitHub Actions</h3>
+              <span className="panel-kicker">BROWSER RENDER</span>
+              <h3>Render MP4</h3>
               <p>
-                CMS tidak menyimpan GitHub token di browser. Tombol render membuka workflow aman di GitHub,
-                lalu hasil MP4 tersedia sebagai artifact.
+                Video dirender langsung di browser menggunakan Remotion. Tidak perlu Node,
+                FFmpeg, atau Remotion Studio di laptop.
               </p>
-              <a
-                className="button button-primary full-width"
-                href="https://github.com/nabillazachra/coba-dipikir/actions/workflows/render-video.yml"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Buka render workflow
-              </a>
-              <button className="button button-disabled full-width" type="button" disabled>
-                Download MP4 — setelah render
-              </button>
+
+              <div className={`render-status render-status-${renderState}`}>
+                <div className="render-status-row">
+                  <span>{renderMessage}</span>
+                  {renderState === 'rendering' ? <strong>{Math.round(renderProgress * 100)}%</strong> : null}
+                </div>
+                <div className="progress-track">
+                  <div className="progress-fill" style={{width: `${Math.round(renderProgress * 100)}%`}} />
+                </div>
+              </div>
+
+              {renderState === 'rendering' ? (
+                <button className="button button-secondary full-width" type="button" onClick={cancelRender}>
+                  Batalkan render
+                </button>
+              ) : (
+                <button
+                  className="button button-primary full-width"
+                  type="button"
+                  onClick={startRender}
+                  disabled={renderState === 'checking' || renderState === 'unsupported'}
+                >
+                  Render video
+                </button>
+              )}
+
+              {downloadUrl ? (
+                <a
+                  className="button button-download full-width"
+                  href={downloadUrl}
+                  download={downloadFilename}
+                >
+                  Download MP4
+                </a>
+              ) : null}
+
+              {renderState === 'unsupported' || renderState === 'error' ? (
+                <a
+                  className="button button-secondary full-width"
+                  href="https://github.com/nabillazachra/coba-dipikir/actions/workflows/render-video.yml"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Gunakan cloud render
+                </a>
+              ) : null}
+
               <small className="helper-text">
-                Tahap berikutnya: hubungkan daftar artifact ke CMS agar download bisa satu klik dari halaman ini.
+                Untuk episode tanpa audio, render saat ini dibuat muted. Audio bisa ditambahkan
+                kemudian saat aset voice-over dan musik sudah tersedia.
               </small>
             </section>
           </aside>
