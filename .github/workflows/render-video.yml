@@ -57,6 +57,9 @@ jobs:
       - name: Generate sound bed
         run: npm run audio:bed
 
+      - name: Generate episode 2 SFX
+        run: npm run audio:ep2-sfx
+
       - name: Render MP4
         run: >-
           npx remotion render src/index.ts
