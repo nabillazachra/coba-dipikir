@@ -516,7 +516,7 @@ export const App: React.FC = () => {
                 <div><span>Resolution</span><strong>{selected.width} × {selected.height}</strong></div>
                 <div><span>Frame rate</span><strong>{selected.fps} FPS</strong></div>
                 <div><span>Duration</span><strong>{formatDuration(selected)}</strong></div>
-                <div><span>Audio</span><strong>VO + SFX ready</strong></div>
+                <div><span>Audio</span><strong>SFX ready · VO pending</strong></div>
                 <div><span>Output</span><strong>{selected.id}.mp4</strong></div>
               </div>
 
