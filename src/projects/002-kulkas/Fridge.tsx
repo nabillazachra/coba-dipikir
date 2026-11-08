@@ -17,7 +17,9 @@ export const Fridge: React.FC<FridgeProps> = ({
   opacity = 1,
 }) => {
   const height = width * 1.62;
-  const doorAngle = 72 * open;
+  // 2D foreshortening is deliberately used here: CSS perspective rotation
+  // made the door project far outside the 9:16 frame at full opening.
+  const doorScale = 1 - 0.84 * open;
 
   return (
     <div
@@ -194,11 +196,11 @@ export const Fridge: React.FC<FridgeProps> = ({
           position: 'absolute',
           inset: 0,
           transformOrigin: '100% 50%',
-          transform: `perspective(1200px) rotateY(${doorAngle}deg)`,
+          transform: `scaleX(${doorScale})`,
           borderRadius: 34,
           border: `7px solid ${brand.colors.ink}`,
           backgroundColor: '#ECEDE7',
-          boxShadow: open > 0.03 ? '-18px 20px 30px rgba(0,0,0,.18)' : '0 0 0 rgba(0,0,0,0)',
+          boxShadow: open > 0.03 ? '-20px 13px 24px rgba(0,0,0,.16)' : '0 0 0 rgba(0,0,0,0)',
           backfaceVisibility: 'hidden',
         }}
       >
