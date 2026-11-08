@@ -53,6 +53,9 @@ jobs:
         if: steps.voice-cache.outputs.cache-hit != 'true'
         run: npm run voice:generate
 
+      - name: Generate sound bed
+        run: npm run audio:bed
+
       - name: Generate CMS auth verifier
         if: ${{ env.CMS_EMAIL != '' && env.CMS_PASSWORD != '' }}
         run: node scripts/generate-auth-env.mjs
