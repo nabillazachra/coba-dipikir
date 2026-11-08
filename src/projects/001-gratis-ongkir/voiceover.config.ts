@@ -1,4 +1,11 @@
 export const voiceoverConfig = {
+  engine: {
+    provider: 'edge-tts',
+    voice: 'id-ID-ArdiNeural',
+    rate: '+5%',
+    pitch: '+0Hz',
+    volume: '+0%',
+  },
   style: {
     language: 'id-ID',
     tone: 'casual-curious',
