@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -78,6 +79,17 @@ export const RevealScene: React.FC = () => {
           <div style={{fontSize:28,fontWeight:800,color:brand.colors.muted,marginTop:12}}>lebih banyak keluar</div>
         </div>
       </div>
+
+      {frame < 1.75 * fps ? (
+        <Subtitle>Ongkirnya nol. Mantap.</Subtitle>
+      ) : frame < 4.2 * fps ? (
+        <Subtitle>Tapi total belanjanya jadi 105 ribu.</Subtitle>
+      ) : (
+        <Subtitle>
+          Jadi hemat 10 ribu... sambil keluar 25 ribu
+          <br />lebih banyak.
+        </Subtitle>
+      )}
     </SceneBase>
   );
 };
