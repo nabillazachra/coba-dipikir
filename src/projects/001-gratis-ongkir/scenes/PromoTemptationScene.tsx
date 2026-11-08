@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Subtitle} from '../../../brand/components/Subtitle';
 import {brand} from '../../../brand/tokens';
 import {SceneBase} from './SceneBase';
 
@@ -69,6 +70,11 @@ export const PromoTemptationScene: React.FC = () => {
       >
         otak: “tanggung...”
       </div>
+
+      <Subtitle>
+        Terus muncul tulisan kecil yang mulai bahaya:
+        <br />kurang 30 ribu lagi.
+      </Subtitle>
     </SceneBase>
   );
 };
