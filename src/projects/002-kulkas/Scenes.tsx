@@ -529,19 +529,19 @@ export const NotHungryScene: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: 88,
-          right: 112,
-          top: 700,
-          height: 520,
+          left: 65,
+          right: 65,
+          top: 635,
+          height: 580,
           display: 'grid',
-          gridTemplateColumns: '1fr 220px 1fr',
+          gridTemplateColumns: '1fr 285px 1fr',
           alignItems: 'center',
-          gap: 26,
+          gap: 10,
         }}
       >
         <div
           style={{
-            height: 330,
+            height: 430,
             borderRadius: 34,
             border: `4px solid ${brand.colors.ink}`,
             backgroundColor: '#FFFDF8',
@@ -573,14 +573,14 @@ export const NotHungryScene: React.FC = () => {
                 }}
               />
             </div>
-            <div style={{fontSize: 25, fontWeight: 900}}>LAPAR</div>
+            <div style={{fontSize: 29, fontWeight: 900}}>LAPAR</div>
           </div>
         </div>
 
         <div
           style={{
             gridColumn: 3,
-            height: 330,
+            height: 430,
             borderRadius: 34,
             border: `4px solid ${brand.colors.green}`,
             backgroundColor: '#EAF1EB',
@@ -604,14 +604,14 @@ export const NotHungryScene: React.FC = () => {
               <div style={{position: 'absolute', right: 40, top: 45, width: 13, height: 13, borderRadius: 999, backgroundColor: brand.colors.ink}} />
               <div style={{position: 'absolute', left: 53, top: 78, width: 42, height: 5, borderRadius: 999, backgroundColor: brand.colors.ink}} />
             </div>
-            <div style={{fontSize: 25, fontWeight: 900}}>BOSAN</div>
+            <div style={{fontSize: 29, fontWeight: 900}}>BOSAN</div>
           </div>
         </div>
         <Character
           expression="curious"
-          width={235}
-          left={360}
-          top={106}
+          width={300}
+          left={338}
+          top={66}
           headTilt={-5}
           blink={blinkAt(frame, fps)}
         />
