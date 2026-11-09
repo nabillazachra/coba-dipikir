@@ -116,6 +116,19 @@ export const LiftLocation:React.FC<{
  background:night?'rgba(253,212,167,.18)':'rgba(98,110,102,.16)'}}/>
  </Camera>;
 
+export const CountSticker:React.FC<{count:number;x?:number;y?:number;night?:boolean}>=({
+ count,x=744,y=502,night=true
+})=><div style={{
+ position:'absolute',left:x,top:y,zIndex:40,
+ minWidth:126,height:92,boxSizing:'border-box',
+ border:'6px solid '+ORANGE,borderRadius:20,
+ boxShadow:'6px 8px 0 rgba(0,0,0,.13)',
+ background:'#FFF9EF',color:ORANGE,
+ display:'flex',alignItems:'center',justifyContent:'center',
+ fontSize:64,fontWeight:950,letterSpacing:-2,
+ transform:'rotate(-6deg)',fontFamily:FONT,
+}}>×{count}</div>;
+
 export const Marker:React.FC<{children:React.ReactNode;x:number;y:number;
  size?:number;color?:string;rotate?:number;night?:boolean;opacity?:number}>=({
  children,x,y,size=33,color=ORANGE,rotate=-4,night=false,opacity=1
