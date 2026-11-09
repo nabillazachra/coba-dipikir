@@ -16,7 +16,8 @@
     "audio:ep3-sfx": "node scripts/generate-episode3-sfx.mjs",
     "audio:ep4-sfx": "node scripts/generate-episode4-sfx.mjs",
     "render:e004": "remotion render E004-Close-Lift renders/004-lift-close.mp4",
-    "render:e003": "remotion render E003-Harga-99000 renders/003-harga-99000.mp4"
+    "render:e003": "remotion render E003-Harga-99000 renders/003-harga-99000.mp4",
+    "audio:ep5-sfx": "node scripts/generate-episode5-sfx.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.534",
