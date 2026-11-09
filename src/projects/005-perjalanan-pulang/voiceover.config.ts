@@ -1,0 +1,36 @@
+// Same phrase text is used for Edge TTS AND exact on-screen captions.
+export const voiceoverConfig={
+engine:{provider:'edge-tts',voice:'id-ID-ArdiNeural',rate:'+24%',pitch:'+4Hz',volume:'+0%'},
+style:{language:'id-ID',tone:'conversational-playful'},
+scenes:[
+{id:'v01',text:'Pernah pergi ke suatu tempat...',rate:'+24%'},
+{id:'v02',text:'terus rasanya lama banget?',rate:'+20%'},
+{id:'v03',text:'Lihat jam.',rate:'+14%'},
+{id:'v04',text:'Baru lewat satu menit.',rate:'+21%'},
+{id:'v05',text:'Padahal perjalanannya biasa aja.',rate:'+26%'},
+{id:'v06',text:'Tapi kok terasa panjang banget?',rate:'+26%'},
+{id:'v07',text:'Cek jam, cek peta, cek lagi.',rate:'+30%'},
+{id:'v08',text:'Masih tujuh belas menit? Serius?',rate:'+26%'},
+{id:'v09',text:'Akhirnya sampai.',rate:'+16%'},
+{id:'v10',text:'Pas pulang, waktunya sama.',rate:'+24%'},
+{id:'v11',text:'Tapi kok rasanya lebih cepet?',rate:'+22%'},
+{id:'v12',text:'Padahal jaraknya... ya sama.',rate:'+18%'},
+{id:'v13',text:'Rasanya kayak jalannya dilipat!',rate:'+27%'},
+{id:'v14',text:'Ini sering disebut return trip effect.',rate:'+28%'},
+{id:'v15',text:'Bukan jalannya mendadak lebih pendek.',rate:'+28%'},
+{id:'v16',text:'Salah satu penjelasannya: ekspektasi.',rate:'+25%'},
+{id:'v17',text:'Pas pergi, kita membayangkan sebentar.',rate:'+27%'},
+{id:'v18',text:'Nyatanya? Kok lama banget.',rate:'+24%'},
+{id:'v19',text:'Pulang, perkiraan kita sudah menyesuaikan.',rate:'+29%'},
+{id:'v20',text:'Jadi rasanya lebih ringan.',rate:'+22%'},
+{id:'v21',text:'Bukan cuma karena hafal jalan.',rate:'+29%'},
+{id:'v22',text:'Bahkan di rute berbeda, bisa terjadi.',rate:'+30%'},
+{id:'v23',text:'Pergi juga terasa lebih nggak pasti.',rate:'+28%'},
+{id:'v24',text:'Pulang, kita tahu gambaran perjalanannya.',rate:'+30%'},
+{id:'v25',text:'Jadi, waktunya bisa sama...',rate:'+19%'},
+{id:'v26',text:'yang berubah, cara kita merasakannya.',rate:'+24%'},
+{id:'v27',text:'Tahu-tahu, sampai rumah.',rate:'+25%'},
+{id:'v28',text:'Sampai ingat ada barang ketinggalan.',rate:'+28%'},
+{id:'v29',text:'Nah. Sekarang jauh lagi.',rate:'+25%'}
+]} as const;
+export const phraseText=(id:string)=>voiceoverConfig.scenes.find(s=>s.id===id)?.text??'';
