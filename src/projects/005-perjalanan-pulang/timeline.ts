@@ -22,19 +22,19 @@ export const scenePlan=[
 export type SceneId=(typeof scenePlan)[number]['id'];
 export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
 {id:'v01',at:.2},{id:'v02',at:1.65,highlight:'lama banget'},
-{id:'v03',at:3.4},{id:'v04',at:4.45,highlight:'satu menit'},
+{id:'v03',at:3.42}
 {id:'v05',at:6.2},{id:'v06',at:8.55,highlight:'panjang'},
-{id:'v07',at:11.13},{id:'v08',at:12.8,highlight:'Serius'},
+{id:'v07',at:11.1}
 {id:'v09',at:14.57},{id:'v10',at:16.62,highlight:'sama'},
 {id:'v11',at:19.3,highlight:'lebih cepet'},
 {id:'v12',at:23.32},{id:'v13',at:26.27,highlight:'dilipat'},
 {id:'v14',at:29.7,highlight:'return trip effect'},
 {id:'v15',at:32.75},{id:'v16',at:35.28,highlight:'ekspektasi'},
-{id:'v17',at:37.08},{id:'v18',at:39.05},
+{id:'v17',at:37.08}
 {id:'v19',at:40.41},{id:'v20',at:42.28},
 {id:'v21',at:44.16},{id:'v22',at:45.83},
-{id:'v23',at:47.54},{id:'v24',at:49.0},
+{id:'v23',at:47.54}
 {id:'v25',at:50.51},{id:'v26',at:53.1,highlight:'merasakannya'},
-{id:'v27',at:55.22},{id:'v28',at:56.84},{id:'v29',at:58.04}
+{id:'v27',at:55.22},{id:'v28',at:56.75},{id:'v29',at:58.04}
 ];
 export const EPISODE_SECONDS=60;
