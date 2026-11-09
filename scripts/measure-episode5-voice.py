@@ -9,7 +9,7 @@ timeline=(root/'timeline.ts').read_text()
 voice=Path('public/audio/005-perjalanan-pulang/voiceover')
 ids=re.findall(r"\{id:'(v\d+)',text:",script)
 entries=[(a,float(b)) for a,b in re.findall(r"\{id:'(v\d+)',at:([0-9.]+)",timeline)]
-assert len(ids)==29 and ids==[a for a,_ in entries], (len(ids),len(entries))
+assert len(ids)==25 and ids==[a for a,_ in entries], (len(ids),len(entries))
 durations,starts,rates={},{},{}
 for i,(key,at) in enumerate(entries):
   p=voice/(key+'.mp3')
@@ -27,4 +27,4 @@ for i,(key,at) in enumerate(entries):
 manifest={'note':'Measured exact E005 MP3 durations; starts and playback rates shared by VO and on-screen captions.',
           'durations':durations,'starts':starts,'rates':rates}
 (root/'voice-durations.generated.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n')
-print('E005 AUDIO QA PASSED: 29 matching phrases; no overlaps; last before 60s.',flush=True)
+print('E005 AUDIO QA PASSED: 25 matching phrases; no overlaps; last before 60s.',flush=True)
