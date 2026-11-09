@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: e005-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   storyboard:
     runs-on: ubuntu-latest
