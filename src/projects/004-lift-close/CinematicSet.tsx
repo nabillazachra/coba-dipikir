@@ -1,5 +1,6 @@
 import React from 'react';
-import {AbsoluteFill} from 'remotion';
+import {AbsoluteFill,useCurrentFrame,useVideoConfig} from 'remotion';
+import {scenePlan} from './timeline';
 import {Actor,Door,Panel,PressFinger,INK,ORANGE,GREEN,PAPER,range} from './VisualSystem';
 import {brand} from '../../brand/tokens';
 
@@ -37,9 +38,17 @@ export const FilmStage:React.FC<{children:React.ReactNode;night?:boolean;warm?:b
 export const FilmTitle:React.FC<{
  eyebrow?:string;children:React.ReactNode;size?:number;night?:boolean;center?:boolean;
  top?:number;rotation?:number;opacity?:number
-}>=({eyebrow,children,size=77,night=false,center=false,top=310,rotation=0,opacity=1})=><div style={{
- position:'absolute',left:96,right:96,top,zIndex:30,opacity,
- textAlign:center?'center':'left',transform:'rotate('+rotation+'deg)',
+}>=({eyebrow,children,size=77,night=false,center=false,top=310,rotation=0,opacity=1})=>{
+ const frame=useCurrentFrame();
+ const {fps}=useVideoConfig();
+ const now=frame/fps;
+ const current=scenePlan.find(scene=>now>=scene.start&&now<scene.end);
+ const sceneTime=Math.max(0,now-(current?.start??0));
+ const entrance=Math.min(1,sceneTime/.28);
+ const eased=1-Math.pow(1-entrance,3);
+ return <div style={{
+ position:'absolute',left:96,right:96,top,zIndex:30,opacity:opacity*eased,
+ textAlign:center?'center':'left',transform:'translateY('+((1-eased)*23)+'px) rotate('+rotation+'deg)',
  color:night?'#FFF9EE':INK,
 }}>
  {eyebrow&&<div style={{fontWeight:850,color:night?'#FFC493':ORANGE,
@@ -47,6 +56,7 @@ export const FilmTitle:React.FC<{
  <div style={{fontSize:size,fontWeight:950,letterSpacing:-2.8,lineHeight:1.1,
  textShadow:night?'0 4px 10px rgba(0,0,0,.19)':'none'}}>{children}</div>
 </div>;
+};
 
 export const Accent:React.FC<{children:React.ReactNode;night?:boolean}>=({children,night=false})=>
  <span style={{color:night?'#FFC18E':ORANGE}}>{children}</span>;
