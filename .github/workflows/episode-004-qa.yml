@@ -4,6 +4,7 @@ on:
     branches:
       - feat/episode-004-lift-close
       - feat/e004-cinematic-rework
+      - fix/e004-design-principles-polish
   workflow_dispatch:
 
 permissions:
