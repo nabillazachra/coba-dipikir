@@ -33,7 +33,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
            expression="worried" walk={t*3.5} lean={15} tilt={11}
            arm={t>2.4?64:-45} scarf={Math.sin(t*14)*14} gaze={12}/>}/>
        <FloorClock x={842} y={556} size={106} turn={t*19} night/>
-       {guide('cepet… cepet…',109,1217,true,34)}
+
      </>}
    </>;
  }
@@ -52,8 +52,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
         scarf={Math.sin(t*6)*4}/>}/>
     <FloorClock x={74} y={726} size={100} turn={t*39} night/>
     {t>2.65&&guide('…',155,985,true,104)}
-    <div style={{position:'absolute',left:90,top:1188,color:warm,
-      fontSize:30,fontWeight:900,letterSpacing:1.2,opacity:range(t,3.2,3.55)}}>nunggu… nunggu…</div>
+
    </>;
  }
  case 'discovery':{
@@ -65,20 +64,20 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <ButtonMacro night finger={p*.9} press={0} camera={1.035+range(t,.2,2.4)*.055}
        spotlight/>
     <LightBurst x={833} y={1035} on={range(t,.7,1.1)} color={warm} size={155}/>
-    {guide('penyelamat?',107,1195,true,42)}
+
    </>;
  }
  case 'click':{
    const down=hop(t,.54,.34);
    const pause=t>1.06;
    return <>
-    {pause?<FilmTitle night eyebrow="SFX: SUARA HENING" size={84}>KLIK.<br/><Accent night>…</Accent></FilmTitle>:
+    {pause?<FilmTitle night eyebrow="LHO, MASIH TERBUKA?" size={84}>KLIK.<br/><Accent night>…</Accent></FilmTitle>:
       <FilmTitle night eyebrow="COBA SEKALI" size={80}>KLIK!</FilmTitle>}
     {pause?<FaceCloseup night expression="deadpan" size={735}
        tilt={t>1.65?6:-6} gaze={t>1.6?-7:9} shiftX={range(t,1.05,2.2)*-30}/>:
        <ButtonMacro night press={down} finger={down} camera={1.20+down*.03}
          showActor={true} spotlight/>}
-    {pause&&guide('pintunya: masih santai.',145,1194,true,39)}
+
    </>;
  }
  case 'spam':{
@@ -121,9 +120,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
          expression={t<1.1?'happy':t<1.8?'realization':'thinking'}
          tilt={t<1.3?-11:9} gaze={7} arm={t<1.3?51:9}
          scarf={Math.sin(t*7)*8}/>}/>
-    <div style={{position:'absolute',left:108,top:1204,
-      color:warm,fontSize:39,fontWeight:950,
-      opacity:range(t,.6,.85),rotate:'-4deg'}}>berhasil… atau kebetulan?</div>
+
    </>;
  }
  case 'rewind':{
@@ -147,7 +144,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
           tilt={i===1?-15:11} arm={i===1?65:30}/>
       </div>)}
     </Camera>
-    {guide('⟲',809,1128,true,127)}
+    <Marker x={842} y={1110} night size={108}>↶</Marker>
    </>;
  }
  case 'once':{
@@ -166,8 +163,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
        <path d="M675 27 L723 49 L680 82" stroke={ORANGE}
          strokeWidth="10" fill="none" strokeLinecap="round"/>
     </svg>
-    <div style={{position:'absolute',left:88,top:1191,fontSize:40,
-      fontWeight:950,color:GREEN,opacity:signal}}>1 sentuhan → sinyal masuk.</div>
+
    </>;
  }
  case 'system':{
@@ -231,7 +227,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     <Camera zoom={1.0}>
       <ProgressTrack value={1-t/5.9} x={97} y={42} w={480}/>
     </Camera>
-    {t>2.8&&guide('oh… iya juga.',106,1202,false,38)}
+
    </>;
  }
  case 'sensor':{
@@ -258,7 +254,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
        transform:'rotate(-8deg)',color:ORANGE,
        fontSize:101,fontWeight:950,textShadow:'6px 7px 0 rgba(233,107,60,.14)'}}>BEEP!</div>}
     </Camera>
-    {t>3.7&&guide('WHY?!',100,1198,false,51)}
+
    </>;
  }
  case 'variants':{
@@ -391,9 +387,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
        camera={1.20+tempting*.10} finger={t<7.9?tempting*.86:slam}
        press={slam} shake={t>7.8?Math.sin(t*35)*5:Math.sin(t*11)*tempting*3}
        showActor spotlight agitation={tempting} reaction={t>8.83}/>}
-    {t>4&&<Marker x={111} y={1192} night size={t>6?45:35}>
-       {t>9.31?'GAGAL.':t>6.8?'TAAAHAN…':'tenang…'}
-    </Marker>}
+
     {t>9.3&&<Marker x={750} y={635} night size={69}>×8</Marker>}
    </>;
  }
