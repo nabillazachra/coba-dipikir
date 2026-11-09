@@ -55,7 +55,7 @@ jobs:
             assert abs(float(previous[2])-float(following[1]))<.001,(previous,following)
           assert 'return trip effect' in voice and 'ekspektasi' in voice
           m=json.loads((root/'voice-durations.generated.json').read_text())
-          assert len(m['durations'])==29 and len(m['starts'])==29
+          assert len(m['durations'])==25 and len(m['starts'])==25
           print('E005 narrative/character/timeline/subtitle and landmarks continuity: PASSED')
           PY
       - name: Render multi-view storyboarding frames (no MP4)
