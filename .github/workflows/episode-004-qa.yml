@@ -5,6 +5,7 @@ on:
       - feat/episode-004-lift-close
       - feat/e004-cinematic-rework
       - fix/e004-design-principles-polish
+      - fix/e004-expressive-acting-revision
   workflow_dispatch:
 
 permissions:
