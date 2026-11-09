@@ -168,7 +168,7 @@ export const Count:React.FC<{value:string;x?:number;y?:number;scale?:number}>=({
       fontSize:68,fontWeight:950,color:ORANGE,zIndex:16}}>{value}</div>
 );
 export const CaptionBand:React.FC<{children:React.ReactNode}>=({children})=>(
- <div style={{position:'absolute',left:84,right:138,top:1325,minHeight:130,maxHeight:170,
+ <div style={{position:'absolute',left:96,right:96,top:1320,height:156,
    display:'flex',alignItems:'center',justifyContent:'center',zIndex:200,pointerEvents:'none'}}>
    {children}
  </div>
