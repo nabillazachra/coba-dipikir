@@ -69,7 +69,7 @@ const FoldHero:React.FC<{t:number}> = ({t})=>{
    <div style={{position:'absolute',left:0,top:15,width:940,height:210,background:'linear-gradient(#D0DACE,#E6E7D4)'}}/>
    <div style={{position:'absolute',left:45,top:220,width:850,height:290,
     display:'flex',justifyContent:'center',alignItems:'center',perspective:850}}>
-     {landmarkOrder.map((kind,i)=>{
+     {[...landmarkOrder].reverse().map((kind,i)=>{
        const direction=i%2?-1:1;
        const individual=ease((fold-i*.085)/.65);
        const w=lerp(panelW,65,individual);
@@ -172,7 +172,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
     <SceneNote>AKHIRNYA!</SceneNote>
     <Stage top={448}>
       <div style={{width:1080,height:810,background:'linear-gradient(#C8DBCE,#F2E4CD)'}}/>
-      <House x={410} y={95} scale={.8}/>
+      <Landmark kind="mini" x={400} y={205} s={1.13}/>
       <Actor x={150} y={253} w={403} expression="excited" tilt={-12} arm={-55} leftArm={60}/>
       <Pill x={710} y={154}>TUJUAN</Pill>
     </Stage>
@@ -296,7 +296,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
    <svg width="840" height="150" style={{position:'absolute',left:116,top:1190}}>
     <path d="M0 95 H840" fill="none" stroke={INK} strokeWidth="9" strokeDasharray="25 25"/></svg>
    <Actor x={690-t*64} y={1130} w={143} expression="worried" tilt={15} lean={17} walk={t*3}/>
-   <Pill x={159} y={1182} size={24}>004 → 005</Pill>
+   <Pill x={159} y={1182} size={24}>EPISODE 005</Pill>
  </>;
  }
  return null;
