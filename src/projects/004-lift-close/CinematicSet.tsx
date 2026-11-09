@@ -22,8 +22,12 @@ export const FilmStage:React.FC<{children:React.ReactNode;night?:boolean;warm?:b
  background:night?'rgba(242,170,101,.08)':'#E7EBE0',opacity:.78}}/>
  <div style={{position:'absolute',right:-150,top:475,width:600,height:750,borderRadius:'48%',
  background:night?'rgba(249,187,128,.07)':'#EFE3D3',opacity:.58}}/>
- <div style={{position:'absolute',left:0,right:0,top:1515,bottom:0,
- background:night?'#27302E':PAPER}}/>
+ {/* Let the illustrated set recede naturally into the safe area; avoid a hard
+     rectangular horizon across the lower third of the vertical canvas. */}
+ <div style={{position:'absolute',left:0,right:0,top:1475,bottom:0,
+ background:night
+   ?'linear-gradient(180deg,rgba(39,48,46,0),#27302E 25%,#27302E 100%)'
+   :'linear-gradient(180deg,rgba(246,240,229,0),#F6F0E5 25%,#F6F0E5 100%)'}}/>
  {warm&&<div style={{position:'absolute',left:60,top:330,width:960,height:850,
  borderRadius:'50%',background:'radial-gradient(ellipse,rgba(250,174,99,.10),transparent 70%)',
  pointerEvents:'none'}}/>}
@@ -33,15 +37,15 @@ export const FilmStage:React.FC<{children:React.ReactNode;night?:boolean;warm?:b
 export const FilmTitle:React.FC<{
  eyebrow?:string;children:React.ReactNode;size?:number;night?:boolean;center?:boolean;
  top?:number;rotation?:number;opacity?:number
-}>=({eyebrow,children,size=77,night=false,center=false,top=307,rotation=0,opacity=1})=><div style={{
- position:'absolute',left:86,right:105,top,zIndex:30,opacity,
+}>=({eyebrow,children,size=77,night=false,center=false,top=310,rotation=0,opacity=1})=><div style={{
+ position:'absolute',left:96,right:96,top,zIndex:30,opacity,
  textAlign:center?'center':'left',transform:'rotate('+rotation+'deg)',
  color:night?'#FFF9EE':INK,
 }}>
- {eyebrow&&<div style={{fontWeight:900,color:night?'#FFC493':ORANGE,
- fontSize:23,letterSpacing:3.1,marginBottom:16}}>{eyebrow}</div>}
- <div style={{fontSize:size,fontWeight:950,letterSpacing:-3.8,lineHeight:1.07,
- textShadow:night?'0 5px 12px rgba(0,0,0,.26)':'none'}}>{children}</div>
+ {eyebrow&&<div style={{fontWeight:850,color:night?'#FFC493':ORANGE,
+ fontSize:22,letterSpacing:2.4,marginBottom:18,lineHeight:1.15}}>{eyebrow}</div>}
+ <div style={{fontSize:size,fontWeight:950,letterSpacing:-2.8,lineHeight:1.1,
+ textShadow:night?'0 4px 10px rgba(0,0,0,.19)':'none'}}>{children}</div>
 </div>;
 
 export const Accent:React.FC<{children:React.ReactNode;night?:boolean}>=({children,night=false})=>
@@ -159,10 +163,12 @@ export const ButtonMacro:React.FC<{press?:number;finger?:number;night?:boolean;c
  border:'8px solid '+ORANGE,borderRadius:40,boxShadow:'0 0 38px rgba(233,107,60,.4)',
  pointerEvents:'none'}}/>}
   <PressFinger x={779} y={545} progress={finger} size={.92}/>
-  {typeof count==='number'&&<div style={{position:'absolute',left:807,top:19,
- background:'#FFF7EE',border:'7px solid '+ORANGE,boxShadow:'8px 10px 0 rgba(0,0,0,.12)',
- color:ORANGE,borderRadius:21,padding:'6px 25px',fontSize:76,fontWeight:950,
- transform:'rotate(-7deg)'}}>×{count}</div>}
+  {/* Keep the x1/x2/x4/x8 cue anchored to the quiet corner of the stage.
+     In the original macro it was clipped by zoom at the right edge. */}
+ {typeof count==='number'&&<div style={{position:'absolute',left:344,top:18,
+ background:'#FFF7EE',border:'6px solid '+ORANGE,boxShadow:'6px 8px 0 rgba(0,0,0,.10)',
+ color:ORANGE,borderRadius:18,padding:'5px 20px',fontSize:62,fontWeight:950,
+ whiteSpace:'nowrap',transform:'rotate(-5deg)',zIndex:25}}>×{count}</div>}
  </Camera>;
 
 export const FaceCloseup:React.FC<{
