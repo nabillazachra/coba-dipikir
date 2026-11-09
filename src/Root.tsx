@@ -11,6 +11,7 @@ import {ClosingScene} from './projects/001-gratis-ongkir/scenes/ClosingScene';
 import {KulkasEpisode} from './projects/002-kulkas/Composition';
 import {Harga99000Episode} from './projects/003-harga-99000/Composition';
 import {LiftCloseEpisode} from './projects/004-lift-close/Composition';
+import {ReturnTripEpisode} from './projects/005-perjalanan-pulang/Composition';
 
 export const RemotionRoot: React.FC = () => (
   <Folder name="Coba-Dipikir">
@@ -59,6 +60,16 @@ export const RemotionRoot: React.FC = () => (
         id="E004-Close-Lift"
         component={LiftCloseEpisode}
         durationInFrames={2439}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+    </Folder>
+    <Folder name="Episode-005-Perjalanan-Pulang">
+      <Composition
+        id="E005-Return-Trip"
+        component={ReturnTripEpisode}
+        durationInFrames={1800}
         fps={30}
         width={1080}
         height={1920}
