@@ -4,7 +4,7 @@ import {Actor,Door,Panel,PressFinger,INK,ORANGE,GREEN,PAPER,range,pulse} from '.
 import {scenePlan,type Episode4SceneId} from './timeline';
 import {publicAsset} from '../../brand/publicAsset';
 import {FilmStage,FilmTitle,Accent,Camera,ElevatorShell,LiftLocation,Marker,FloorClock,
- LightBurst,ButtonMacro,FaceCloseup,SensorBeam,ProgressTrack} from './CinematicSet';
+ LightBurst,ButtonMacro,FaceCloseup,SensorBeam,ProgressTrack,CountSticker} from './CinematicSet';
 
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 const hop=(t:number,at:number,d=.22)=>Math.max(0,1-Math.abs(t-at)/d);
@@ -25,7 +25,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
       BURU-BURU<br/><Accent night>MASUK LIFT?</Accent>
     </FilmTitle>}
     {early?<ButtonMacro night press={hop(t,.38,.30)} finger={hop(t,.38,.30)}
-       camera={1.14} count={8} spotlight agitation={1}/>:
+       camera={1.14} spotlight agitation={1}/>:
      <>
        <LiftLocation night open={range(t,1.04,1.59,.24,1)}
          zoom={1.01+entering*.055} panX={entering*-17}
@@ -92,7 +92,8 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
     </FilmTitle>
     <ButtonMacro night press={active} finger={active}
       camera={zoom} shake={hits>3?Math.sin(t*43)*hits*1.6:0}
-      agitation={hits/7} count={hits?count:undefined} spotlight={hits>=2}/>
+      agitation={hits/7} spotlight={hits>=2}/>
+    {hits>0&&<CountSticker count={count} x={760} y={518}/>}
     {hits>=6&&<LightBurst x={850} y={1080} on={.7+hop(t,3.25,.25)*.3}
       color={warm} size={165}/>}
    </>;
