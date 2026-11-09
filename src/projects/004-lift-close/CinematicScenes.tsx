@@ -84,7 +84,8 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
    const beat=[.35,1.15,1.70,2.12,2.46,2.78,3.25];
    const hits=beat.filter(b=>t>=b).length;
    const active=Math.max(0,...beat.map(b=>hop(t,b,.16)));
-   const count=hits<=1?1:hits<=3?2:hits<=6?4:8;
+   // The first click happened in the previous scene; subsequent presses are #2 through #8.
+   const count=hits+1;
    const zoom=1.06+hits*.022;
    return <>
     <FilmTitle night eyebrow="KALAU KURANG MEMUASKAN…" size={79}>
@@ -372,7 +373,8 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
  }
  case 'ending':{
    const tempting=range(t,5.08,7.55);
-   const late=[8.47,8.7,8.93,9.16,9.37];
+   // Seven extra presses complete the eight-click joke after the initial deliberate press.
+   const late=[8.47,8.64,8.80,8.95,9.10,9.25,9.40];
    const slam=Math.max(0,...late.map(s=>hop(t,s,.12)));
    const first=hop(t,3.28,.27);
    const final=t>5.65;
@@ -389,7 +391,7 @@ const Scene:React.FC<{id:Episode4SceneId;t:number}>=({id,t})=>{
        press={slam} shake={t>7.8?Math.sin(t*35)*5:Math.sin(t*11)*tempting*3}
        showActor spotlight agitation={tempting} reaction={t>8.83}/>}
 
-    {t>9.3&&<Marker x={750} y={635} night size={69}>×8</Marker>}
+    {late.some(s=>t>=s)&&<CountSticker count={1+late.filter(s=>t>=s).length} x={760} y={516}/>} 
    </>;
  }
  case 'brand':{
