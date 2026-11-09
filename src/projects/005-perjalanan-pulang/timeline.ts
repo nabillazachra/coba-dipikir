@@ -20,7 +20,7 @@ export const scenePlan=[
 {id:'brand',title:'End Card',label:'Coba Dipikir 005',start:58.8,end:60}
 ] as const;
 export type SceneId=(typeof scenePlan)[number]['id'];
-export const phrasePlan=[
+export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
 {id:'v01',at:.2},{id:'v02',at:1.65,highlight:'lama banget'},
 {id:'v03',at:3.4},{id:'v04',at:4.45,highlight:'satu menit'},
 {id:'v05',at:6.2},{id:'v06',at:8.55,highlight:'panjang'},
@@ -36,5 +36,5 @@ export const phrasePlan=[
 {id:'v23',at:47.54},{id:'v24',at:49.0},
 {id:'v25',at:50.51},{id:'v26',at:53.1,highlight:'merasakannya'},
 {id:'v27',at:55.22},{id:'v28',at:56.84},{id:'v29',at:58.04}
-] as const;
+];
 export const EPISODE_SECONDS=60;
