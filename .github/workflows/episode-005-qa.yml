@@ -60,7 +60,7 @@ jobs:
             assert abs(float(previous[2])-float(following[1]))<.001,(previous,following)
           assert 'return trip effect' in voice and 'ekspektasi' in voice
           m=json.loads((root/'voice-durations.generated.json').read_text())
-          assert len(m['durations'])==23 and len(m['starts'])==23
+          assert len(m['durations'])==22 and len(m['starts'])==22
           assert 'playbackRate={rate}' not in (root/'EpisodeAudio.tsx').read_text()
           assert 'rates' not in m, 'VO must not be time-stretched'
           assert "height:940" in world, 'Map must occupy full active frame height'
