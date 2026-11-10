@@ -4,7 +4,7 @@ import {useVideoConfig} from 'remotion';
 import {publicAsset} from '../../brand/publicAsset';
 import {phrasePlan} from './timeline';
 import manifest from './voice-durations.generated.json';
-const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>;rates?:Record<string,number>};
+const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>};
 const sfx=(name:string)=>publicAsset('audio/005-perjalanan-pulang/sfx/'+name+'.wav');
 const voice=(id:string)=>publicAsset('audio/005-perjalanan-pulang/voiceover/'+id+'.mp3');
 type Cue={name:string;file:string;at:number;volume:number;speed?:number};
@@ -58,11 +58,10 @@ export const Episode5Audio:React.FC=()=>{
    <Audio name="Original outgoing-to-return score" src={sfx('score')} volume={.22} premountFor={fps}/>
    {phrasePlan.map((p,i)=>{
       const start=m.starts?.[p.id]??p.at;
-      const rate=m.rates?.[p.id]??1;
-      const duration=(m.durations[p.id]??1.25)/rate;
+      const duration=(m.durations[p.id]??1.5);
       return <Audio key={p.id} name={'VO '+p.id} src={voice(p.id)}
-       from={Math.round(start*fps)} playbackRate={rate}
-       durationInFrames={Math.round(duration*fps)} volume={.98} premountFor={fps}/>;
+       from={Math.round(start*fps)}
+       durationInFrames={Math.ceil(duration*fps)} volume={.98} premountFor={fps}/>;
    })}
    {cues.map(c=><Audio key={c.name} name={'SFX '+c.name} src={sfx(c.file)}
       from={Math.round(c.at*fps)} playbackRate={c.speed??1} volume={c.volume} premountFor={fps}/>)}
