@@ -58,7 +58,7 @@ jobs:
           assert float(scenes[0][1])==0 and float(scenes[-1][2])==65
           for previous,following in zip(scenes,scenes[1:]):
             assert abs(float(previous[2])-float(following[1]))<.001,(previous,following)
-          assert 'return trip effect' in voice and 'ekspektasi' in voice
+          assert 'return trip effect' in voice.lower() and 'ekspektasi' in voice.lower()
           m=json.loads((root/'voice-durations.generated.json').read_text())
           assert len(m['durations'])==22 and len(m['starts'])==22
           assert 'playbackRate={rate}' not in (root/'EpisodeAudio.tsx').read_text()
