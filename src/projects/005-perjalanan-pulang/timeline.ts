@@ -24,7 +24,7 @@ export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
 {id:'v01',at:.38,highlight:'lama banget'},
 {id:'v03',at:3.55},
 {id:'v05',at:6.32},{id:'v06',at:8.7,highlight:'panjang'},
-{id:'v07',at:11.2,highlight:'Tujuh belas menit'},
+{id:'v07',at:11.2,highlight:'tujuh belas menit'},
 {id:'v09',at:14.56},{id:'v10',at:16.6,highlight:'dua puluh tiga menit'},
 {id:'v11',at:19.46,highlight:'lebih cepat'},
 {id:'v12',at:23.45},{id:'v13',at:26.05,highlight:'dilipat'},
@@ -32,9 +32,8 @@ export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
 {id:'v15',at:32.72},{id:'v16',at:35.32,highlight:'ekspektasi'},
 {id:'v17',at:37.8},
 {id:'v19',at:40.48},
-{id:'v21',at:44.16},{id:'v22',at:45.95},
-{id:'v23',at:47.56},
-{id:'v25',at:50.55},{id:'v26',at:53.13,highlight:'berubah'},
+{id:'v21',at:44.45},{id:'v23',at:47.56},
+{id:'v25',at:50.55},{id:'v26',at:53.13,highlight:'beda'},
 {id:'v27',at:55.28},{id:'v28',at:57.0},{id:'v29',at:59.33}
 ];
 export const EPISODE_SECONDS=65;
