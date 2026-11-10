@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feat/episode-005-return-trip-effect
+      - fix/e005-fullframe-voice-natural
   workflow_dispatch:
 
 permissions:
@@ -54,24 +55,27 @@ jobs:
           assert 'Caption' in captions and "phraseText(cue.id)" in captions
           scenes=re.findall(r"\{id:'([^']+)',title:'[^']+',label:'[^']+',start:([0-9.]+),end:([0-9.]+)\}",timeline)
           assert len(scenes)==19, len(scenes)
-          assert float(scenes[0][1])==0 and float(scenes[-1][2])==60
+          assert float(scenes[0][1])==0 and float(scenes[-1][2])==65
           for previous,following in zip(scenes,scenes[1:]):
             assert abs(float(previous[2])-float(following[1]))<.001,(previous,following)
           assert 'return trip effect' in voice and 'ekspektasi' in voice
           m=json.loads((root/'voice-durations.generated.json').read_text())
-          assert len(m['durations'])==25 and len(m['starts'])==25
-          print('E005 narrative/character/timeline/subtitle and landmarks continuity: PASSED')
+          assert len(m['durations'])==23 and len(m['starts'])==23
+          assert 'playbackRate={rate}' not in (root/'EpisodeAudio.tsx').read_text()
+          assert 'rates' not in m, 'VO must not be time-stretched'
+          assert "height:940" in world, 'Map must occupy full active frame height'
+          print('E005 natural VO/full-stage layout/timeline/landmarks: PASSED')
           PY
       - name: Render multi-view storyboarding frames (no MP4)
         run: |
           mkdir -p /tmp/e005
-          for frame in 27 115 158 238 295 355 409 465 523 597 666 720 748 786 824 870 916 980 1080 1131 1216 1310 1381 1440 1509 1557 1612 1674 1716 1756 1784; do
+          for frame in 27 115 158 238 295 355 399 409 465 523 597 666 720 748 786 824 870 916 980 1080 1131 1216 1310 1381 1440 1509 1533 1557 1612 1674 1716 1795 1840 1880 1925; do
             npx remotion still E005-Return-Trip /tmp/e005/frame-${frame}.png --frame=${frame} --log=error
           done
           python - <<'PY'
           import base64,io
           from PIL import Image,ImageDraw
-          frames=[27,115,158,238,295,355,409,465,523,597,666,720,748,786,824,870,916,980,1080,1131,1216,1310,1381,1440,1509,1557,1612,1674,1716,1756,1784]
+          frames=[27,115,158,238,295,355,399,409,465,523,597,666,720,748,786,824,870,916,980,1080,1131,1216,1310,1381,1440,1509,1533,1557,1612,1674,1716,1795,1840,1880,1925]
           w,h=168,298;cols=5;rows=7
           sheet=Image.new('RGB',(cols*(w+9)+9,rows*(h+22)+9),'#f6f0e5')
           d=ImageDraw.Draw(sheet)
