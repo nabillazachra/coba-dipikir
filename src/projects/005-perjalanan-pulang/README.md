@@ -1,5 +1,5 @@
 # Episode 005 — Kenapa Perjalanan Pulang Terasa Lebih Cepat?
-An original 60-second Remotion mini animated short, 1080x1920 at 30fps.
+An original 65-second Remotion mini animated short, 1080x1920 at 30fps.
 Composition `E005-Return-Trip`. Reuses `../002-kulkas/Character` and global brand tokens without redesigning the character.
 ## Directorial continuity
 Landmarks on way out: minimarket, big tree, flyover, billboard, halte. Return runs the same sequence backwards. Three independent parallax layers. Hero accordion world-strip folds while bus/character remain centered. Perceived route shrinks; physical distance labeled as unchanged.

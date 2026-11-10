@@ -4,7 +4,7 @@ import {useVideoConfig} from 'remotion';
 import {publicAsset} from '../../brand/publicAsset';
 import {phrasePlan} from './timeline';
 import manifest from './voice-durations.generated.json';
-const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>;rates?:Record<string,number>};
+const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>};
 const sfx=(name:string)=>publicAsset('audio/005-perjalanan-pulang/sfx/'+name+'.wav');
 const voice=(id:string)=>publicAsset('audio/005-perjalanan-pulang/voiceover/'+id+'.mp3');
 type Cue={name:string;file:string;at:number;volume:number;speed?:number};
@@ -47,10 +47,10 @@ const cues:Cue[]=[
  {name:'home-ding',file:'ding',at:55.27,volume:.22},
  {name:'memory-pop',file:'pop',at:56.96,volume:.29},
  {name:'road-re-stretch',file:'stretch',at:57.55,volume:.32},
- {name:'bass-drop',file:'bonk',at:58.16,volume:.38},
- {name:'footstep-1',file:'tap',at:59.01,volume:.13},
- {name:'footstep-2',file:'tap',at:59.37,volume:.12},
- {name:'footstep-3',file:'tap',at:59.74,volume:.11}
+ {name:'bass-drop',file:'bonk',at:59.38,volume:.38},
+ {name:'footstep-1',file:'tap',at:62.38,volume:.13},
+ {name:'footstep-2',file:'tap',at:63.13,volume:.12},
+ {name:'footstep-3',file:'tap',at:63.91,volume:.11}
 ];
 export const Episode5Audio:React.FC=()=>{
  const {fps}=useVideoConfig();
@@ -58,11 +58,10 @@ export const Episode5Audio:React.FC=()=>{
    <Audio name="Original outgoing-to-return score" src={sfx('score')} volume={.22} premountFor={fps}/>
    {phrasePlan.map((p,i)=>{
       const start=m.starts?.[p.id]??p.at;
-      const rate=m.rates?.[p.id]??1;
-      const duration=(m.durations[p.id]??1.25)/rate;
+      const duration=(m.durations[p.id]??1.5);
       return <Audio key={p.id} name={'VO '+p.id} src={voice(p.id)}
-       from={Math.round(start*fps)} playbackRate={rate}
-       durationInFrames={Math.round(duration*fps)} volume={.98} premountFor={fps}/>;
+       from={Math.round(start*fps)}
+       durationInFrames={Math.ceil(duration*fps)} volume={.98} premountFor={fps}/>;
    })}
    {cues.map(c=><Audio key={c.name} name={'SFX '+c.name} src={sfx(c.file)}
       from={Math.round(c.at*fps)} playbackRate={c.speed??1} volume={c.volume} premountFor={fps}/>)}

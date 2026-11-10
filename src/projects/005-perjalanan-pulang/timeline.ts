@@ -16,25 +16,24 @@ export const scenePlan=[
 {id:'montage',title:'View Perjalanan',label:'Window, wheel, map, character',start:50.4,end:53},
 {id:'compare',title:'Persepsinya Berubah',label:'23 MIN vs 23 MIN',start:53,end:55.15},
 {id:'home',title:'Tiba di Rumah',label:'23-minute homecoming',start:55.15,end:56.8},
-{id:'forgotten',title:'Barang Tertinggal',label:'The road stretches long again',start:56.8,end:58.8},
-{id:'brand',title:'End Card',label:'Coba Dipikir 005',start:58.8,end:60}
+{id:'forgotten',title:'Barang Tertinggal',label:'The road stretches long again',start:56.8,end:62.2},
+{id:'brand',title:'End Card',label:'Coba Dipikir 005',start:62.2,end:65}
 ] as const;
 export type SceneId=(typeof scenePlan)[number]['id'];
 export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
-{id:'v01',at:.2},{id:'v02',at:1.65,highlight:'lama banget'},
-{id:'v03',at:3.42},
-{id:'v05',at:6.2},{id:'v06',at:8.55,highlight:'panjang'},
-{id:'v07',at:11.1},
-{id:'v09',at:14.57},{id:'v10',at:16.62,highlight:'sama'},
-{id:'v11',at:19.3,highlight:'lebih cepet'},
-{id:'v12',at:23.32},{id:'v13',at:26.27,highlight:'dilipat'},
-{id:'v14',at:29.7,highlight:'return trip effect'},
-{id:'v15',at:32.75},{id:'v16',at:35.28,highlight:'ekspektasi'},
-{id:'v17',at:37.08},
-{id:'v19',at:40.41},{id:'v20',at:42.28},
-{id:'v21',at:44.16},{id:'v22',at:45.83},
-{id:'v23',at:47.54},
-{id:'v25',at:50.51},{id:'v26',at:53.1,highlight:'berubah'},
-{id:'v27',at:55.22},{id:'v28',at:56.75},{id:'v29',at:58.04}
+{id:'v01',at:.38,highlight:'lama banget'},
+{id:'v03',at:3.55},
+{id:'v05',at:6.32},{id:'v06',at:8.7,highlight:'panjang'},
+{id:'v07',at:11.2,highlight:'tujuh belas menit'},
+{id:'v09',at:14.56},{id:'v10',at:16.6,highlight:'dua puluh tiga menit'},
+{id:'v11',at:19.46,highlight:'lebih cepat'},
+{id:'v12',at:23.45},{id:'v13',at:26.05,highlight:'dilipat'},
+{id:'v14',at:29.78,highlight:'return trip effect'},
+{id:'v15',at:32.72},{id:'v16',at:35.32,highlight:'ekspektasi'},
+{id:'v17',at:37.8},
+{id:'v19',at:40.48},
+{id:'v21',at:44.45},{id:'v23',at:47.56},
+{id:'v25',at:50.55},{id:'v26',at:53.13,highlight:'beda'},
+{id:'v27',at:55.28},{id:'v28',at:57.0},{id:'v29',at:59.91}
 ];
-export const EPISODE_SECONDS=60;
+export const EPISODE_SECONDS=65;

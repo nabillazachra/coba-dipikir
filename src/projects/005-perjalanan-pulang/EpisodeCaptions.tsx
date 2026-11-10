@@ -4,12 +4,12 @@ import {phrasePlan} from './timeline';
 import {phraseText} from './voiceover.config';
 import manifest from './voice-durations.generated.json';
 import {INK,ORANGE,FONT} from './StoryWorld';
-const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>;rates?:Record<string,number>};
+const m=manifest as {durations:Record<string,number>;starts?:Record<string,number>};
 export const Episode5Captions:React.FC=()=>{
  const {fps}=useVideoConfig();const time=useCurrentFrame()/fps;
  const cue=phrasePlan.find(p=>{
   const st=m.starts?.[p.id]??p.at;
-  const duration=(m.durations[p.id]??1.3)/(m.rates?.[p.id]??1);
+  const duration=(m.durations[p.id]??1.5);
   return time>=st&&time<st+duration;
  });
  if(!cue)return null;
