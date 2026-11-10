@@ -9,9 +9,10 @@ timeline=(root/'timeline.ts').read_text()
 voice=Path('public/audio/005-perjalanan-pulang/voiceover')
 ids=re.findall(r"\{id:'(v\d+)',text:",script)
 entries=[(key,float(at)) for key,at in re.findall(r"\{id:'(v\d+)',at:([0-9.]+)",timeline)]
-assert len(ids)==23 and ids==[key for key,_ in entries], (ids,entries)
+assert len(ids)==22 and ids==[key for key,_ in entries], (ids,entries)
 durations,starts={},{}
 previous_end=0.0
+issues=[]
 for key,planned in entries:
   path=voice/(key+'.mp3')
   if not path.is_file():raise FileNotFoundError(path)
@@ -19,12 +20,13 @@ for key,planned in entries:
   if length<.2:raise ValueError(f'Unexpected short recording {key}: {length:.3f}s')
   start=max(planned,previous_end+.10)
   drift=start-planned
-  if drift>.35:raise RuntimeError(f'{key} slips {drift:.2f}s: shorten script or adjust cues, do not accelerate voice')
+  if drift>.35:issues.append(f'{key} slips {drift:.2f}s')
   durations[key]=round(length,3)
   starts[key]=round(start,3)
   previous_end=start+length
   print(f'{key:4s} planned={planned:5.2f}s start={start:5.2f}s natural={length:4.2f}s end={previous_end:5.2f}s speed=1.00x',flush=True)
-if previous_end>62.16:raise RuntimeError(f'Voice ends {previous_end:.2f}s, overlaps 65-second ending; shorten copy, never time-stretch')
+if previous_end>62.16:issues.append(f'Voice ends {previous_end:.2f}s, overlaps ending')
+if issues:raise RuntimeError('; '.join(issues)+'; never time stretch voice')
 for (k,_),(n,_) in zip(entries,entries[1:]):
   assert starts[k]+durations[k]<=starts[n]-.075,(k,n)
 (root/'voice-durations.generated.json').write_text(json.dumps({
