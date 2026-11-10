@@ -132,7 +132,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
  case 'opening':return <>
   <SceneNote night>COBA DIPIKIR · 005</SceneNote>
   <TextFocus night size={71}>PERGI KOK<br/><span style={{color:'#FFC18E'}}>LAMA BANGET?</span></TextFocus>
-  {windowScene(t,false,'23 MIN',true)}
+  <div style={{position:'absolute',inset:0,transform:'scale('+(1+.055*ease(t/3.35))+')',transformOrigin:'55% 65%'}}>{windowScene(t,false,'23 MIN',true)}</div>
   <div style={{position:'absolute',left:790,top:455,width:65,height:500,background:'rgba(252,193,131,.08)',
    transform:'translateX('+Math.sin(t*2)*70+'px)'}}/>
  </>;
@@ -206,7 +206,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
     <path d="M15 196 H906" stroke="#B4C0B0" strokeWidth="115" strokeLinecap="round"/>
     <path d="M15 196 H906" stroke={INK} strokeWidth="9" strokeDasharray="33 29"/>
    </svg>
-   <CharacterClose t={t} emotion={t>1.5?'shocked':'thinking'} left={105} top={574} scale={.75}/>
+   <CharacterClose t={t} emotion={t>1.5?'shocked':'thinking'} left={80} top={549} scale={.92}/>
    <Scissor t={t}/>
  </>;
  case 'expect':return <>
@@ -282,7 +282,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
     <Pill x={609} y={911}>23 MIN?!</Pill>
     {t>.4&&<div style={{position:'absolute',left:688,top:502,width:190,height:118,
      border:'7px solid '+INK,background:BG,borderRadius:33,
-     textAlign:'center',fontSize:76,fontWeight:950,color:ORANGE}}>!</div>}
+     textAlign:'center',fontSize:76,fontWeight:950,color:ORANGE}} ><svg width="135" height="90" viewBox="0 0 135 90"><path d="M36 30 Q38 5 68 5 Q98 5 100 30" fill="none" stroke={INK} strokeWidth="10"/><rect x="16" y="29" width="104" height="57" rx="13" fill={ORANGE} stroke={INK} strokeWidth="9"/><rect x="55" y="45" width="26" height="19" rx="6" fill={PAPER}/></svg></div>}
    </>;
  }
  case 'brand':return <>
