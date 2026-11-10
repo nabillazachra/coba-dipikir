@@ -47,10 +47,10 @@ const cues:Cue[]=[
  {name:'home-ding',file:'ding',at:55.27,volume:.22},
  {name:'memory-pop',file:'pop',at:56.96,volume:.29},
  {name:'road-re-stretch',file:'stretch',at:57.55,volume:.32},
- {name:'bass-drop',file:'bonk',at:58.16,volume:.38},
- {name:'footstep-1',file:'tap',at:59.01,volume:.13},
- {name:'footstep-2',file:'tap',at:59.37,volume:.12},
- {name:'footstep-3',file:'tap',at:59.74,volume:.11}
+ {name:'bass-drop',file:'bonk',at:59.38,volume:.38},
+ {name:'footstep-1',file:'tap',at:62.38,volume:.13},
+ {name:'footstep-2',file:'tap',at:63.13,volume:.12},
+ {name:'footstep-3',file:'tap',at:63.91,volume:.11}
 ];
 export const Episode5Audio:React.FC=()=>{
  const {fps}=useVideoConfig();
