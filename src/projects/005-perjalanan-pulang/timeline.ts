@@ -34,6 +34,6 @@ export const phrasePlan:ReadonlyArray<{id:string;at:number;highlight?:string}>=[
 {id:'v19',at:40.48},
 {id:'v21',at:44.45},{id:'v23',at:47.56},
 {id:'v25',at:50.55},{id:'v26',at:53.13,highlight:'beda'},
-{id:'v27',at:55.28},{id:'v28',at:57.0},{id:'v29',at:59.33}
+{id:'v27',at:55.28},{id:'v28',at:57.0},{id:'v29',at:59.91}
 ];
 export const EPISODE_SECONDS=65;
