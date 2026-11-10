@@ -9,6 +9,9 @@ import {scenePlan as harga99000Scenes} from './projects/003-harga-99000/timeline
 import {LiftCloseEpisode} from './projects/004-lift-close/Composition';
 import {projectConfig as liftCloseConfig} from './projects/004-lift-close/project.config';
 import {scenePlan as liftCloseScenes} from './projects/004-lift-close/timeline';
+import {ReturnTripEpisode} from './projects/005-perjalanan-pulang/Composition';
+import {projectConfig as returnTripConfig} from './projects/005-perjalanan-pulang/project.config';
+import {scenePlan as returnTripScenes} from './projects/005-perjalanan-pulang/timeline';
 
 export type ProjectStatus = 'idea' | 'draft' | 'review' | 'published';
 
@@ -132,6 +135,28 @@ export const projectRegistry: ProjectRegistryEntry[] = [
       label: scene.label,
       startFrame: Math.round(scene.start * liftCloseConfig.fps),
       durationInFrames: Math.round((scene.end - scene.start) * liftCloseConfig.fps),
+    })),
+  },
+  {
+    id: returnTripConfig.id,
+    episode: returnTripConfig.episode,
+    title: returnTripConfig.title,
+    coverText: returnTripConfig.coverText,
+    category: returnTripConfig.category,
+    status: returnTripConfig.status,
+    compositionId: 'E005-Return-Trip',
+    width: returnTripConfig.width,
+    height: returnTripConfig.height,
+    fps: returnTripConfig.fps,
+    durationInFrames: returnTripConfig.durationInFrames,
+    folder: 'src/projects/005-perjalanan-pulang',
+    component: ReturnTripEpisode,
+    scenes: returnTripScenes.map(scene=>({
+      id: scene.id,
+      title: scene.title,
+      label: scene.label,
+      startFrame: Math.round(scene.start*returnTripConfig.fps),
+      durationInFrames: Math.round((scene.end-scene.start)*returnTripConfig.fps)
     })),
   },
 ];

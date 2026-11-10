@@ -1,0 +1,96 @@
+name: Episode 005 — Storyboard, Motion and VO QA
+on:
+  push:
+    branches:
+      - feat/episode-005-return-trip-effect
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e005-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  storyboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install tooling
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --quiet -r requirements-voice.txt mutagen==1.47.0 Pillow==11.3.0
+      - name: Generate Episode 005 assets (not an MP4 export)
+        run: |
+          node scripts/generate-voiceover.mjs --project=005-perjalanan-pulang
+          npm run audio:ep5-sfx
+          python scripts/measure-episode5-voice.py
+      - name: TypeScript / CMS check
+        run: |
+          npx tsc --noEmit
+          npm run cms:build
+      - name: Narrative, continuity and safe-area contracts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, json
+          root=Path('src/projects/005-perjalanan-pulang')
+          timeline=(root/'timeline.ts').read_text()
+          world=(root/'StoryWorld.tsx').read_text()
+          voice=(root/'voiceover.config.ts').read_text()
+          captions=(root/'EpisodeCaptions.tsx').read_text()
+          assert "import {Character,type CharacterExpression} from '../002-kulkas/Character'" in world
+          assert "['mini','tree','flyover','billboard','halte']" in world
+          assert "reverse()" in world
+          assert all(x in world for x in ['StreetWorld','MapBoard','Landmark','WindowCabin'])
+          assert 'Caption' in captions and "phraseText(cue.id)" in captions
+          scenes=re.findall(r"\{id:'([^']+)',title:'[^']+',label:'[^']+',start:([0-9.]+),end:([0-9.]+)\}",timeline)
+          assert len(scenes)==19, len(scenes)
+          assert float(scenes[0][1])==0 and float(scenes[-1][2])==60
+          for previous,following in zip(scenes,scenes[1:]):
+            assert abs(float(previous[2])-float(following[1]))<.001,(previous,following)
+          assert 'return trip effect' in voice and 'ekspektasi' in voice
+          m=json.loads((root/'voice-durations.generated.json').read_text())
+          assert len(m['durations'])==25 and len(m['starts'])==25
+          print('E005 narrative/character/timeline/subtitle and landmarks continuity: PASSED')
+          PY
+      - name: Render multi-view storyboarding frames (no MP4)
+        run: |
+          mkdir -p /tmp/e005
+          for frame in 27 115 158 238 295 355 409 465 523 597 666 720 748 786 824 870 916 980 1080 1131 1216 1310 1381 1440 1509 1557 1612 1674 1716 1756 1784; do
+            npx remotion still E005-Return-Trip /tmp/e005/frame-${frame}.png --frame=${frame} --log=error
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image,ImageDraw
+          frames=[27,115,158,238,295,355,409,465,523,597,666,720,748,786,824,870,916,980,1080,1131,1216,1310,1381,1440,1509,1557,1612,1674,1716,1756,1784]
+          w,h=168,298;cols=5;rows=7
+          sheet=Image.new('RGB',(cols*(w+9)+9,rows*(h+22)+9),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,n in enumerate(frames):
+            frame=Image.open('/tmp/e005/frame-'+str(n)+'.png').convert('RGB')
+            frame.thumbnail((w,h))
+            x=9+(i%cols)*(w+9)
+            y=23+(i//cols)*(h+22)
+            sheet.paste(frame,(x,y))
+            d.text((x,y-16),f'{n/30:.2f}s',fill='#20251f')
+          data=io.BytesIO();sheet.save(data,format='WEBP',quality=43,method=5)
+          print('E005_SHEET_BEGIN')
+          print(base64.b64encode(data.getvalue()).decode())
+          print('E005_SHEET_END')
+          sheet.save('/tmp/e005/storyboard-contact.webp','WEBP',quality=78)
+          PY
+      - name: Upload visual QA frames
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode005-storyboard-review
+          path: /tmp/e005
+          retention-days: 7
