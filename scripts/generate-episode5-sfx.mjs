@@ -34,13 +34,13 @@ wav('warp',1.83,t=>chirp(130,720,t,1.83)*Math.sin(Math.PI*t/1.83)**2*.32+rand()*
 wav('snip',.4,t=>rand()*env(t,43)*.18+chirp(600,180,t,.4)*env(t,12)*.22);
 wav('bonk',.85,t=>chirp(190,59,t,.85)*env(t,8)*.5);
 wav('stretch',1.54,t=>chirp(170,420,t,1.54)*Math.sin(Math.PI*t/1.54)**2*.23+sin(87,t)*Math.sin(Math.PI*t/1.54)**2*.18);
-const N=60*SR,score=new Float32Array(N);
+const N=65*SR,score=new Float32Array(N);
 function add(at,d,fn,vol){
  const beg=Math.round(at*SR),num=Math.round(d*SR);
  for(let i=0;i<num&&i+beg<N;i++)if(beg+i>=0)score[beg+i]+=fn(i/SR)*vol;
 }
 const melody=[392,440,523,392,330,440,494,392,349,392,523,440];
-for(let t=.65,i=0;t<58.9;i++){
+for(let t=.65,i=0;t<64.5;i++){
  const incoming=t<19;
  const beat=incoming?1.12:t<29.6?.69:t<40?.92:.74;
  if(!((t>3.45&&t<6)||(t>24.7&&t<28.5)||(t>56.4&&t<58.5))){
@@ -53,7 +53,7 @@ for(let t=.65,i=0;t<58.9;i++){
 for(const [at,d,f] of [[0,9,110],[19,10,147],[30,11,123],[45,10,131]])
  add(at,d,t=>(sin(f,t)+.14*sin(f*1.5,t))*Math.min(1,t/.3,(d-t)/.8),.014);
 for(let i=0;i<N;i++){
- const t=i/SR;const fade=Math.max(0,Math.min(1,t/.45,(60-t)/.58));
+ const t=i/SR;const fade=Math.max(0,Math.min(1,t/.45,(65-t)/.58));
  score[i]*=fade;
 }
-wav('score',60,(_,i)=>score[i]);
+wav('score',65,(_,i)=>score[i]);
