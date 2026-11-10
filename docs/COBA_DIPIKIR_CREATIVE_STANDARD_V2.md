@@ -49,6 +49,43 @@ Prefer topics with **physical acting and recurring props**. Reject or rework top
 - **Hero motion:** at least one memorable physical or visual metaphor driven by the story, not a decorative effect.
 - Do not turn every scene into character + text + character + text; use text only when it adds information the action cannot communicate.
 
+## 5A. FULL-BLEED CINEMATIC ENVIRONMENT — MANDATORY VISUAL STANDARD (2026-11-11)
+
+**NON-NEGOTIABLE DIRECTORIAL RULE:** Every narrative scene must look like a genuine **9:16 full-screen animated world**, visually comparable in immersive staging to the user-provided "animasi Dajjal" reference and the environment-based acting of Episode 002. Do **not** recreate the Episode 005 mistake: a framed city/map/room illustration occupying only the upper portion of the video, with half the canvas left visually empty. The environment is the **world the character inhabits**, not a card on a background.
+
+### Full-screen world, not boxed imagery
+1. **Backgrounds extend edge-to-edge (0–1080 x 0–1920)**. Sky, walls, streets, floors, buildings, lighting and other scenic planes continue naturally beyond the visible camera frame. Safe areas constrain **important information**, not the scenery.
+2. **No framed environment cards**: avoid rounded-rectangle stage containers, centered illustration cards, bordered mini-worlds, giant cream margins, stand-alone mini maps or environments with an abrupt rectangular bottom edge. Frames are allowed only when they are real diegetic objects (phone screen, bus window, TV, poster), visibly part of the surrounding full-screen world.
+3. Compose foreground, midground and background continuously; camera cuts, zooms and parallax must preserve spatial logic. A room is built with floor/walls/props; a street has continuous road, skyline, traffic and near objects; a vehicle has a readable interior/exterior world. The character interacts with this world instead of standing in front of disconnected illustrations.
+4. **No accidental dead space**: the lower and upper parts of the screen may be calm for legibility, but cannot look like an unfinished composition. Continue scenery/textures/shadows through caption-safe areas; keep the composition balanced without overcrowding it.
+5. Do not confuse "full screen" with "every pixel must be busy": retain intentional negative space, controlled contrast, readable gestures and clear silhouettes. A cutaway to a clock/phone is allowed, but its surrounding scene must feel spatially designed, not pasted on a blank slide.
+6. The approved **002 master character** stays consistent, large enough to read on mobile and with a meaningful spatial relationship to doors, seats, roads and props. No tiny character stranded in oversized scenery.
+
+### Social UI overlay and typography-safe staging
+- Use the **full 1080×1920 canvas for scenery**, but **protect UI-sensitive elements** (headline, character face, prop action, map labels, numbers, subtitle, logo). Keep important text **away from the upper profile/username overlay**, and away from right-side Reels/TikTok action buttons and bottom caption/navigation overlay.
+- **Starting layout guide (not platform-guaranteed):** top ~0–300 px = scenic bleed / nonessential details; place most essential headlines roughly **y=330–620**. Prefer content x≈90–880, with extra breathing room on the right for mobile controls. Keep core character acting in approximately y≈540–1280. Place captions in a stable band around **y≈1340–1500**, normally no more than two lines; bottom ~300 px should contain only nonessential scenery. These are starting coordinates, not substitutes for checking actual TikTok/Reels UI crops.
+- Avoid overly elevated headlines (e.g. y≈90–230), labels behind mobile controls, cropped callouts, or oversized text cards that dominate the setting.
+- Always test with a **TikTok/Reels UI-safe overlay** in the 9:16 preview at native 1080×1920 and at phone display size. Test first/last frame of every scene, key camera motion peaks, opening hook, hero motion and ending; verify text remains readable with platform UI present.
+- If text competes with the scene, **reduce or reposition the text** rather than shrinking the entire world into a card. Subtitle text remains verbatim to VO, with orange emphasis used sparingly.
+
+### Motion, continuity and scene review
+- The camera frames an environment that continues beyond the crop; action, lighting, prop state and landmark placement persist logically from shot to shot.
+- When introducing an explanatory map, use a full-stage camera cut into a **world-scale map** or zoom into an actual phone, not a postage-stamp framed graphic in the upper third.
+- Motion should feel like an animated short: motivated camera work, character acting, object physics and environment movement; **not** repeated header + illustration + caption templates.
+- Treat the Episode 005 boxed-scene screenshots (map at ~00:13/00:51 and cabin/label crops around ~00:49) as **negative QA examples**.
+- **Mandatory failure condition:** any main scene in which an unrelated rectangular illustration occupies a small fraction of the active vertical frame, with a large empty cream remainder or with title text hidden by social profile UI, **fails creative QA even when CI/Remotion renders successfully**.
+- **Release gate:** inspect full-length playback *with* UI overlay on a phone and stills at 0s, each scene midpoint, transition peaks, and hero/punchline. Correct full-bleed world, text placement, character readability, and crop *before* calling the episode ready.
+
+### Full-bleed QA checklist
+- [ ] Environment genuinely fills 9:16 (scenic bleed, no boxed world/mini scene).
+- [ ] Top/profile and right-side controls do not cover headlines, faces, important numbers or labels.
+- [ ] Subtitles are stable, verbatim, legible, and above bottom UI.
+- [ ] Foreground/midground/background feel like one scene with coherent perspective.
+- [ ] Main prop and character read clearly on a phone, not merely at editor zoom.
+- [ ] No accidental visually empty half-frame, clipped scenery, floating cards or off-frame text.
+- [ ] Camera movement and transitions preserve environmental continuity.
+- [ ] Visual quality feels like an animated short at least on par with Episode 002.
+
 ## 6. Technical brand, motion and audio contract
 - Remotion project in the existing GitHub repo `nabillazachra/coba-dipikir` as a new `src/projects/NNN-topic/` folder; retain `src/brand` and 002 master character.
 - Vertical 9:16, 1080×1920, typically 30 fps; responsive safe composition for TikTok/Reels mobile view. Reserve top for platform chrome and lower area for captions/controls. Do not leave giant accidental visual dead zones.
@@ -77,6 +114,8 @@ Prefer topics with **physical acting and recurring props**. Reject or rework top
 - [ ] Story has setup, escalation, reveal and visually satisfying payoff.
 - [ ] One memorable 3–8s signature animation is clearly visible.
 - [ ] Acting has readable eyes/brows/pose and changes within scenes, not merely one expression per scene.
+- [ ] **Full-bleed 9:16 environment** (not a boxed illustration, floating stage or tiny top-aligned map), with scenery extending through safe areas and no accidental empty half-screen.
+- [ ] **Mobile UI overlay reviewed:** headline below profile/username region; critical objects away from right action controls; captions clear of bottom UI.
 - [ ] Framing and environment feel like a complete animated short; no arbitrary giant blank zones or cropped labels.
 - [ ] Camera movement and parallax serve a story beat; transitions match motion.
 - [ ] Same approved character, colors, logo and typography as previous episodes.
