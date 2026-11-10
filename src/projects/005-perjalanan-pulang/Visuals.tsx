@@ -7,11 +7,11 @@ import {Actor,Film,SceneNote,TextFocus,StreetWorld,WindowCabin,MapBoard,Landmark
 
 const BG='#FFFDF8';
 const Stage:React.FC<{children:React.ReactNode;top?:number;night?:boolean;zoom?:number;pan?:number}> = ({
- children,top=445,night=false,zoom=1,pan=0
-})=><div style={{position:'absolute',left:48,top,width:988,height:813,overflow:'hidden',
- border:'10px solid '+(night?'#758A7A':INK),borderRadius:47,
- boxShadow:'15px 18px 0 rgba(32,37,31,.11)',background:night?'#53685D':'#C7D9CB'}}>
- <div style={{position:'absolute',left:-40,top:0,width:1080,height:830,
+ children,top=388,night=false,zoom=1,pan=0
+})=><div style={{position:'absolute',left:0,top,width:1080,height:1340-top,overflow:'hidden',
+ border:'none',borderRadius:0,
+ boxShadow:'none',background:night?'#53685D':'#C7D9CB'}}>
+ <div style={{position:'absolute',left:0,top:0,width:1080,height:970,
  transform:'translateX('+pan+'px) scale('+zoom+')',transformOrigin:'50% 55%'}}>{children}</div></div>;
 
 const Pill:React.FC<{children:React.ReactNode;x:number;y:number;dark?:boolean;color?:string;size?:number}> = ({
@@ -19,7 +19,8 @@ const Pill:React.FC<{children:React.ReactNode;x:number;y:number;dark?:boolean;co
 })=><div style={{position:'absolute',left:x,top:y,background:dark?'#334840':BG,
  border:'6px solid '+(dark?'#F2E3C9':INK),color:color,fontSize:size,fontWeight:950,
  borderRadius:20,padding:'13px 23px',boxShadow:'6px 8px 0 rgba(0,0,0,.1)',zIndex:40,
- transform:'rotate(-3deg)',whiteSpace:'nowrap'}}>{children}</div>;
+ boxSizing:'border-box',maxWidth:Math.max(208,990-x),lineHeight:1.12,overflowWrap:'break-word',
+ transform:'rotate(-3deg)',whiteSpace:'normal'}}>{children}</div>;
 
 const Phone:React.FC<{x?:number;y?:number;minutes:string;rotate?:number;scale?:number;dark?:boolean}> = ({
  x=560,y=610,minutes,rotate=-9,scale=1,dark=false
@@ -163,9 +164,9 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
     <SceneNote>ARE WE THERE YET?</SceneNote>
     {phase===0?<><CharacterClose t={t} emotion="annoyed"/><Phone minutes="17 MIN" x={536} y={551}/></>:
      phase===1?<WindowCabin t={t} showPhone={false}/>:
-     phase===2?<><MapBoard progress={.35} small/><Pill x={612} y={1090}>17 MIN</Pill></>:
+     phase===2?<><MapBoard progress={.35} small/><Pill x={622} y={1070}>17 MIN</Pill></>:
      <><CharacterClose t={t} emotion="annoyed" left={90} top={590} scale={.76}/><Phone minutes="16 MIN" x={505} y={545} scale={1.05}/></>}
-    {t>2.75&&<Pill x={676} y={1036}>...</Pill>}
+    {t>2.75&&<Pill x={675} y={1187}>...</Pill>}
    </>;
  }
  case 'arrival':return <>
@@ -201,6 +202,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
  case 'scissors':return <>
    <SceneNote>BUKAN TRIK FISIKA</SceneNote>
    <TextFocus size={64}>JALANNYA NGGAK<br/><span style={{color:ORANGE}}>DIPOTONG.</span></TextFocus>
+   <Stage top={440} zoom={1.08}><StreetWorld progress={.23} dusk={false} withVehicle={false}/></Stage>
    <svg width="920" height="315" viewBox="0 0 920 315"
    style={{position:'absolute',left:73,top:912}}>
     <path d="M15 196 H906" stroke="#B4C0B0" strokeWidth="115" strokeLinecap="round"/>
@@ -233,7 +235,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
  case 'alternate':return <>
    <SceneNote>BUKAN HARUS HAFAL JALAN</SceneNote>
    <MapBoard progress={clamp(t/3.45)} alternate={t>1.55}/>
-   <Pill x={135} y={1136}>RUTE PULANG BISA BERBEDA</Pill>
+   <Pill x={130} y={1166} size={28}>RUTE PULANG BISA BERBEDA</Pill>
  </>;
  case 'unknown':return <>
    <SceneNote>PERGI TERASA BELUM PASTI</SceneNote>
@@ -243,7 +245,7 @@ const Frame:React.FC<{id:SceneId;t:number}> = ({id,t})=>{
     fontSize:100,fontWeight:950,color:ORANGE,
     opacity:clamp(1-(t-1.0)*1.2)*(i%2?.65:.9),
     transform:'translateY('+(-t*27)+'px)'}}>?</div>)}
-   {t>1.8&&<Pill x={665} y={1099} color={GREEN}>RUMAH SUDAH TERBAYANG</Pill>}
+   {t>1.8&&<Pill x={538} y={1099} color={GREEN} size={28}>RUMAH SUDAH TERBAYANG</Pill>}
  </>;
  case 'montage':{
    const p=Math.floor(t/.65);
