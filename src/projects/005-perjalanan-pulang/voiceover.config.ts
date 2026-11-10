@@ -25,6 +25,6 @@ scenes:[
 {id:'v26',text:'Rasanya beda.',rate:'+5%'},
 {id:'v27',text:'Sampai!',rate:'+5%'},
 {id:'v28',text:'Eh, barang ketinggalan!',rate:'+5%'},
-{id:'v29',text:'Nah. Jauh lagi.',rate:'+5%'}
+{id:'v29',text:'Jauh lagi.',rate:'+5%'}
 ]} as const;
 export const phraseText=(id:string)=>voiceoverConfig.scenes.find(s=>s.id===id)?.text??'';
