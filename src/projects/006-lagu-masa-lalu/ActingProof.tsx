@@ -131,22 +131,25 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
           <defs>
             <linearGradient id="e006-wall" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0" stopColor={rgb([230, 222, 211], [239, 185, 133], morph)} />
-              <stop offset="1" stopColor={rgb([184, 176, 166], [155, 107, 92], morph)} />
+              <stop offset="0" stopColor={rgb([230, 222, 211], [239, 185, 133], floorMorph)} />
+              <stop offset="1" stopColor={rgb([184, 176, 166], [155, 107, 92], floorMorph)} />
             </linearGradient>
             <linearGradient id="e006-floor" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor={rgb([178, 159, 139], [116, 100, 94], morph)} />
-              <stop offset="1" stopColor={rgb([104, 101, 96], [56, 62, 68], morph)} />
+              <stop offset="0" stopColor={rgb([178, 159, 139], [116, 100, 94], floorMorph)} />
+              <stop offset="1" stopColor={rgb([104, 101, 96], [56, 62, 68], floorMorph)} />
             </linearGradient>
             <linearGradient id="e006-sky" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0" stopColor={rgb([169, 189, 188], [227, 126, 105], morph)} />
-              <stop offset="0.62" stopColor={rgb([216, 199, 173], [250, 181, 104], morph)} />
-              <stop offset="1" stopColor={rgb([203, 185, 156], [214, 120, 91], morph)} />
+              <stop offset="0" stopColor={rgb([169, 189, 188], [227, 126, 105], cityMorph)} />
+              <stop offset="0.62" stopColor={rgb([216, 199, 173], [250, 181, 104], cityMorph)} />
+              <stop offset="1" stopColor={rgb([203, 185, 156], [214, 120, 91], floorMorph)} />
             </linearGradient>
             <radialGradient id="e006-sun" cx="73%" cy="44%" r="58%">
               <stop offset="0" stopColor="#FFD090" stopOpacity={accentLight} />
               <stop offset="1" stopColor="#FFD090" stopOpacity="0" />
             </radialGradient>
+            <clipPath id="e006-friend-wipe">
+              <rect x="537" y="780" width={520 * arrival} height="825" />
+            </clipPath>
             <clipPath id="e006-window-clip">
               <rect x={windowX + 16} y={windowY + 16} width={windowW - 32} height={windowH - 32} rx={lerp(12, 48, morph)} />
             </clipPath>
@@ -161,39 +164,39 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
 
           {/* The real room window becomes the bus window by reshaping the same border. */}
           <rect x={windowX - 12} y={windowY - 12} width={windowW + 24}
-            height={windowH + 24} rx={lerp(24, 75, morph)}
-            fill={rgb([115, 109, 101], [59, 73, 74], morph)} />
+            height={windowH + 24} rx={lerp(24, 75, windowMorph)}
+            fill={rgb([115, 109, 101], [59, 73, 74], windowMorph)} />
           <rect x={windowX} y={windowY} width={windowW} height={windowH}
-            rx={lerp(16, 65, morph)} fill="url(#e006-sky)" />
+            rx={lerp(16, 65, windowMorph)} fill="url(#e006-sky)" />
           <g clipPath="url(#e006-window-clip)">
-            <circle cx={lerp(952, 885, morph)} cy={lerp(576, 600, morph)} r={lerp(65, 114, morph)}
-              fill="#FDE0A6" opacity={0.48 + 0.3 * morph} />
+            <circle cx={lerp(952, 885, windowMorph)} cy={lerp(576, 600, windowMorph)} r={lerp(65, 114, windowMorph)}
+              fill="#FDE0A6" opacity={0.48 + 0.3 * windowMorph} />
             {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
               <g key={i}>
-                <rect x={lerp(641, 480, morph) + i * 79 - morph * ((frame % 100) / 100) * 47}
-                  y={lerp(765, 690, morph) - (i % 3) * (38 + 20 * morph)}
+                <rect x={lerp(641, 480, windowMorph) + i * 79 - windowMorph * exteriorMove}
+                  y={lerp(765, 690, windowMorph) - (i % 3) * (38 + 20 * windowMorph)}
                   width={69 + (i % 2) * 16}
                   height="470" fill={i % 2 ? '#7C7473' : '#85766E'}
-                  opacity={0.36 + 0.28 * morph} />
+                  opacity={0.36 + 0.28 * windowMorph} />
                 {[0,1,2].map((j) => <rect key={j}
-                  x={lerp(667, 506, morph) + i * 79 + (j % 2) * 21 - morph * ((frame % 100) / 100) * 47}
+                  x={lerp(667, 506, windowMorph) + i * 79 + (j % 2) * 21 - windowMorph * exteriorMove}
                   y={798 + j * 37 - (i % 3) * 44}
-                  width="9" height="12" rx="3" fill="#FBE2AA" opacity={morph * 0.75} />)}
+                  width="9" height="12" rx="3" fill="#FBE2AA" opacity={windowMorph * 0.75} />)}
               </g>
             ))}
             <path d={'M' + windowX + ' ' + (windowY + windowH - 30) +
-              ' H' + (windowX + windowW)} stroke="#665B57" strokeWidth="20" opacity={morph} />
+              ' H' + (windowX + windowW)} stroke="#665B57" strokeWidth="20" opacity={windowMorph} />
           </g>
-          <path d={'M' + (windowX + windowW * lerp(0.52, 0.34, morph)) + ' ' + windowY +
+          <path d={'M' + (windowX + windowW * lerp(0.52, 0.34, windowMorph)) + ' ' + windowY +
             ' V' + (windowY + windowH)}
-            stroke={rgb([109, 104, 94], [62, 73, 73], morph)}
-            strokeWidth={lerp(13, 26, morph)} />
-          <path d={'M' + windowX + ' ' + (windowY + windowH * lerp(0.48, 0.81, morph)) +
+            stroke={rgb([109, 104, 94], [62, 73, 73], windowMorph)}
+            strokeWidth={lerp(13, 26, windowMorph)} />
+          <path d={'M' + windowX + ' ' + (windowY + windowH * lerp(0.48, 0.81, windowMorph)) +
             ' H' + (windowX + windowW)} stroke="#5D5F59"
-            strokeWidth={lerp(14, 23, morph)} opacity={1 - 0.38 * morph} />
+            strokeWidth={lerp(14, 23, windowMorph)} opacity={1 - 0.38 * windowMorph} />
 
           {/* Bookshelf straight lines become the vertical building rhythms. */}
-          <g opacity={1 - morph * 0.92}>
+          <g opacity={1 - cityMorph * 0.92}>
             <rect x="42" y="315" width="153" height="850" rx="10" fill="#73695E" />
             <rect x="55" y="329" width="128" height="835" rx="7" fill="#D7C3AC" />
             {[0,1,2].map((i) => <path key={i} d={'M55 ' + (515 + 220*i) + ' H183'}
@@ -204,38 +207,38 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
               fill={i%3===0?'#E96B3C':i%3===1?'#42765B':'#F6F0E5'}
               stroke="#47443E" strokeWidth="5" />)}
           </g>
-          <g opacity={morph * 0.74}>
+          <g opacity={cityMorph * 0.74}>
             {[0,1,2,3].map((i) => <path key={i}
               d={'M' + (-80+i*94) + ' 350 V' + (800+i%2*130)}
               stroke="#665A51" strokeWidth="30" />)}
           </g>
 
           {/* Desk lamp's arm becomes the streetlight viewed from the bus. */}
-          <path d={'M' + lerp(930, 898, morph) + ' ' + lerp(1147, 1051, morph) +
-            ' L' + lerp(923, 901, morph) + ' ' + lerp(955, 574, morph) +
-            ' L' + lerp(855, 813, morph) + ' ' + lerp(922, 563, morph)}
-            fill="none" stroke={rgb([74, 71, 67], [62, 75, 75], morph)}
-            strokeWidth={lerp(22, 17, morph)} strokeLinecap="round" strokeLinejoin="round" />
-          <path d={'M' + lerp(828, 788, morph) + ' ' + lerp(916, 557, morph) +
-            ' Q' + lerp(851, 798, morph) + ' ' + lerp(865, 530, morph) +
-            ' ' + lerp(887, 853, morph) + ' ' + lerp(914, 564, morph) + ' Z'}
+          <path d={'M' + lerp(930, 898, lampMorph) + ' ' + lerp(1147, 1051, lampMorph) +
+            ' L' + lerp(923, 901, lampMorph) + ' ' + lerp(955, 574, lampMorph) +
+            ' L' + lerp(855, 813, lampMorph) + ' ' + lerp(922, 563, lampMorph)}
+            fill="none" stroke={rgb([74, 71, 67], [62, 75, 75], lampMorph)}
+            strokeWidth={lerp(22, 17, lampMorph)} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={'M' + lerp(828, 788, lampMorph) + ' ' + lerp(916, 557, lampMorph) +
+            ' Q' + lerp(851, 798, lampMorph) + ' ' + lerp(865, 530, lampMorph) +
+            ' ' + lerp(887, 853, lampMorph) + ' ' + lerp(914, 564, lampMorph) + ' Z'}
             fill="#F1A96D" stroke="#4D4A43" strokeWidth="9" />
-          <circle cx={lerp(854, 811, morph)} cy={lerp(930, 588, morph)}
-            r={lerp(27, 52, morph)} fill="#FFD9A0" opacity={0.20 + morph*0.38} />
+          <circle cx={lerp(854, 811, lampMorph)} cy={lerp(930, 588, lampMorph)}
+            r={lerp(27, 52, lampMorph)} fill="#FFD9A0" opacity={0.20 + lampMorph*0.38} />
 
           {/* Chair turns into a bus passenger seat in exactly the same place. */}
-          <rect x={lerp(175, 131, morph)} y={lerp(1015, 960, morph)}
-            width={lerp(320, 370, morph)} height={lerp(390, 490, morph)}
-            rx={lerp(38, 74, morph)}
-            fill={rgb([139, 123, 109], [74, 118, 110], morph)}
+          <rect x={lerp(175, 131, seatMorph)} y={lerp(1015, 960, seatMorph)}
+            width={lerp(320, 370, seatMorph)} height={lerp(390, 490, seatMorph)}
+            rx={lerp(38, 74, seatMorph)}
+            fill={rgb([139, 123, 109], [74, 118, 110], seatMorph)}
             stroke="#4D4A43" strokeWidth="16" />
-          <path d={'M' + lerp(212, 154, morph) + ' ' + lerp(1066, 1015, morph) +
-            ' Q' + lerp(336, 320, morph) + ' ' + lerp(980, 969, morph) +
-            ' ' + lerp(461, 473, morph) + ' ' + lerp(1060, 1015, morph)}
-            stroke="#F6F0E5" strokeWidth="9" opacity={morph * .52} fill="none" />
+          <path d={'M' + lerp(212, 154, seatMorph) + ' ' + lerp(1066, 1015, seatMorph) +
+            ' Q' + lerp(336, 320, seatMorph) + ' ' + lerp(980, 969, seatMorph) +
+            ' ' + lerp(461, 473, seatMorph) + ' ' + lerp(1060, 1015, seatMorph)}
+            stroke="#F6F0E5" strokeWidth="9" opacity={seatMorph * .52} fill="none" />
 
           {/* The friend is revealed spatially inside the memory, not in a card. */}
-          <g opacity={arrival}>
+          <g clipPath="url(#e006-friend-wipe)">
             <ellipse cx="748" cy="1295" rx="166" ry="195" fill="#4C7F5A" stroke="#20251F" strokeWidth="15" />
             <circle cx="750" cy="932" r="105" fill="#F6F0E5" stroke="#20251F" strokeWidth="13" />
             <path d="M691 895 Q750 824 817 891" stroke="#20251F" strokeWidth="17" fill="none" strokeLinecap="round" />
@@ -245,30 +248,33 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             <circle cx="565" cy="1164" r="23" fill="#F6F0E5" stroke="#20251F" strokeWidth="10" />
             <path d="M729 1041 C764 1093 728 1124 682 1119" stroke="#292A28" strokeWidth="6" fill="none" />
             <circle cx="727" cy="1028" r="20" fill="#343734" stroke="#20251F" strokeWidth="6" />
+            <path d="M727 1042 C683 1081 652 1048 629 1023 C603 992 560 1007 551 1044"
+              fill="none" stroke="#292D2A" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="549" cy="1045" r="11" fill="#E96B3C" stroke="#20251F" strokeWidth="5" />
           </g>
 
           {/* Table edge remains a single drawn geometry as it turns into bus railing. */}
-          <path d={'M' + lerp(544, 518, morph) + ' ' + deskY +
-            ' L1110 ' + lerp(1169, 1115, morph) + ' L1110 1920 L' +
-            lerp(572, 560, morph) + ' 1920 Z'}
-            fill={rgb([114, 94, 78], [81, 93, 91], morph)}
-            opacity={0.91 - 0.63 * morph} />
-          <path d={'M' + lerp(540, 512, morph) + ' ' + deskY +
-            ' Q' + lerp(845, 845, morph) + ' ' + lerp(1171, 1100, morph) +
-            ' 1120 ' + lerp(1170, 1116, morph)}
-            fill="none" stroke={rgb([59, 55, 50], [58, 71, 73], morph)}
-            strokeWidth={lerp(29, 21, morph)} strokeLinecap="round" />
-          <path d={'M' + lerp(757, 737, morph) + ' ' + deskY +
-            ' L' + lerp(757, 737, morph) + ' ' + lerp(1430, 1570, morph)}
-            stroke="#425252" strokeWidth="17" opacity={morph} />
-          <path d={'M' + lerp(990, 970, morph) + ' ' + deskY +
-            ' L' + lerp(990, 970, morph) + ' 1710'}
-            stroke="#425252" strokeWidth="17" opacity={morph} />
+          <path d={'M' + lerp(544, 518, edgeMorph) + ' ' + deskY +
+            ' L1110 ' + lerp(1169, 1115, edgeMorph) + ' L1110 1920 L' +
+            lerp(572, 560, edgeMorph) + ' 1920 Z'}
+            fill={rgb([114, 94, 78], [81, 93, 91], edgeMorph)}
+            opacity={0.91 - 0.63 * edgeMorph} />
+          <path d={'M' + lerp(540, 512, edgeMorph) + ' ' + deskY +
+            ' Q' + lerp(845, 845, edgeMorph) + ' ' + lerp(1171, 1100, edgeMorph) +
+            ' 1120 ' + lerp(1170, 1116, edgeMorph)}
+            fill="none" stroke={rgb([59, 55, 50], [58, 71, 73], edgeMorph)}
+            strokeWidth={lerp(29, 21, edgeMorph)} strokeLinecap="round" />
+          <path d={'M' + lerp(757, 737, edgeMorph) + ' ' + deskY +
+            ' L' + lerp(757, 737, edgeMorph) + ' ' + lerp(1430, 1570, edgeMorph)}
+            stroke="#425252" strokeWidth="17" opacity={edgeMorph} />
+          <path d={'M' + lerp(990, 970, edgeMorph) + ' ' + deskY +
+            ' L' + lerp(990, 970, edgeMorph) + ' 1710'}
+            stroke="#425252" strokeWidth="17" opacity={edgeMorph} />
 
           {/* The paperback is being put down before music interrupts. */}
           <g transform={'translate(' + lerp(420, 518, bookSettle) + ' ' +
             lerp(1096, 1130, bookSettle) + ') rotate(' + lerp(-13, 0, bookSettle) + ')'}
-            opacity={1 - 0.93 * morph}>
+            opacity={1 - 0.93 * edgeMorph}>
             <rect width="93" height="48" rx="6" fill="#42765B" stroke="#20251F" strokeWidth="7" />
             <path d="M16 12 H71 M16 25 H54" stroke="#F6F0E5" strokeWidth="5" strokeLinecap="round" />
           </g>
@@ -306,9 +312,9 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             <filter id="e006-glow"><feGaussianBlur stdDeviation="16" /></filter>
           </defs>
           {/* A foreground seat edge hides the legs as the character settles. */}
-          <g opacity={morph}>
-            <path d={'M100 ' + lerp(1460, 1342, morph) +
-              ' Q270 ' + lerp(1400, 1320, morph) + ' 575 1401 L565 1920 H0 V1515 Z'}
+          <g opacity={seatMorph}>
+            <path d={'M100 ' + lerp(1460, 1342, seatMorph) +
+              ' Q270 ' + lerp(1400, 1320, seatMorph) + ' 575 1401 L565 1920 H0 V1515 Z'}
               fill="#38685E" stroke="#20251F" strokeWidth="17" />
             <path d="M-50 1620 Q250 1533 552 1592"
               stroke="#B3C6A2" strokeWidth="16" fill="none" opacity=".45" />
