@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {brand} from '../../brand/tokens';
 import {Character, type CharacterExpression} from '../002-kulkas/Character';
@@ -73,42 +73,58 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const sec = frame / fps;
-  const hear = smooth(0.66, 1.0, sec);
-  const recognize = smooth(1.02, 2.03, sec);
-  const reach = smooth(2.08, 3.16, sec);
-  const morph = smooth(3.12, 6.40, sec);
-  const arrival = smooth(5.60, 6.85, sec);
-  const ripple = smooth(2.80, 5.30, sec);
-  const pulse = Math.sin(sec * 12) * Math.exp(-Math.max(0, sec - 3.22) * 1.5);
-  const heroX = lerp(240, 202, morph);
-  const heroY = lerp(720, 806, morph);
-  const heroWidth = lerp(460, 486, morph);
+  // Eyes shift before brows, head precedes torso, finger activates the morph.
+  const hear = smooth(0.68, 0.88, sec);
+  const eyeShift = smooth(0.82, 1.13, sec);
+  const browChange = smooth(1.14, 1.40, sec);
+  const headTurn = smooth(1.48, 1.99, sec);
+  const bodyTurn = smooth(1.82, 2.26, sec);
+  const recognize = smooth(0.92, 2.18, sec);
+  const reach = smooth(2.30, 3.11, sec);
+  const contact = smooth(3.07, 3.15, sec);
+  const press = contact * (1 - smooth(3.27, 3.60, sec));
+  const morph = smooth(3.34, 6.42, sec);
+  const edgeMorph = smooth(3.35, 4.46, sec);
+  const lampMorph = smooth(3.80, 5.08, sec);
+  const windowMorph = smooth(4.19, 5.69, sec);
+  const seatMorph = smooth(4.65, 6.03, sec);
+  const cityMorph = smooth(4.37, 6.10, sec);
+  const floorMorph = smooth(4.75, 6.43, sec);
+  const arrival = smooth(5.72, 6.86, sec);
+  const ripple = smooth(3.14, 5.32, sec);
+  const heroX = lerp(218, 197, morph);
+  const heroY = lerp(704, 797, morph);
+  const heroWidth = lerp(486, 510, morph);
+  // No cartoon shock rays: subtle brow recognition, then a quiet smile.
   const expression: CharacterExpression =
-    arrival > 0.78 ? 'happy' :
-    recognize > 0.68 ? 'thinking' :
-    recognize > 0.16 ? 'curious' : 'neutral';
+    arrival > 0.73 ? 'happy' : browChange > 0.68 ? 'curious' : 'neutral';
   const blink = Math.max(
-    0, 1 - Math.abs(sec - 1.62) / 0.095,
-    1 - Math.abs(sec - 5.92) / 0.11,
+    0, 1 - Math.abs(sec - 1.59) / 0.10,
+    1 - Math.abs(sec - 6.31) / 0.11,
   );
-  const scarfSwing = 1.1 * Math.sin(sec * 3.5) * (1 - hear) +
-    11 * Math.sin((sec - 3.25) * 7) * Math.max(0, morph * (1 - 0.75 * arrival));
-  const windowX = lerp(646, 552, morph);
-  const windowY = lerp(420, 371, morph);
-  const windowW = lerp(485, 614, morph);
-  const windowH = lerp(550, 691, morph);
-  const pan = lerp(0, -51, morph) - 12 * recognize * (1 - morph);
-  const zoom = 1 + 0.038 * recognize + 0.040 * morph;
-  const deskY = lerp(1170, 1128, morph);
-  const accentLight = 0.13 + 0.39 * morph;
-  const handAngle = lerp(-29, 76, reach) - 13 * morph;
-  const bookSettle = smooth(0.05, 0.79, sec);
+  const scarfSwing =
+    1.3 * Math.sin(sec * 3.5) * (1 - hear) +
+    3.4 * Math.sin(Math.max(0, sec - 1.51) * 7.5) * headTurn * (1 - bodyTurn) +
+    17 * Math.sin(Math.max(0, sec - 3.15) * 8) *
+      Math.exp(-Math.max(0, sec - 3.15) * 0.82) * contact;
+  const windowX = lerp(646, 552, windowMorph);
+  const windowY = lerp(420, 371, windowMorph);
+  const windowW = lerp(485, 614, windowMorph);
+  const windowH = lerp(550, 691, windowMorph);
+  // Push for recognition, then track into the emerging vehicle.
+  const pan = -23 * headTurn * (1 - morph) - 67 * morph;
+  const zoom = 1 + 0.081 * headTurn + 0.021 * morph;
+  const deskY = lerp(1170, 1128, edgeMorph);
+  const accentLight = 0.11 + 0.49 * morph;
+  const handAngle = lerp(-29, 70, reach) - 17 * seatMorph;
+  const bookSettle = smooth(0.05, 0.71, sec);
+  const exteriorMove = cityMorph * Math.max(0, sec - 4.37) * 36;
 
   return (
     <AbsoluteFill style={{background: brand.colors.paper, overflow: 'hidden'}}>
       <div style={{
         position: 'absolute', width: 1080, height: 1920, inset: 0,
-        transform: 'translate(' + pan + 'px, 0px) scale(' + zoom + ')',
+        transform: 'translate(' + pan + 'px, ' + lerp(0, -20, morph) + 'px) scale(' + zoom + ')',
         transformOrigin: '51% 53%',
       }}>
         <svg width="1080" height="1920" viewBox="0 0 1080 1920"
@@ -274,10 +290,10 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
         <Character
           width={heroWidth} left={heroX} top={heroY}
           expression={expression}
-          gazeX={lerp(0, 10, recognize) * (1 - arrival * 0.5)}
+          gazeX={lerp(0, 15, eyeShift) * (1 - arrival * 0.45)}
           blink={blink}
-          headTilt={lerp(-1, 8, recognize) - 5 * arrival}
-          lean={lerp(-4, 1, recognize) - 8 * morph}
+          headTilt={lerp(-2, 11, headTurn) - 6 * arrival}
+          lean={lerp(-3, 3, bodyTurn) - 7 * morph}
           leftArm={lerp(26, 8, bookSettle) + 4 * morph}
           rightArm={handAngle}
           scarfSwing={scarfSwing}
