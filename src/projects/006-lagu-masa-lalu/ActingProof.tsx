@@ -161,6 +161,27 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           <path d="M0 1371 H1080" stroke="#493C37" strokeWidth="22" opacity={1 - morph * 0.53} />
           <path d="M0 1650 L1080 1550 M0 1880 L1080 1755" stroke="#F2DDC2" strokeWidth="6" opacity={0.11 + 0.13 * morph} />
           <rect x="0" y="0" width="1080" height="1920" fill="url(#e006-sun)" />
+          {/* A foreground travel bag and its cast shadow keep the lower
+              world inhabited without placing information under platform UI. */}
+          <ellipse cx={185 + 40 * floorMorph} cy="1749"
+            rx={190} ry="42" fill="#2D3030" opacity={0.20 + 0.09 * floorMorph} />
+          <path d={
+            'M-80 ' + lerp(1558, 1525, floorMorph) +
+            ' Q57 ' + lerp(1460, 1495, floorMorph) +
+            ' 230 1491 Q322 1510 327 1633 L340 1732' +
+            ' Q192 1827 -78 1720 Z'}
+            fill={rgb([113, 119, 109], [67, 102, 93], floorMorph)}
+            stroke="#44443F" strokeWidth="15" />
+          <path d="M51 1503 Q96 1391 195 1469"
+            fill="none" stroke="#353E39" strokeWidth="18" strokeLinecap="round" />
+          <path d="M27 1601 Q144 1647 285 1610"
+            fill="none" stroke="#DECBAD" strokeWidth="7" opacity=".51" />
+          <path d="M-31 1700 Q86 1764 250 1735"
+            fill="none" stroke="#2D3532" strokeWidth="13" opacity=".39" />
+          {/* Warm late-afternoon rim lighting belongs to the environment. */}
+          <path d="M0 1375 Q500 1260 1080 1385 L1080 1560 Q566 1457 0 1567 Z"
+            fill="#FFCB8F" opacity={morph * 0.115} />
+
 
           {/* The real room window becomes the bus window by reshaping the same border. */}
           <rect x={windowX - 12} y={windowY - 12} width={windowW + 24}
@@ -194,6 +215,17 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           <path d={'M' + windowX + ' ' + (windowY + windowH * lerp(0.48, 0.81, windowMorph)) +
             ' H' + (windowX + windowW)} stroke="#5D5F59"
             strokeWidth={lerp(14, 23, windowMorph)} opacity={1 - 0.38 * windowMorph} />
+
+          {/* Bus ceiling hand straps, anchored above camera crop.
+              Their delayed entrance is a world clue, not a typography overlay. */}
+          <g opacity={smooth(5.07, 6.20, sec)}>
+            <path d="M180 -30 V452 M340 -40 V395" stroke="#344B48"
+              strokeWidth="21" strokeLinecap="round" />
+            <rect x="136" y="442" width="84" height="85" rx="28"
+              fill="none" stroke="#365952" strokeWidth="19" />
+            <rect x="301" y="385" width="75" height="76" rx="28"
+              fill="none" stroke="#365952" strokeWidth="18" />
+          </g>
 
           {/* Bookshelf straight lines become the vertical building rhythms. */}
           <g opacity={1 - cityMorph * 0.92}>
@@ -280,15 +312,17 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           </g>
 
           {/* Speaker's geometry folds into a little join on the bus railing. */}
-          <g opacity={1 - arrival * 0.83}>
-            <rect x={lerp(649, 665, morph)} y={lerp(1049, 1101, morph)}
-              width={lerp(95, 35, morph)} height={lerp(113, 44, morph)}
-              rx={lerp(18, 9, morph)} stroke="#20251F" strokeWidth="9"
-              fill={rgb([103, 112, 104], [90, 113, 107], morph)} />
-            <circle cx={lerp(696, 682, morph)} cy={lerp(1091, 1118, morph)}
-              r={lerp(24, 8, morph)} stroke="#20251F" strokeWidth="6"
-              fill="#C3C7B9" opacity={1 - morph * 0.68} />
-            <circle cx="691" cy="1144" r="6" fill="#E96B3C" opacity={1-morph} />
+          <g opacity={1 - arrival * 0.83}
+             transform={'translate(' + (-5 * press) + ' ' + (9 * press) +
+               ') rotate(' + (-5 * press) + ' 695 1105)'}>
+            <rect x={lerp(649, 665, edgeMorph)} y={lerp(1049, 1101, edgeMorph)}
+              width={lerp(95, 35, edgeMorph)} height={lerp(113, 44, edgeMorph)}
+              rx={lerp(18, 9, edgeMorph)} stroke="#20251F" strokeWidth="9"
+              fill={rgb([103, 112, 104], [90, 113, 107], edgeMorph)} />
+            <circle cx={lerp(696, 682, edgeMorph)} cy={lerp(1091, 1118, edgeMorph)}
+              r={lerp(24, 8, edgeMorph)} stroke="#20251F" strokeWidth="6"
+              fill="#C3C7B9" opacity={1 - edgeMorph * 0.68} />
+            <circle cx="691" cy="1144" r="6" fill="#E96B3C" opacity={1-edgeMorph} />
           </g>
         </svg>
 
@@ -322,31 +356,62 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
               fill="#344744" opacity=".67" />
           </g>
 
-          {/* The waveform follows table, wall and window and reshapes their outlines. */}
+          
+          {/* Light is carried by the *real object edges*. The line becomes their outline
+              before disappearing into the finished bus, never a floating audio meter. */}
           <path
-            d="M704 1062 C778 1050 791 1140 848 1134 S977 1153 962 1035
-               Q951 914 829 891 Q696 867 681 752 C668 654 787 591 896 625"
-            stroke="#F5A25F" strokeWidth="30" strokeLinecap="round" fill="none"
-            opacity={0.35 * ripple * (1 - 0.60 * arrival)}
-            pathLength={1} strokeDasharray={String(ripple) + ' 1'}
-            filter="url(#e006-glow)" />
+            d={'M690 1090 C669 1133 635 1150 583 1166 L' +
+              lerp(540, 512, edgeMorph) + ' ' + deskY +
+              ' Q830 ' + lerp(1170, 1120, edgeMorph) +
+              ' 1092 ' + lerp(1170, 1117, edgeMorph)}
+            stroke="#FFBB74" strokeWidth={18 - 8 * edgeMorph} fill="none"
+            strokeLinecap="round" strokeLinejoin="round"
+            opacity={smooth(3.14, 3.48, sec) * (1 - smooth(4.28, 4.70, sec))}
+            pathLength={1}
+            strokeDasharray={String(smooth(3.14, 4.11, sec)) + ' 1'}
+          />
           <path
-            d="M704 1062 C778 1050 791 1140 848 1134 S977 1153 962 1035
-               Q951 914 829 891 Q696 867 681 752 C668 654 787 591 896 625"
-            stroke={brand.colors.orange} strokeWidth={lerp(6, 12, morph)}
-            strokeLinecap="round" strokeLinejoin="round" fill="none"
-            opacity={ripple * (1 - 0.69 * arrival)}
-            pathLength={1} strokeDasharray={String(ripple) + ' 1'} />
-          {[0,1,2,3].map((i) => {
-            const p = smooth(3.26+i*.22, 4.45+i*.22, sec);
-            return <circle key={i} cx={780+i*58} cy={1066-i*90}
-              r={lerp(0, 6+i*2, p)*(1-arrival)}
-              fill="#FFCF8B" opacity={p * (1-arrival)} />;
+            d={'M934 ' + lerp(1131, 1021, lampMorph) +
+              ' Q977 ' + lerp(1037, 770, lampMorph) +
+              ' 900 ' + lerp(929, 575, lampMorph) +
+              ' L820 ' + lerp(910, 560, lampMorph)}
+            stroke="#FFB66B" strokeWidth={16 - 7 * lampMorph} fill="none"
+            strokeLinecap="round" strokeLinejoin="round"
+            opacity={smooth(3.72, 4.03, sec) * (1 - smooth(4.83, 5.35, sec))}
+            pathLength={1}
+            strokeDasharray={String(smooth(3.77, 4.72, sec)) + ' 1'}
+          />
+          <path
+            d={'M854 905 Q729 847 ' + (windowX + 8) + ' ' +
+              (windowY + windowH - 18) +
+              ' L' + (windowX + 8) + ' ' + (windowY + 25) +
+              ' Q' + (windowX + 10) + ' ' + (windowY + 6) +
+              ' ' + (windowX + 50) + ' ' + (windowY + 5)}
+            stroke="#FFB66B" strokeWidth={15 - 7 * windowMorph} fill="none"
+            strokeLinecap="round" strokeLinejoin="round"
+            opacity={smooth(4.11, 4.39, sec) * (1 - smooth(5.41, 5.93, sec))}
+            pathLength={1}
+            strokeDasharray={String(smooth(4.21, 5.31, sec)) + ' 1'}
+          />
+          {/* Speaker push sends a shock into the near edge, with a small
+              impact ring that touches the protagonist's actual hand. */}
+          <ellipse cx="697" cy="1091" rx={18 + contact * 49}
+            ry={14 + contact * 26} fill="none"
+            stroke="#FFD5A1" strokeWidth={6 * (1 - contact) + 1}
+            opacity={press * 0.74} />
+          {/* A few sparks travel toward architectural corners, not over the face. */}
+          {[0,1,2].map((i) => {
+            const p = smooth(3.45 + i * 0.25, 4.37 + i * 0.31, sec);
+            return <circle key={i}
+              cx={790 + i * 45 + 8 * Math.sin(sec * 2 + i)}
+              cy={1129 - i * 121 - 30 * p}
+              r={4 + 4 * p}
+              fill="#FFE0AA" opacity={p * (1 - smooth(5.31, 6.10, sec))} />;
           })}
           {/* Passing pole supplies a foreground depth cue, not a flat crossfade. */}
-          <path d={'M' + lerp(1220, 1115, arrival) + ' -80 L' +
-            lerp(1220, 1115, arrival) + ' 2010'}
-            stroke="#263D3B" strokeWidth="50" opacity={arrival * .42} />
+          <path d={'M' + lerp(552, 1115, arrival) + ' -80 L' +
+            lerp(552, 1115, arrival) + ' 2010'}
+            stroke="#263D3B" strokeWidth="34" opacity={arrival * .78} />
         </svg>
       </div>
 
