@@ -1,0 +1,347 @@
+import React from 'react';
+import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {Audio} from '@remotion/media';
+import {brand} from '../../brand/tokens';
+import {Character, type CharacterExpression} from '../002-kulkas/Character';
+
+// E006 is deliberately ONLY a seven-second acting proof, not the full episode.
+// The original Episode 002 Character is imported above and is never copied.
+type ActingProofProps = {readonly showSafeOverlay?: boolean};
+const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const smooth = (from: number, to: number, t: number) => {
+  const k = Math.max(0, Math.min(1, (t - from) / (to - from)));
+  return k * k * (3 - 2 * k);
+};
+const rgb = (a: [number, number, number], b: [number, number, number], t: number) =>
+  'rgb(' + a.map((v, i) => Math.round(lerp(v, b[i], t))).join(',') + ')';
+
+/**
+ * Entirely original four-note motif. Generated deterministically from sine
+ * oscillators as a 16-kHz PCM WAV so the proof has no licensed song dependency.
+ * Keep one cached data URL: a frame must never generate a different soundtrack.
+ */
+let motifCache: string | undefined;
+const originalMotif = () => {
+  if (motifCache) return motifCache;
+  const rate = 16000;
+  const n = rate * 7;
+  const buffer = new ArrayBuffer(44 + 2 * n);
+  const view = new DataView(buffer);
+  const tag = (at: number, word: string) => {
+    for (let i = 0; i < word.length; i++) view.setUint8(at + i, word.charCodeAt(i));
+  };
+  tag(0, 'RIFF'); view.setUint32(4, 36 + n * 2, true);
+  tag(8, 'WAVE'); tag(12, 'fmt ');
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true); view.setUint32(24, rate, true);
+  view.setUint32(28, rate * 2, true); view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true); tag(36, 'data'); view.setUint32(40, n * 2, true);
+  const notes: Array<[number, number]> = [
+    [0.70, 392.00], [0.96, 466.16], [1.23, 349.23], [1.52, 523.25],
+    [3.85, 392.00], [4.22, 466.16], [4.62, 349.23], [5.08, 523.25],
+  ];
+  for (let i = 0; i < n; i++) {
+    const t = i / rate;
+    let v = 0;
+    // Distant room hum that ducks when the familiar motif is recognized.
+    v += 0.015 * Math.sin(2 * Math.PI * 98 * t) * (1 - 0.65 * smooth(1, 2, t));
+    for (const [start, frequency] of notes) {
+      const age = t - start;
+      if (age < 0 || age > 1.8) continue;
+      const attack = Math.min(1, age * 26);
+      const release = Math.exp(-age * (start < 2 ? 4.4 : 1.9));
+      const body = Math.sin(2 * Math.PI * frequency * age) +
+        0.20 * Math.sin(2 * Math.PI * frequency * 2 * age);
+      v += 0.105 * attack * release * body * (start < 2 ? 0.48 : 0.93);
+    }
+    // Soft original transition sweep, not an external sample.
+    const transition = smooth(3.20, 4.05, t) * (1 - smooth(5.4, 6.6, t));
+    v += 0.023 * transition * Math.sin(2 * Math.PI * (160 + 85 * t) * t);
+    view.setInt16(44 + i * 2, Math.round(Math.max(-1, Math.min(1, v)) * 32767), true);
+  }
+  const bytes = new Uint8Array(buffer);
+  const chunks: string[] = [];
+  for (let i = 0; i < bytes.length; i += 4096) {
+    chunks.push(String.fromCharCode(...bytes.subarray(i, i + 4096)));
+  }
+  motifCache = 'data:audio/wav;base64,' + btoa(chunks.join(''));
+  return motifCache;
+};
+
+export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = false}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const sec = frame / fps;
+  const hear = smooth(0.66, 1.0, sec);
+  const recognize = smooth(1.02, 2.03, sec);
+  const reach = smooth(2.08, 3.16, sec);
+  const morph = smooth(3.12, 6.40, sec);
+  const arrival = smooth(5.60, 6.85, sec);
+  const ripple = smooth(2.80, 5.30, sec);
+  const pulse = Math.sin(sec * 12) * Math.exp(-Math.max(0, sec - 3.22) * 1.5);
+  const heroX = lerp(240, 202, morph);
+  const heroY = lerp(720, 806, morph);
+  const heroWidth = lerp(460, 486, morph);
+  const expression: CharacterExpression =
+    arrival > 0.78 ? 'happy' :
+    recognize > 0.68 ? 'thinking' :
+    recognize > 0.16 ? 'curious' : 'neutral';
+  const blink = Math.max(
+    0, 1 - Math.abs(sec - 1.62) / 0.095,
+    1 - Math.abs(sec - 5.92) / 0.11,
+  );
+  const scarfSwing = 1.1 * Math.sin(sec * 3.5) * (1 - hear) +
+    11 * Math.sin((sec - 3.25) * 7) * Math.max(0, morph * (1 - 0.75 * arrival));
+  const windowX = lerp(646, 552, morph);
+  const windowY = lerp(420, 371, morph);
+  const windowW = lerp(485, 614, morph);
+  const windowH = lerp(550, 691, morph);
+  const pan = lerp(0, -51, morph) - 12 * recognize * (1 - morph);
+  const zoom = 1 + 0.038 * recognize + 0.040 * morph;
+  const deskY = lerp(1170, 1128, morph);
+  const accentLight = 0.13 + 0.39 * morph;
+  const handAngle = lerp(-29, 76, reach) - 13 * morph;
+  const bookSettle = smooth(0.05, 0.79, sec);
+
+  return (
+    <AbsoluteFill style={{background: brand.colors.paper, overflow: 'hidden'}}>
+      <div style={{
+        position: 'absolute', width: 1080, height: 1920, inset: 0,
+        transform: 'translate(' + pan + 'px, 0px) scale(' + zoom + ')',
+        transformOrigin: '51% 53%',
+      }}>
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+          style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
+          <defs>
+            <linearGradient id="e006-wall" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stopColor={rgb([230, 222, 211], [239, 185, 133], morph)} />
+              <stop offset="1" stopColor={rgb([184, 176, 166], [155, 107, 92], morph)} />
+            </linearGradient>
+            <linearGradient id="e006-floor" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor={rgb([178, 159, 139], [116, 100, 94], morph)} />
+              <stop offset="1" stopColor={rgb([104, 101, 96], [56, 62, 68], morph)} />
+            </linearGradient>
+            <linearGradient id="e006-sky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor={rgb([169, 189, 188], [227, 126, 105], morph)} />
+              <stop offset="0.62" stopColor={rgb([216, 199, 173], [250, 181, 104], morph)} />
+              <stop offset="1" stopColor={rgb([203, 185, 156], [214, 120, 91], morph)} />
+            </linearGradient>
+            <radialGradient id="e006-sun" cx="73%" cy="44%" r="58%">
+              <stop offset="0" stopColor="#FFD090" stopOpacity={accentLight} />
+              <stop offset="1" stopColor="#FFD090" stopOpacity="0" />
+            </radialGradient>
+            <clipPath id="e006-window-clip">
+              <rect x={windowX + 16} y={windowY + 16} width={windowW - 32} height={windowH - 32} rx={lerp(12, 48, morph)} />
+            </clipPath>
+          </defs>
+
+          {/* One continuous world: no external scenery frame or cream padding. */}
+          <rect width="1080" height="1920" fill="url(#e006-wall)" />
+          <path d="M0 1374 L1080 1374 L1080 1920 L0 1920 Z" fill="url(#e006-floor)" />
+          <path d="M0 1371 H1080" stroke="#493C37" strokeWidth="22" opacity={1 - morph * 0.53} />
+          <path d="M0 1650 L1080 1550 M0 1880 L1080 1755" stroke="#F2DDC2" strokeWidth="6" opacity={0.11 + 0.13 * morph} />
+          <rect x="0" y="0" width="1080" height="1920" fill="url(#e006-sun)" />
+
+          {/* The real room window becomes the bus window by reshaping the same border. */}
+          <rect x={windowX - 12} y={windowY - 12} width={windowW + 24}
+            height={windowH + 24} rx={lerp(24, 75, morph)}
+            fill={rgb([115, 109, 101], [59, 73, 74], morph)} />
+          <rect x={windowX} y={windowY} width={windowW} height={windowH}
+            rx={lerp(16, 65, morph)} fill="url(#e006-sky)" />
+          <g clipPath="url(#e006-window-clip)">
+            <circle cx={lerp(952, 885, morph)} cy={lerp(576, 600, morph)} r={lerp(65, 114, morph)}
+              fill="#FDE0A6" opacity={0.48 + 0.3 * morph} />
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <g key={i}>
+                <rect x={lerp(641, 480, morph) + i * 79 - morph * ((frame % 100) / 100) * 47}
+                  y={lerp(765, 690, morph) - (i % 3) * (38 + 20 * morph)}
+                  width={69 + (i % 2) * 16}
+                  height="470" fill={i % 2 ? '#7C7473' : '#85766E'}
+                  opacity={0.36 + 0.28 * morph} />
+                {[0,1,2].map((j) => <rect key={j}
+                  x={lerp(667, 506, morph) + i * 79 + (j % 2) * 21 - morph * ((frame % 100) / 100) * 47}
+                  y={798 + j * 37 - (i % 3) * 44}
+                  width="9" height="12" rx="3" fill="#FBE2AA" opacity={morph * 0.75} />)}
+              </g>
+            ))}
+            <path d={'M' + windowX + ' ' + (windowY + windowH - 30) +
+              ' H' + (windowX + windowW)} stroke="#665B57" strokeWidth="20" opacity={morph} />
+          </g>
+          <path d={'M' + (windowX + windowW * lerp(0.52, 0.34, morph)) + ' ' + windowY +
+            ' V' + (windowY + windowH)}
+            stroke={rgb([109, 104, 94], [62, 73, 73], morph)}
+            strokeWidth={lerp(13, 26, morph)} />
+          <path d={'M' + windowX + ' ' + (windowY + windowH * lerp(0.48, 0.81, morph)) +
+            ' H' + (windowX + windowW)} stroke="#5D5F59"
+            strokeWidth={lerp(14, 23, morph)} opacity={1 - 0.38 * morph} />
+
+          {/* Bookshelf straight lines become the vertical building rhythms. */}
+          <g opacity={1 - morph * 0.92}>
+            <rect x="42" y="315" width="153" height="850" rx="10" fill="#73695E" />
+            <rect x="55" y="329" width="128" height="835" rx="7" fill="#D7C3AC" />
+            {[0,1,2].map((i) => <path key={i} d={'M55 ' + (515 + 220*i) + ' H183'}
+              stroke="#514B43" strokeWidth="19" />)}
+            {[0,1,2,3,4,5].map((i) => <rect key={i} x={65 + (i%3)*36}
+              y={400 + Math.floor(i/3)*440} width={25+(i%2)*7}
+              height={90+(i%3)*28} rx="4"
+              fill={i%3===0?'#E96B3C':i%3===1?'#42765B':'#F6F0E5'}
+              stroke="#47443E" strokeWidth="5" />)}
+          </g>
+          <g opacity={morph * 0.74}>
+            {[0,1,2,3].map((i) => <path key={i}
+              d={'M' + (-80+i*94) + ' 350 V' + (800+i%2*130)}
+              stroke="#665A51" strokeWidth="30" />)}
+          </g>
+
+          {/* Desk lamp's arm becomes the streetlight viewed from the bus. */}
+          <path d={'M' + lerp(930, 898, morph) + ' ' + lerp(1147, 1051, morph) +
+            ' L' + lerp(923, 901, morph) + ' ' + lerp(955, 574, morph) +
+            ' L' + lerp(855, 813, morph) + ' ' + lerp(922, 563, morph)}
+            fill="none" stroke={rgb([74, 71, 67], [62, 75, 75], morph)}
+            strokeWidth={lerp(22, 17, morph)} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={'M' + lerp(828, 788, morph) + ' ' + lerp(916, 557, morph) +
+            ' Q' + lerp(851, 798, morph) + ' ' + lerp(865, 530, morph) +
+            ' ' + lerp(887, 853, morph) + ' ' + lerp(914, 564, morph) + ' Z'}
+            fill="#F1A96D" stroke="#4D4A43" strokeWidth="9" />
+          <circle cx={lerp(854, 811, morph)} cy={lerp(930, 588, morph)}
+            r={lerp(27, 52, morph)} fill="#FFD9A0" opacity={0.20 + morph*0.38} />
+
+          {/* Chair turns into a bus passenger seat in exactly the same place. */}
+          <rect x={lerp(175, 131, morph)} y={lerp(1015, 960, morph)}
+            width={lerp(320, 370, morph)} height={lerp(390, 490, morph)}
+            rx={lerp(38, 74, morph)}
+            fill={rgb([139, 123, 109], [74, 118, 110], morph)}
+            stroke="#4D4A43" strokeWidth="16" />
+          <path d={'M' + lerp(212, 154, morph) + ' ' + lerp(1066, 1015, morph) +
+            ' Q' + lerp(336, 320, morph) + ' ' + lerp(980, 969, morph) +
+            ' ' + lerp(461, 473, morph) + ' ' + lerp(1060, 1015, morph)}
+            stroke="#F6F0E5" strokeWidth="9" opacity={morph * .52} fill="none" />
+
+          {/* The friend is revealed spatially inside the memory, not in a card. */}
+          <g opacity={arrival}>
+            <ellipse cx="748" cy="1295" rx="166" ry="195" fill="#4C7F5A" stroke="#20251F" strokeWidth="15" />
+            <circle cx="750" cy="932" r="105" fill="#F6F0E5" stroke="#20251F" strokeWidth="13" />
+            <path d="M691 895 Q750 824 817 891" stroke="#20251F" strokeWidth="17" fill="none" strokeLinecap="round" />
+            <path d="M713 940 L713 953 M776 940 L776 953" stroke="#20251F" strokeWidth="13" strokeLinecap="round" />
+            <path d="M721 997 Q751 1026 786 992" stroke="#20251F" strokeWidth="9" fill="none" strokeLinecap="round" />
+            <path d="M671 1175 Q614 1151 566 1164" stroke="#20251F" strokeWidth="22" fill="none" strokeLinecap="round" />
+            <circle cx="565" cy="1164" r="23" fill="#F6F0E5" stroke="#20251F" strokeWidth="10" />
+            <path d="M729 1041 C764 1093 728 1124 682 1119" stroke="#292A28" strokeWidth="6" fill="none" />
+            <circle cx="727" cy="1028" r="20" fill="#343734" stroke="#20251F" strokeWidth="6" />
+          </g>
+
+          {/* Table edge remains a single drawn geometry as it turns into bus railing. */}
+          <path d={'M' + lerp(544, 518, morph) + ' ' + deskY +
+            ' L1110 ' + lerp(1169, 1115, morph) + ' L1110 1920 L' +
+            lerp(572, 560, morph) + ' 1920 Z'}
+            fill={rgb([114, 94, 78], [81, 93, 91], morph)}
+            opacity={0.91 - 0.63 * morph} />
+          <path d={'M' + lerp(540, 512, morph) + ' ' + deskY +
+            ' Q' + lerp(845, 845, morph) + ' ' + lerp(1171, 1100, morph) +
+            ' 1120 ' + lerp(1170, 1116, morph)}
+            fill="none" stroke={rgb([59, 55, 50], [58, 71, 73], morph)}
+            strokeWidth={lerp(29, 21, morph)} strokeLinecap="round" />
+          <path d={'M' + lerp(757, 737, morph) + ' ' + deskY +
+            ' L' + lerp(757, 737, morph) + ' ' + lerp(1430, 1570, morph)}
+            stroke="#425252" strokeWidth="17" opacity={morph} />
+          <path d={'M' + lerp(990, 970, morph) + ' ' + deskY +
+            ' L' + lerp(990, 970, morph) + ' 1710'}
+            stroke="#425252" strokeWidth="17" opacity={morph} />
+
+          {/* The paperback is being put down before music interrupts. */}
+          <g transform={'translate(' + lerp(420, 518, bookSettle) + ' ' +
+            lerp(1096, 1130, bookSettle) + ') rotate(' + lerp(-13, 0, bookSettle) + ')'}
+            opacity={1 - 0.93 * morph}>
+            <rect width="93" height="48" rx="6" fill="#42765B" stroke="#20251F" strokeWidth="7" />
+            <path d="M16 12 H71 M16 25 H54" stroke="#F6F0E5" strokeWidth="5" strokeLinecap="round" />
+          </g>
+
+          {/* Speaker's geometry folds into a little join on the bus railing. */}
+          <g opacity={1 - arrival * 0.83}>
+            <rect x={lerp(649, 665, morph)} y={lerp(1049, 1101, morph)}
+              width={lerp(95, 35, morph)} height={lerp(113, 44, morph)}
+              rx={lerp(18, 9, morph)} stroke="#20251F" strokeWidth="9"
+              fill={rgb([103, 112, 104], [90, 113, 107], morph)} />
+            <circle cx={lerp(696, 682, morph)} cy={lerp(1091, 1118, morph)}
+              r={lerp(24, 8, morph)} stroke="#20251F" strokeWidth="6"
+              fill="#C3C7B9" opacity={1 - morph * 0.68} />
+            <circle cx="691" cy="1144" r="6" fill="#E96B3C" opacity={1-morph} />
+          </g>
+        </svg>
+
+        {/* Never fork or redraw the approved 002 protagonist. */}
+        <Character
+          width={heroWidth} left={heroX} top={heroY}
+          expression={expression}
+          gazeX={lerp(0, 10, recognize) * (1 - arrival * 0.5)}
+          blink={blink}
+          headTilt={lerp(-1, 8, recognize) - 5 * arrival}
+          lean={lerp(-4, 1, recognize) - 8 * morph}
+          leftArm={lerp(26, 8, bookSettle) + 4 * morph}
+          rightArm={handAngle}
+          scarfSwing={scarfSwing}
+          bob={-2.2 * (1 - hear) * Math.sin(sec * 6) + 7 * morph}
+        />
+
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+          style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
+          <defs>
+            <filter id="e006-glow"><feGaussianBlur stdDeviation="16" /></filter>
+          </defs>
+          {/* A foreground seat edge hides the legs as the character settles. */}
+          <g opacity={morph}>
+            <path d={'M100 ' + lerp(1460, 1342, morph) +
+              ' Q270 ' + lerp(1400, 1320, morph) + ' 575 1401 L565 1920 H0 V1515 Z'}
+              fill="#38685E" stroke="#20251F" strokeWidth="17" />
+            <path d="M-50 1620 Q250 1533 552 1592"
+              stroke="#B3C6A2" strokeWidth="16" fill="none" opacity=".45" />
+            <rect x="1012" y="0" width="24" height="1920" rx="12"
+              fill="#344744" opacity=".67" />
+          </g>
+
+          {/* The waveform follows table, wall and window and reshapes their outlines. */}
+          <path
+            d="M704 1062 C778 1050 791 1140 848 1134 S977 1153 962 1035
+               Q951 914 829 891 Q696 867 681 752 C668 654 787 591 896 625"
+            stroke="#F5A25F" strokeWidth="30" strokeLinecap="round" fill="none"
+            opacity={0.35 * ripple * (1 - 0.60 * arrival)}
+            pathLength={1} strokeDasharray={String(ripple) + ' 1'}
+            filter="url(#e006-glow)" />
+          <path
+            d="M704 1062 C778 1050 791 1140 848 1134 S977 1153 962 1035
+               Q951 914 829 891 Q696 867 681 752 C668 654 787 591 896 625"
+            stroke={brand.colors.orange} strokeWidth={lerp(6, 12, morph)}
+            strokeLinecap="round" strokeLinejoin="round" fill="none"
+            opacity={ripple * (1 - 0.69 * arrival)}
+            pathLength={1} strokeDasharray={String(ripple) + ' 1'} />
+          {[0,1,2,3].map((i) => {
+            const p = smooth(3.26+i*.22, 4.45+i*.22, sec);
+            return <circle key={i} cx={780+i*58} cy={1066-i*90}
+              r={lerp(0, 6+i*2, p)*(1-arrival)}
+              fill="#FFCF8B" opacity={p * (1-arrival)} />;
+          })}
+          {/* Passing pole supplies a foreground depth cue, not a flat crossfade. */}
+          <path d={'M' + lerp(1220, 1115, arrival) + ' -80 L' +
+            lerp(1220, 1115, arrival) + ' 2010'}
+            stroke="#263D3B" strokeWidth="50" opacity={arrival * .42} />
+        </svg>
+      </div>
+
+      {/* A QA-only overlay; the main proof never contains these boxes. */}
+      {showSafeOverlay ? (
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+          style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
+          <rect x="0" y="0" width="1080" height="300" fill="#D14D4D" fillOpacity=".18" />
+          <rect x="900" y="0" width="180" height="1920" fill="#D14D4D" fillOpacity=".17" />
+          <rect x="0" y="1620" width="1080" height="300" fill="#D14D4D" fillOpacity=".2" />
+          <rect x="72" y="330" width="800" height="1170" fill="none"
+            stroke="#47816D" strokeWidth="8" strokeDasharray="20 15" />
+          <rect x="72" y="1340" width="800" height="160" fill="none"
+            stroke="#E96B3C" strokeWidth="8" strokeDasharray="16 12" />
+        </svg>
+      ) : null}
+      <Audio name="Original four-note music cue (1.0x)" src={originalMotif()} volume={0.82} />
+    </AbsoluteFill>
+  );
+};
