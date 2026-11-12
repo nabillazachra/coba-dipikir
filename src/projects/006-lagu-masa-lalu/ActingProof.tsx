@@ -124,7 +124,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
     <AbsoluteFill style={{background: brand.colors.paper, overflow: 'hidden'}}>
       <div style={{
         position: 'absolute', width: 1080, height: 1920, inset: 0,
-        transform: 'translate(' + pan + 'px, ' + lerp(0, -20, morph) + 'px) scale(' + zoom + ')',
+        transform: 'translate(' + pan + 'px, ' + lerp(0, -27, morph) + 'px) scale(' + zoom + ')',
         transformOrigin: '51% 53%',
       }}>
         <svg width="1080" height="1920" viewBox="0 0 1080 1920"
@@ -141,7 +141,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             <linearGradient id="e006-sky" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0" stopColor={rgb([169, 189, 188], [227, 126, 105], cityMorph)} />
               <stop offset="0.62" stopColor={rgb([216, 199, 173], [250, 181, 104], cityMorph)} />
-              <stop offset="1" stopColor={rgb([203, 185, 156], [214, 120, 91], floorMorph)} />
+              <stop offset="1" stopColor={rgb([203, 185, 156], [214, 120, 91], cityMorph)} />
             </linearGradient>
             <radialGradient id="e006-sun" cx="73%" cy="44%" r="58%">
               <stop offset="0" stopColor="#FFD090" stopOpacity={accentLight} />
@@ -157,8 +157,8 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
 
           {/* One continuous world: no external scenery frame or cream padding. */}
           <rect width="1080" height="1920" fill="url(#e006-wall)" />
-          <path d="M0 1374 L1080 1374 L1080 1920 L0 1920 Z" fill="url(#e006-floor)" />
-          <path d="M0 1371 H1080" stroke="#493C37" strokeWidth="22" opacity={1 - morph * 0.53} />
+          <path d="M0 1342 L1080 1342 L1080 1920 L0 1920 Z" fill="url(#e006-floor)" />
+          <path d="M0 1339 H1080" stroke="#493C37" strokeWidth="22" opacity={1 - morph * 0.53} />
           <path d="M0 1650 L1080 1550 M0 1880 L1080 1755" stroke="#F2DDC2" strokeWidth="6" opacity={0.11 + 0.13 * morph} />
           <rect x="0" y="0" width="1080" height="1920" fill="url(#e006-sun)" />
           {/* A foreground travel bag and its cast shadow keep the lower
@@ -179,7 +179,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           <path d="M-31 1700 Q86 1764 250 1735"
             fill="none" stroke="#2D3532" strokeWidth="13" opacity=".39" />
           {/* Warm late-afternoon rim lighting belongs to the environment. */}
-          <path d="M0 1375 Q500 1260 1080 1385 L1080 1560 Q566 1457 0 1567 Z"
+          <path d="M0 1345 Q500 1260 1080 1360 L1080 1555 Q566 1457 0 1567 Z"
             fill="#FFCB8F" opacity={morph * 0.115} />
 
 
@@ -205,6 +205,12 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
                   width="9" height="12" rx="3" fill="#FBE2AA" opacity={windowMorph * 0.75} />)}
               </g>
             ))}
+            {/* Slow glass-reflection parallax, distinct from moving buildings. */}
+            <path d={'M' + (windowX + windowW * 0.70) + ' ' + windowY +
+              ' L' + (windowX + windowW * 0.86) + ' ' + windowY +
+              ' L' + (windowX + windowW * 0.50 - 18 * cityMorph) + ' ' + (windowY + windowH) +
+              ' L' + (windowX + windowW * 0.42 - 18 * cityMorph) + ' ' + (windowY + windowH) + ' Z'}
+              fill="#FFF0CC" opacity={cityMorph * 0.14} />
             <path d={'M' + windowX + ' ' + (windowY + windowH - 30) +
               ' H' + (windowX + windowW)} stroke="#665B57" strokeWidth="20" opacity={windowMorph} />
           </g>
@@ -219,12 +225,18 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           {/* Bus ceiling hand straps, anchored above camera crop.
               Their delayed entrance is a world clue, not a typography overlay. */}
           <g opacity={smooth(5.07, 6.20, sec)}>
-            <path d="M180 -30 V452 M340 -40 V395" stroke="#344B48"
-              strokeWidth="21" strokeLinecap="round" />
-            <rect x="136" y="442" width="84" height="85" rx="28"
-              fill="none" stroke="#365952" strokeWidth="19" />
-            <rect x="301" y="385" width="75" height="76" rx="28"
-              fill="none" stroke="#365952" strokeWidth="18" />
+            <g transform={'rotate(' + (3.2 * Math.sin(sec * 2.15) * cityMorph) + ' 180 -30)'}>
+              <path d="M180 -30 V452" stroke="#344B48"
+                strokeWidth="21" strokeLinecap="round" />
+              <rect x="136" y="442" width="84" height="85" rx="28"
+                fill="none" stroke="#365952" strokeWidth="19" />
+            </g>
+            <g transform={'rotate(' + (2.8 * Math.sin(sec * 2.15 + 1.1) * cityMorph) + ' 340 -40)'}>
+              <path d="M340 -40 V395" stroke="#344B48"
+                strokeWidth="20" strokeLinecap="round" />
+              <rect x="301" y="385" width="75" height="76" rx="28"
+                fill="none" stroke="#365952" strokeWidth="18" />
+            </g>
           </g>
 
           {/* Bookshelf straight lines become the vertical building rhythms. */}
@@ -246,7 +258,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           </g>
 
           {/* Desk lamp's arm becomes the streetlight viewed from the bus. */}
-          <path d={'M' + lerp(930, 898, lampMorph) + ' ' + lerp(1147, 1051, lampMorph) +
+          <path d={'M' + lerp(930, 898, lampMorph) + ' ' + lerp(1147, 865, lampMorph) +
             ' L' + lerp(923, 901, lampMorph) + ' ' + lerp(955, 574, lampMorph) +
             ' L' + lerp(855, 813, lampMorph) + ' ' + lerp(922, 563, lampMorph)}
             fill="none" stroke={rgb([74, 71, 67], [62, 75, 75], lampMorph)}
@@ -269,6 +281,15 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             ' ' + lerp(461, 473, seatMorph) + ' ' + lerp(1060, 1015, seatMorph)}
             stroke="#F6F0E5" strokeWidth="9" opacity={seatMorph * .52} fill="none" />
 
+          {/* A second passenger seat makes the vehicle a spatial world. */}
+          <g opacity={smooth(5.02, 6.35, sec)}>
+            <path d="M1050 1407 Q992 1337 965 1414 L926 1920 L1220 1920 V1460 Z"
+              fill="#315F58" stroke="#1F3936" strokeWidth="18" />
+            <path d="M987 1460 Q1098 1425 1182 1469"
+              fill="none" stroke="#A8C6B4" strokeWidth="12" opacity=".55" />
+            <path d="M1006 1650 L966 1920" fill="none"
+              stroke="#1A3330" strokeWidth="19" opacity=".48" />
+          </g>
           {/* The friend is revealed spatially inside the memory, not in a card. */}
           <g clipPath="url(#e006-friend-wipe)">
             <ellipse cx="748" cy="1295" rx="166" ry="195" fill="#4C7F5A" stroke="#20251F" strokeWidth="15" />
@@ -332,6 +353,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           expression={expression}
           gazeX={lerp(0, 15, eyeShift) * (1 - arrival * 0.45)}
           blink={blink}
+          light={morph * 0.35}
           headTilt={lerp(-2, 11, headTurn) - 6 * arrival}
           lean={lerp(-3, 3, bodyTurn) - 7 * morph}
           leftArm={lerp(26, 8, bookSettle) + 4 * morph}
