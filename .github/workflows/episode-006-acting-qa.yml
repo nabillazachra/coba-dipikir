@@ -73,6 +73,28 @@ jobs:
           print(base64.b64encode(img.getvalue()).decode())
           print('E006_SHEET_END')
           PY
+      - name: Create low-resolution looping WebP acting preview (not MP4)
+        run: |
+          for frame in $(seq 0 5 205); do
+            npx remotion still E006-Lagu-Acting-Proof /tmp/e006/anim-$frame.png --frame=$frame --log=error
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image
+          frames=[]
+          for frame in range(0,210,5):
+            im=Image.open('/tmp/e006/anim-{}.png'.format(frame)).convert('RGB')
+            im.thumbnail((270,480))
+            frames.append(im)
+          frames[0].save('/tmp/e006/review-motion-7s.webp', format='WEBP',
+              save_all=True, append_images=frames[1:], duration=167, loop=0,
+              quality=57, method=4)
+          b=open('/tmp/e006/review-motion-7s.webp','rb').read()
+          print('E006_MOTION_BEGIN')
+          print(base64.b64encode(b).decode('ascii'))
+          print('E006_MOTION_END')
+          print('Review motion bytes:',len(b))
+          PY
       - name: Upload frame QA artifact (no video export)
         uses: actions/upload-artifact@v4
         with:
