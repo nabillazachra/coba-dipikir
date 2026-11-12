@@ -118,6 +118,12 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
   const accentLight = 0.11 + 0.49 * morph;
   const handAngle = lerp(-29, 98, reach) - 27 * seatMorph;
   const bookSettle = smooth(0.05, 0.71, sec);
+  const leftArmAngle = lerp(26, 8, bookSettle) + 4 * morph;
+  // Book travels with the approved character's hand endpoint, rather than
+  // drifting independently; the hand stops immediately when the cue plays.
+  const bookLeft = heroX + heroWidth / 300 * (100 + Math.sin(leftArmAngle * Math.PI / 180) * 78) - 53;
+  const bookTop = heroY + heroWidth / 300 * (235 + Math.cos(leftArmAngle * Math.PI / 180) * 78) - 38 +
+    6 * smooth(0.61, 0.77, sec);
   const exteriorMove = cityMorph * Math.max(0, sec - 4.37) * 36;
 
   return (
@@ -332,8 +338,8 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             stroke="#425252" strokeWidth="17" opacity={edgeMorph} />
 
           {/* The paperback is being put down before music interrupts. */}
-          <g transform={'translate(' + lerp(420, 518, bookSettle) + ' ' +
-            lerp(1096, 1130, bookSettle) + ') rotate(' + lerp(-13, 0, bookSettle) + ')'}
+          <g transform={'translate(' + bookLeft + ' ' + bookTop +
+            ') rotate(' + lerp(-17, 0, bookSettle) + ' 46 24)'}
             opacity={1 - 0.93 * edgeMorph}>
             <rect width="93" height="48" rx="6" fill="#42765B" stroke="#20251F" strokeWidth="7" />
             <path d="M16 12 H71 M16 25 H54" stroke="#F6F0E5" strokeWidth="5" strokeLinecap="round" />
@@ -363,7 +369,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           light={morph * 0.35}
           headTilt={lerp(-2, 11, headTurn) - 6 * arrival}
           lean={lerp(-3, 3, bodyTurn) - 7 * morph}
-          leftArm={lerp(26, 8, bookSettle) + 4 * morph}
+          leftArm={leftArmAngle}
           rightArm={handAngle}
           scarfSwing={scarfSwing}
           bob={-2.2 * (1 - hear) * Math.sin(sec * 6) + 7 * morph}
