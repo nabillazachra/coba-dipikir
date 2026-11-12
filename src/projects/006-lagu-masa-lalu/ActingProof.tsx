@@ -116,7 +116,7 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
   const zoom = 1 + 0.081 * headTurn + 0.021 * morph;
   const deskY = lerp(1170, 1128, edgeMorph);
   const accentLight = 0.11 + 0.49 * morph;
-  const handAngle = lerp(-29, 70, reach) - 17 * seatMorph;
+  const handAngle = lerp(-29, 98, reach) - 27 * seatMorph;
   const bookSettle = smooth(0.05, 0.71, sec);
   const exteriorMove = cityMorph * Math.max(0, sec - 4.37) * 36;
 
@@ -292,14 +292,21 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           </g>
           {/* The friend is revealed spatially inside the memory, not in a card. */}
           <g clipPath="url(#e006-friend-wipe)">
-            <ellipse cx="748" cy="1295" rx="166" ry="195" fill="#4C7F5A" stroke="#20251F" strokeWidth="15" />
+            <path d="M647 1219 Q649 1144 711 1127 Q759 1108 809 1139 Q853 1173 850 1244 L850 1450 Q748 1494 635 1446 Z"
+              fill="#42765B" stroke="#20251F" strokeWidth="14" strokeLinejoin="round" />
+            <path d="M683 1439 L658 1540 M796 1441 L815 1540" stroke="#20251F"
+              strokeWidth="15" strokeLinecap="round" />
+            <path d="M813 1217 Q872 1236 884 1310" stroke="#20251F"
+              strokeWidth="14" strokeLinecap="round" fill="none" />
+            <circle cx="884" cy="1310" r="18" fill="#F6F0E5"
+              stroke="#20251F" strokeWidth="9" />
             <circle cx="750" cy="932" r="105" fill="#F6F0E5" stroke="#20251F" strokeWidth="13" />
             <path d="M691 895 Q750 824 817 891" stroke="#20251F" strokeWidth="17" fill="none" strokeLinecap="round" />
             <path d="M713 940 L713 953 M776 940 L776 953" stroke="#20251F" strokeWidth="13" strokeLinecap="round" />
             <path d="M721 997 Q751 1026 786 992" stroke="#20251F" strokeWidth="9" fill="none" strokeLinecap="round" />
-            <path d="M671 1175 Q614 1151 566 1164" stroke="#20251F" strokeWidth="22" fill="none" strokeLinecap="round" />
+            <path d="M649 1195 Q618 1149 566 1164" stroke="#20251F" strokeWidth="22" fill="none" strokeLinecap="round" />
             <circle cx="565" cy="1164" r="23" fill="#F6F0E5" stroke="#20251F" strokeWidth="10" />
-            <path d="M729 1041 C764 1093 728 1124 682 1119" stroke="#292A28" strokeWidth="6" fill="none" />
+            <path d="M729 1041 C760 1087 744 1116 705 1139" stroke="#292A28" strokeWidth="6" fill="none" />
             <circle cx="727" cy="1028" r="20" fill="#343734" stroke="#20251F" strokeWidth="6" />
             <path d="M727 1042 C683 1081 652 1048 629 1023 C603 992 560 1007 551 1044"
               fill="none" stroke="#292D2A" strokeWidth="6" strokeLinecap="round" />
