@@ -167,6 +167,11 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           <path d="M0 1339 H1080" stroke="#493C37" strokeWidth="22" opacity={1 - morph * 0.53} />
           <path d="M0 1650 L1080 1550 M0 1880 L1080 1755" stroke="#F2DDC2" strokeWidth="6" opacity={0.11 + 0.13 * morph} />
           <rect x="0" y="0" width="1080" height="1920" fill="url(#e006-sun)" />
+          {/* Contact shadow fixes the main actor to the room's floor,
+              without masking the later vehicle seat. */}
+          <ellipse cx={heroX + heroWidth / 2} cy={heroY + heroWidth * 1.305}
+            rx={110 * (1 - 0.2 * morph)} ry={26 * (1 - .25 * morph)}
+            fill="#29312B" opacity={0.24 * (1 - seatMorph)} />
           {/* A foreground travel bag and its cast shadow keep the lower
               world inhabited without placing information under platform UI. */}
           <ellipse cx={185 + 40 * floorMorph} cy="1749"
@@ -297,7 +302,8 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
               stroke="#1A3330" strokeWidth="19" opacity=".48" />
           </g>
           {/* The friend is revealed spatially inside the memory, not in a card. */}
-          <g clipPath="url(#e006-friend-wipe)">
+          <g clipPath="url(#e006-friend-wipe)"
+             transform={'rotate(' + (3.5 * Math.sin(Math.max(0, sec - 5.65) * 4.2) * arrival) + ' 746 1292)' }>
             <path d="M647 1219 Q649 1144 711 1127 Q759 1108 809 1139 Q853 1173 850 1244 L850 1450 Q748 1494 635 1446 Z"
               fill="#42765B" stroke="#20251F" strokeWidth="14" strokeLinejoin="round" />
             <path d="M683 1439 L658 1540 M796 1441 L815 1540" stroke="#20251F"
@@ -319,6 +325,16 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
             <circle cx="549" cy="1045" r="11" fill="#E96B3C" stroke="#20251F" strokeWidth="5" />
           </g>
 
+          {/* Memory passenger settles behind the matching bus seat cushion;
+              the legs disappear naturally instead of looking like a floating mascot. */}
+          <g opacity={smooth(6.01, 6.78, sec)}>
+            <path d="M611 1445 Q740 1400 901 1448 L955 1920 H600 Z"
+              fill="#3C7065" stroke="#203D38" strokeWidth="16" />
+            <path d="M633 1472 Q751 1436 892 1477"
+              fill="none" stroke="#A3BEAA" strokeWidth="11" opacity=".51" />
+            <path d="M656 1740 Q762 1775 908 1738"
+              fill="none" stroke="#1D463E" strokeWidth="12" opacity=".4" />
+          </g>
           {/* Table edge remains a single drawn geometry as it turns into bus railing. */}
           <path d={'M' + lerp(544, 518, edgeMorph) + ' ' + deskY +
             ' L1110 ' + lerp(1169, 1115, edgeMorph) + ' L1110 1920 L' +
@@ -349,6 +365,9 @@ export const LaguActingProof: React.FC<ActingProofProps> = ({showSafeOverlay = f
           <g opacity={1 - arrival * 0.83}
              transform={'translate(' + (-5 * press) + ' ' + (9 * press) +
                ') rotate(' + (-5 * press) + ' 695 1105)'}>
+            <ellipse cx="696" cy="1094" rx={72 + 38 * press}
+              ry={91 + 36 * press} fill="#FFBE7C"
+              opacity={(0.04 + press * 0.16) * (1 - morph)} />
             <rect x={lerp(649, 665, edgeMorph)} y={lerp(1049, 1101, edgeMorph)}
               width={lerp(95, 35, edgeMorph)} height={lerp(113, 44, edgeMorph)}
               rx={lerp(18, 9, edgeMorph)} stroke="#20251F" strokeWidth="9"
