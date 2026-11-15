@@ -374,39 +374,112 @@ export const Bittersweet:React.FC=()=>{
 
 export const EndingCringe:React.FC=()=>{
   const frame=useCurrentFrame();const {fps}=useVideoConfig();const s=frame/fps;
-  const stage=smooth(1.6,2.42,s)*(1-smooth(4.4,5.3,s));
-  const stop=smooth(4.13,4.61,s);
-  const quake=stage*15*Math.sin(s*16);
+  const stage=smooth(1.55,2.37,s)*(1-smooth(4.44,5.31,s));
+  const presentShift=smooth(1.55,2.35,s)*(1-smooth(4.48,5.32,s));
+  const flinch=smooth(2.65,3.28,s)*(1-smooth(4.32,4.73,s));
+  const stop=smooth(4.14,4.60,s);
+  const after=smooth(5.34,6.10,s);
+  const dance=Math.sin((s-2.17)*12.1);
+  const quake=stage*8*Math.sin(s*17);
   return <AbsoluteFill style={{overflow:'hidden',background:P.wall}}>
-    <div style={{position:'absolute',inset:0,transform:'translate('+quake+'px,0px)'}}>
+    {/* The real room remains under the stage-memory transformation. */}
+    <div style={{position:'absolute',inset:0,
+      transform:'translate('+quake+'px,0px)'}}>
       <RoomSet sec={s}/>
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
         style={{position:'absolute',inset:0}}>
+        {/* A full-bleed school-event stage, NEVER a framed mini-memory. */}
         <rect width="1080" height="1920" fill="#4F5570" opacity={stage}/>
-        <path d="M0 180 L370 480 L650 480 L1080 140 V1920 H0 Z"
-          fill="#7F7491" opacity={stage*.65}/>
-        <ellipse cx="570" cy="1380" rx="460" ry="170" fill="#F4CC86" opacity={stage*.72}/>
-        {[0,1,2].map(i=><circle key={i}
-          cx={176+i*340} cy={319} r={90+10*Math.sin(s*8+i)}
-          fill="#FAD3A2" opacity={stage*.42}/>)}
-        {/* A visible diegetic stop button, not a floating annotation. */}
-        <rect x="615" y="1120" width="112" height="155" rx="22"
-          fill="#373D38" stroke="#20251F" strokeWidth="11" opacity={1-stage*.4}/>
-        <circle cx="671" cy="1182" r={29-5*stop}
-          fill="#E96B3C" stroke="#F6F0E5" strokeWidth="7"/>
-        <path d="M662 1170 H680 V1191 H662 Z" fill="#20251F"/>
+        <path d="M0 0 H1080 V1920 H0 Z" fill="#A18BA0" opacity={stage*.24}/>
+        <path d="M0 0 H255 Q210 415 300 735 Q166 1200 -45 1530 Z"
+          fill="#6E506E" opacity={stage*.94}/>
+        <path d="M1080 0 H855 Q892 430 810 760 Q956 1230 1170 1490 Z"
+          fill="#6E506E" opacity={stage*.94}/>
+        <path d="M30 0 L370 470 L545 470 L1070 0 L1080 1920 H0 Z"
+          fill="#807594" opacity={stage*.45}/>
+        <path d="M0 1520 Q540 1400 1080 1520 V1920 H0 Z"
+          fill="#5B526B" opacity={stage}/>
+        <ellipse cx="710" cy="1351" rx="355" ry="146"
+          fill="#FFD994" opacity={stage*.76}/>
+        {[0,1,2].map(i=><g key={i} opacity={stage}>
+          <path d={'M'+(178+i*340)+' 0 L'+(330+i*240)+' 1050'}
+            stroke="#F0D6A0" strokeWidth="19" opacity=".12"/>
+          <circle cx={176+i*340} cy={310}
+            r={97+12*Math.sin(s*7.4+i)}
+            fill="#FAD3A2" opacity=".53"/>
+          <path d={'M'+(176+i*340)+' 0 L'+(176+i*340)+' 184'}
+            stroke="#3D4255" strokeWidth="16"/>
+        </g>)}
+        {/* Loose paper bunting is a physical school-stage detail. */}
+        <path d="M20 217 Q544 337 1060 220"
+          stroke="#DBB7AE" strokeWidth="9" fill="none" opacity={stage}/>
+        {[0,1,2,3,4,5,6].map(i=><path key={i}
+          d={'M'+(65+i*146)+' '+(241+(i%2)*14)+
+          ' l48 17 l-12 50 Z'}
+          fill={i%2===0?'#E96B3C':'#F4D6A5'} opacity={stage*.8}/>)}
+        {/* Awkward on-stage microphone: physically anchored to the floor. */}
+        <g opacity={stage}>
+          <path d="M891 1020 L872 1476 M815 1476 H930"
+            stroke="#2F343F" strokeWidth="16" strokeLinecap="round"/>
+          <path d="M891 1020 L943 984" stroke="#2F343F" strokeWidth="12"
+            strokeLinecap="round"/>
+          <ellipse cx="951" cy="978" rx="35" ry="17"
+            transform="rotate(-14 951 978)" fill="#343B45"
+            stroke="#1C2833" strokeWidth="7"/>
+        </g>
+        {/* Phone is a real prop on the original desk during the abrupt stop. */}
+        <g transform={'translate(493 1114) rotate(' +(-4*stop)+' 52 78)'}>
+          <rect width="106" height="169" rx="20"
+            fill="#373D38" stroke="#20251F" strokeWidth="11"
+            opacity={1-stage*.31}/>
+          <rect x="16" y="18" width="74" height="131" rx="7"
+            fill="#9CAF9E" opacity={1-stage*.20}/>
+          <circle cx="53" cy="79" r={31-8*stop}
+            fill="#E96B3C" stroke="#F6F0E5" strokeWidth="7"/>
+          <path d="M43 68 H63 V91 H43 Z" fill="#20251F"/>
+        </g>
+        {/* The motif still visibly originates from the same room speaker. */}
+        <path d="M617 1065 Q631 1035 644 1065 T670 1065 T697 1065"
+          fill="none" stroke="#E96B3C" strokeWidth="8"
+          opacity={after*.42} strokeLinecap="round"/>
       </svg>
-      <CharacterAt x={stage>.4?173:177} y={795} w={508}
-        expression={stage>.2?'surprised':stop>.6?'deadpan':'happy'}
-        lean={stage*(19*Math.sin(s*12))}
-        leftArm={stage?(-65+55*Math.sin(s*11)):15}
-        rightArm={stage?(55+65*Math.cos(s*12)):-18-82*stop}
-        scarf={stage*20*Math.sin(s*13)}/>
+
+      {/* Present self is caught watching the embarrassing version of themself. */}
+      <CharacterAt
+        x={lerp(178,76,presentShift)}
+        y={lerp(796,866,presentShift)}
+        w={lerp(505,424,presentShift)}
+        expression={stage>.23?'surprised':stop>.55?'deadpan':'happy'}
+        tilt={-3+11*stage-7*stop}
+        lean={-4*flinch}
+        leftArm={15-62*flinch}
+        rightArm={-18+112*stop}
+        scarf={stage*8*Math.sin(s*9)+3*Math.sin(s*2)*(1-stage)}
+      />
+
+      {/* EXACT master protagonist again: this is their younger, over-confident
+          dancing self, not an invented second character or a looping icon. */}
+      <div style={{position:'absolute',inset:0,opacity:stage,
+        transform:'translateY('+(118*(1-stage))+'px)',pointerEvents:'none'}}>
+        <CharacterAt
+          x={522+31*dance}
+          y={777+24*Math.sin((s-2.17)*24.2)}
+          w={412}
+          expression="excited"
+          tilt={15*dance}
+          lean={-18*dance}
+          leftArm={-61+61*Math.sin((s-2.17)*12.1)}
+          rightArm={38+68*Math.cos((s-2.17)*12.1)}
+          scarf={24*Math.sin((s-2.17)*14)}
+          light={.33}
+        />
+      </div>
     </div>
-    {s>5.30&&<div style={{position:'absolute',left:120,top:430,width:770,
+    {/* Brand is still a continuation of the physical room, not a blank slide. */}
+    {s>5.50&&<div style={{position:'absolute',left:116,top:410,width:770,
       color:'#20251F',fontFamily:brand.fontFamily,textAlign:'left'}}>
-      <div style={{fontWeight:1000,fontSize:82,letterSpacing:-2}}>COBA DIPIKIR.</div>
-      <div style={{fontSize:34,fontWeight:650,marginTop:12}}>Yang biasa, belum tentu sederhana.</div>
+      <div style={{fontWeight:1000,fontSize:78,letterSpacing:-1.7}}>COBA DIPIKIR.</div>
+      <div style={{fontSize:33,fontWeight:650,marginTop:11}}>Yang biasa, belum tentu sederhana.</div>
     </div>}
   </AbsoluteFill>;
 };
