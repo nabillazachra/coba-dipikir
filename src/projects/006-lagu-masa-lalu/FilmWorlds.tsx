@@ -385,7 +385,7 @@ export const EndingCringe:React.FC=()=>{
       </svg>
       <CharacterAt x={stage>.4?173:177} y={795} w={508}
         expression={stage>.2?'surprised':stop>.6?'deadpan':'happy'}
-        lean={stage*(19*Math.sin(s*12))} headTilt={undefined as never}
+        lean={stage*(19*Math.sin(s*12))}
         leftArm={stage?(-65+55*Math.sin(s*11)):15}
         rightArm={stage?(55+65*Math.cos(s*12)):-18-82*stop}
         scarf={stage*20*Math.sin(s*13)}/>
