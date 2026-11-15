@@ -19,15 +19,19 @@ for i,cue in enumerate(cues):
     assert path.exists(),path
     duration=round(float(MP3(path).info.length),3)
     if duration <=0.1: raise ValueError(f"Bad audio: {cue['id']}")
-    at=cue['at']
-    if i+1<len(cues):
-        next_at=cues[i+1]['at']
-        if at+duration+0.10>next_at:
-            raise RuntimeError(f"OVERLAP {cue['id']}: actual {duration:.3f}s "
-                               f"at {at:.2f}s exceeds next at {next_at:.2f}s; "
-                               "change editorial timing or script, never rate")
-    elif at+duration > 66.8:
-        raise RuntimeError(f"Final VO {cue['id']} exceeds 67 seconds")
+    planned=cue['at']
+    # TTS often includes natural pauses (e.g. a full-stop after "Eh.").
+    # Move the next start forward only when necessary; never change playbackRate.
+    prev_end=0 if not starts else max(starts[k]+durations[k] for k in starts)
+    at=max(planned,round(prev_end+0.12,3))
+    drift=round(at-planned,3)
+    if drift>0.05:
+        print(f"ADJUST {cue['id']}: planned {planned:.2f} -> {at:.2f}; "
+              f"natural audio {duration:.3f}s; delay {drift:.3f}s")
+    if at+duration > 66.8:
+        raise RuntimeError(f"Final VO {cue['id']} ends at {at+duration:.3f}s "
+                           "after 67s composition. Extend editorial scene, "
+                           "trim wording, or adjust pauses; never time-stretch.")
     durations[cue['id']]=duration
     starts[cue['id']]=at
 out={'ready':True,'durations':durations,'starts':starts}
