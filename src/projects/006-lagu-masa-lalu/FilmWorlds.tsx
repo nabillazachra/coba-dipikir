@@ -223,11 +223,18 @@ export const CueRoom:React.FC=()=>{
   const glow=smooth(4.3,6.2,s);
   const objects=smooth(7.1,11.5,s);
   const pulse=Math.sin((s-4)*9);
-  const inspect=smooth(7.6,10.5,s)*(1-smooth(12.1,15.2,s));
+  // Motivate every camera beat from the real drawer and ticket:
+  // room-wide -> drawer inspection -> ticket close-up -> back to the actor.
+  const drawerFocus=smooth(2.2,4.2,s)*(1-smooth(6.6,8.0,s));
+  const ticketFocus=smooth(7.2,9.3,s)*(1-smooth(11.8,14.6,s));
+  const drift=smooth(2.4,10.0,s);
+  const zoom=1.01+.17*drawerFocus+.56*ticketFocus+.035*drift;
+  const trackX=-35*drift-75*drawerFocus-345*ticketFocus;
+  const trackY=-95*drawerFocus-320*ticketFocus;
   return <AbsoluteFill style={{overflow:'hidden',background:P.wall}}>
     <div style={{position:'absolute',width:1080,height:1920,
-      transform:'translate('+(-22*smooth(3,11,s)-150*inspect)+'px,'+(-92*inspect)+'px) scale('+(1.01+.055*smooth(2,11,s)+.31*inspect)+')',
-      transformOrigin:'50% 60%'}}>
+      transform:'translate('+trackX+'px,'+trackY+'px) scale('+zoom+')',
+      transformOrigin:'48% 65%'}}>
       <RoomSet sec={s}/>
       {/* The old desk drawer opens on actual rails. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
@@ -278,8 +285,30 @@ export const WrongSong:React.FC=()=>{
   const frame=useCurrentFrame();const {fps}=useVideoConfig();const s=frame/fps;
   const press=smooth(0.3,1.4,s);const wait=smooth(1.7,3.6,s);
   const peep=smooth(4.3,5.7,s);
+  // Near-miss portal is a physical reaction of the room's speaker/window.
+  const almost=smooth(.38,.92,s)*(1-smooth(1.35,2.02,s));
+  const fizzle=smooth(1.52,1.95,s)*(1-smooth(2.55,3.16,s));
+  const deadpanPush=smooth(2.72,4.0,s)*(1-smooth(5.1,6.4,s));
   return <AbsoluteFill style={{background:P.wall,overflow:'hidden'}}>
+    <div style={{position:'absolute',width:1080,height:1920,
+      transform:'translate('+(-55*deadpanPush)+'px,'+(-88*deadpanPush)+'px) scale('+(1+.14*deadpanPush)+')',
+      transformOrigin:'50% 57%'}}>
     <RoomSet sec={s}/>
+    <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+      style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+      <rect x="616" y="399" width="520" height="656" rx="20"
+        fill="#E96B3C" opacity={almost*.17}/>
+      <ellipse cx="666" cy="1068" rx={25+110*almost} ry={15+75*almost}
+        fill="#FFE0AD" opacity={almost*.5}/>
+      <path d={'M664 1060 Q'+(712+88*almost)+' '+(990-140*almost)+' '+(770+155*almost)+' '+(843-140*almost)}
+        fill="none" stroke="#E96B3C" strokeWidth={7+6*almost}
+        strokeLinecap="round" opacity={almost*.83}/>
+      {[0,1,2,3].map(i=><g key={i} opacity={fizzle*(1-i*.15)}
+        transform={'translate('+(660+Math.cos(i*1.6)*38*fizzle)+' '+(1055+Math.sin(i*1.6)*44*fizzle)+')'}>
+        <circle r={7+4*i} fill="#E96B3C"/>
+        <path d="M-14 0 H14 M0 -14 V14" stroke="#FCE8C7" strokeWidth="3"/>
+      </g>)}
+    </svg>
     <CharacterAt x={178} y={793} w={507}
       expression={s<2.1?'excited':s<5.2?'sleepy':'deadpan'}
       tilt={-4+4*press+6*peep}
@@ -301,6 +330,7 @@ export const WrongSong:React.FC=()=>{
     </svg>
     {wait>.60&&<ellipse style={{position:'absolute',left:360,top:1000,
       width:45,height:12,background:'#3E423D',opacity:.09*wait,borderRadius:'50%'}}/>}
+    </div>
   </AbsoluteFill>;
 };
 
