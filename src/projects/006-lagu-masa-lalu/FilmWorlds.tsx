@@ -108,8 +108,8 @@ const RoomSet:React.FC<{sec:number;lamp?:boolean;evening?:boolean}>=({sec,evenin
     style={{position:'absolute',inset:0}}>
     <defs>
       <linearGradient id="e6-room-wall" x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0" stopColor="#E7DED3"/>
-        <stop offset="1" stopColor={evening?'#BEB0A0':'#D1CCBD'}/>
+        <stop offset="0" stopColor="#E6D9C9"/>
+        <stop offset="1" stopColor={evening?'#AEA18F':'#D1CCBD'}/>
       </linearGradient>
       <linearGradient id="e6-room-window" x1="0" x2="0" y1="0" y2="1">
         <stop offset="0" stopColor="#9CB9B9"/>
@@ -117,8 +117,11 @@ const RoomSet:React.FC<{sec:number;lamp?:boolean;evening?:boolean}>=({sec,evenin
       </linearGradient>
     </defs>
     <rect width="1080" height="1920" fill="url(#e6-room-wall)"/>
-    <rect x="0" y="1324" width="1080" height="596" fill="#8C8276"/>
+    <rect x="0" y="1324" width="1080" height="596" fill="#756D61"/>
     <path d="M0 1328 H1080" stroke="#554B44" strokeWidth="20"/>
+    {/* The existing window casts a subtle physical light-plane into the room. */}
+    <path d="M630 1030 L1096 1030 L1250 1940 L480 1940 Z"
+      fill="#FFCB8C" opacity=".08"/>
     <path d="M0 1630 L1080 1550 M0 1870 L1080 1800" stroke="#E8DACC" strokeWidth="5" opacity=".18"/>
     <rect x="603" y="382" width="551" height="690" rx="27" fill="#5F6058" stroke="#45423D" strokeWidth="16"/>
     <rect x="619" y="399" width="519" height="656" rx="16" fill="url(#e6-room-window)"/>
@@ -155,13 +158,13 @@ export const BusMemory:React.FC<WorldProps>=()=>{
   // A brief window-focused truck lets the music-linked city become the subject,
   // before returning to the shared-earbud interaction.
   const cityLook=smooth(5.7,7.9,s)*(1-smooth(9.1,11.25,s));
-  const lens=lerp(1,1.055,smooth(1,9,s))+.08*cityLook;
+  const lens=lerp(1.015,1.10,smooth(1,4,s))+.07*cityLook;
   return <AbsoluteFill style={{overflow:'hidden',background:'#A98170'}}>
     <div style={{position:'absolute',width:1080,height:1920,
       transform:'translate('+(-15*smooth(1,9,s)-94*cityLook)+'px,0px) scale('+lens+')',
       transformOrigin:'52% 55%'}}>
       <BusWindow sec={s}/>
-      <Friend x={614} y={866} scale={.86} smile={smile}
+      <Friend x={614} y={846} scale={1.02} smile={smile}
         sway={3*Math.sin(s*1.55)+4*smooth(1.8,3,s)*(1-smooth(3.5,4.5,s))}/>
       {/* One shared cable ties both characters to the music as a physical prop. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
@@ -170,7 +173,7 @@ export const BusMemory:React.FC<WorldProps>=()=>{
           fill="none" stroke="#29312D" strokeWidth="6"/>
         <circle cx="487" cy="1023" r="15" fill="#E96B3C" stroke="#20251F" strokeWidth="5"/>
       </svg>
-      <CharacterAt x={140} y={798} w={510}
+      <CharacterAt x={110} y={780} w={570}
         expression={smile?'happy':'curious'}
         tilt={-4+7*smooth(2,4,s)} lean={-3+Math.sin(s*2)*2}
         leftArm={20-35*smooth(2,3.8,s)}
@@ -191,7 +194,7 @@ export const ReturnQuestion:React.FC=()=>{
     <div style={{position:'absolute',width:1080,height:1920,
       transform:'translate('+(-22*smooth(1,5,s))+'px,0px) scale(1.03)'}}>
       <RoomSet sec={s}/>
-      <CharacterAt x={194} y={782} w={498}
+      <CharacterAt x={142} y={734} w={586}
         expression={s<1.4?'surprised':s<3.4?'curious':'thinking'}
         tilt={8-14*smooth(1.5,4,s)}
         leftArm={8} rightArm={22-55*smooth(1.8,3,s)}
@@ -248,12 +251,12 @@ export const CueRoom:React.FC=()=>{
           opacity={objects*.34*(1-smooth(13.2,15.3,s))}/>
         <circle cx="1015" cy="554" r={75+58*objects}
           fill="#FFE0A0" opacity={objects*.21}/>
-        <rect x={645-45*drawer} y={1224+111*drawer} width={335+60*drawer}
+        <rect x={645-45*drawer} y={1224+70*drawer} width={335+60*drawer}
           height={151+62*drawer} rx="12" stroke="#51473C" strokeWidth="13"
           fill="#B49A7D"/>
-        <rect x={666-43*drawer} y={1244+116*drawer} width={293+48*drawer}
+        <rect x={666-43*drawer} y={1244+70*drawer} width={293+48*drawer}
           height={88} rx="8" fill="#7D6554" stroke="#5E5144" strokeWidth="10"/>
-        <rect x={798-42*drawer} y={1286+113*drawer} width="38" height="10" rx="5"
+        <rect x={798-42*drawer} y={1286+70*drawer} width="38" height="10" rx="5"
           fill="#DDC5A7" stroke="#56473E" strokeWidth="6"/>
         {/* A bus ticket is already inside the drawer, not a floating polaroid. */}
         <g transform={'translate('+(730-50*drawer)+' '+(1290-240*objects)+') rotate('+(8-25*objects)+' 68 45)'}>
@@ -269,13 +272,15 @@ export const CueRoom:React.FC=()=>{
           fill="none" stroke="#E96B3C" strokeWidth={8+2*pulse}
           strokeLinecap="round" opacity={glow*(1-smooth(11.8,14.7,s))}
           pathLength={1} strokeDasharray={String(smooth(4.1,7.7,s))+' 1'}/>
-        <ellipse cx={795-40*drawer} cy={1380+111*drawer} rx="170" ry="50"
+        <ellipse cx={795-40*drawer} cy={1380+70*drawer} rx="170" ry="50"
           fill="#FFD8A0" opacity={glow*.11}/>
       </svg>
-      <CharacterAt x={169} y={797} w={495}
+      {/* Real contact: finger touches drawer handle at 2.2s, and then
+          follows the handle as it moves left and toward the viewer. */}
+      <CharacterAt x={278} y={850} w={560}
         expression={s<3?'curious':s<10?'thinking':'happy'}
         tilt={-6+11*look} leftArm={15-38*drawer}
-        rightArm={-21+107*drawer}
+        rightArm={-21+111*smooth(.5,2.2,s)-34*drawer}
         scarf={5*Math.sin(s*2.7)*glow}/>
     </div>
   </AbsoluteFill>;
@@ -309,7 +314,7 @@ export const WrongSong:React.FC=()=>{
         <path d="M-14 0 H14 M0 -14 V14" stroke="#FCE8C7" strokeWidth="3"/>
       </g>)}
     </svg>
-    <CharacterAt x={178} y={793} w={507}
+    <CharacterAt x={145} y={755} w={570}
       expression={s<2.1?'excited':s<5.2?'sleepy':'deadpan'}
       tilt={-4+4*press+6*peep}
       leftArm={-24+34*wait}
@@ -370,7 +375,7 @@ export const SuddenMemory:React.FC=()=>{
       {/* Study lamp throws an energetic light hit as the room changes. */}
       <circle cx="865" cy="445" r={120+400*rush} fill="#FFDA97" opacity={.12*rush}/>
     </svg>
-    <CharacterAt x={124} y={794} w={515}
+    <CharacterAt x={80} y={750} w={590}
       expression={smile>.55?'surprised':'deadpan'}
       tilt={-6+17*smile}
       lean={-3-8*rush}
@@ -387,11 +392,11 @@ export const Bittersweet:React.FC=()=>{
       transform:'translate('+(-18*smooth(2,6,s))+'px,0px) scale('+(1+.04*smooth(1,7,s))+')',
       transformOrigin:'50% 60%'}}>
       <BusWindow sec={s+4} large/>
-      <Friend x={663} y={815} scale={.82} sway={3*Math.sin(s*1.2)} />
-      <CharacterAt x={426} y={789} w={390} expression="happy"
+      <Friend x={670} y={806} scale={.92} sway={3*Math.sin(s*1.2)} />
+      <CharacterAt x={395} y={786} w={430} expression="happy"
         scarf={4*Math.sin(s*2)} leftArm={12}
         rightArm={-28+20*Math.sin(s*1.4)} light={.15}/>
-      <CharacterAt x={92} y={907} w={367} expression={s<3?'curious':'happy'}
+      <CharacterAt x={64} y={842} w={500} expression={s<3?'curious':'happy'}
         tilt={-8} lean={-4} rightArm={-28+52*reach}
         scarf={6*Math.sin(s*2.4)} light={.25}/>
       <BusSeats sec={s+7}/>
@@ -476,9 +481,9 @@ export const EndingCringe:React.FC=()=>{
 
       {/* Present self is caught watching the embarrassing version of themself. */}
       <CharacterAt
-        x={lerp(178,76,presentShift)}
-        y={lerp(796,866,presentShift)}
-        w={lerp(505,424,presentShift)}
+        x={lerp(145,65,presentShift)}
+        y={lerp(770,820,presentShift)}
+        w={lerp(555,465,presentShift)}
         expression={stage>.23?'surprised':stop>.55?'deadpan':'happy'}
         tilt={-3+11*stage-7*stop}
         lean={-4*flinch}
@@ -494,7 +499,7 @@ export const EndingCringe:React.FC=()=>{
         <CharacterAt
           x={522+31*dance}
           y={777+24*Math.sin((s-2.17)*24.2)}
-          w={412}
+          w={448}
           expression="excited"
           tilt={15*dance}
           lean={-18*dance}
