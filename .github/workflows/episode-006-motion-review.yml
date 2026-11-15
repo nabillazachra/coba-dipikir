@@ -1,0 +1,110 @@
+name: E006 Moving Creative Review (WebP only, no MP4)
+
+on:
+  push:
+    branches:
+      - feature/e006-full-episode-review
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e006-motion-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  motion-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install renderer and image library
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --quiet Pillow==11.3.0
+      - name: Generate review-only cinematic motion frames
+        run: |
+          mkdir -p /tmp/e006-moving
+          # Sampling 5 fps is for visual flow review, NOT final 30-fps approval.
+          for frame in $(seq 540 6 666); do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-moving/return-$frame.png --frame=$frame --log=error
+          done
+          for frame in $(seq 960 6 1170); do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-moving/cue-$frame.png --frame=$frame --log=error
+          done
+          for frame in $(seq 1830 6 2064); do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-moving/ending-$frame.png --frame=$frame --log=error
+          done
+      - name: Compare Episode 002 and Episode 006 at phone scale
+        run: |
+          for frame in 0 450 900 1500; do
+            npx remotion still E002-Kenapa-Buka-Kulkas /tmp/e006-moving/e002-$frame.png --frame=$frame --log=error
+          done
+          for frame in 0 450 900 1950; do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-moving/e006-$frame.png --frame=$frame --log=error
+          done
+      - name: Construct animated WebP proxies and benchmark
+        run: |
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageChops
+          d=Path('/tmp/e006-moving')
+          clips={'return':list(range(540,667,6)),
+                 'cue':list(range(960,1171,6)),
+                 'ending':list(range(1830,2065,6))}
+          for name,indices in clips.items():
+              frames=[]
+              for num in indices:
+                  with Image.open(d/f'{name}-{num}.png') as source:
+                      frame=source.convert('RGB')
+                      frame.thumbnail((240,427),Image.Resampling.LANCZOS)
+                      frames.append(frame.copy())
+              assert all(im.size==(240,427) for im in frames)
+              diffs=[]
+              for first,second in zip(frames,frames[1:]):
+                  diffs.append(ImageChops.difference(first,second).getbbox() is not None)
+              assert sum(diffs)>len(diffs)*.60, (name,sum(diffs),len(diffs))
+              dest=d/f'e006-{name}-motion.webp'
+              frames[0].save(dest,save_all=True,append_images=frames[1:],
+                             duration=200,loop=0,quality=54,method=4)
+              print('E006_PREVIEW_BEGIN_'+name.upper())
+              print(base64.b64encode(dest.read_bytes()).decode('ascii'))
+              print('E006_PREVIEW_END_'+name.upper())
+              print('E006',name,'frames',len(frames),'bytes',dest.stat().st_size)
+          w,h=230,409
+          sheet=Image.new('RGB',(4*(w+14)+14,2*(h+32)+18),'#f6f0e5')
+          draw=ImageDraw.Draw(sheet)
+          for row,prefix,times in [
+              (0,'e002',[0,450,900,1500]),
+              (1,'e006',[0,450,900,1950]),
+          ]:
+              for i,frame in enumerate(times):
+                  with Image.open(d/f'{prefix}-{frame}.png') as im:
+                      im=im.convert('RGB')
+                      im.thumbnail((w,h))
+                      x=14+i*(w+14)
+                      y=28+row*(h+32)
+                      sheet.paste(im,(x,y))
+                      draw.text((x,y-18),f'{prefix.upper()} {frame/30:.1f}s',fill='#20251f')
+          comp=d/'e006-versus-e002-phone.webp'
+          sheet.save(comp,'WEBP',quality=74,method=4)
+          print('E006_COMPARE_BEGIN')
+          print(base64.b64encode(comp.read_bytes()).decode('ascii'))
+          print('E006_COMPARE_END')
+          print('E006 comparison file size',comp.stat().st_size)
+          PY
+      - name: Upload only review images (no video export)
+        uses: actions/upload-artifact@v4
+        with:
+          name: e006-motion-and-e002-benchmark-webp
+          path: |
+            /tmp/e006-moving/*.webp
+          retention-days: 7

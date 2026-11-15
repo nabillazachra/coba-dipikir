@@ -1,4 +1,6 @@
 import type {ComponentType} from 'react';
+import {LaguMasaLaluEpisode} from './projects/006-lagu-masa-lalu/Film';
+import {scenePlan as episode6Scenes, DURATION_SECONDS as episode6Duration} from './projects/006-lagu-masa-lalu/timeline';
 import {GratisOngkirEpisode} from './projects/001-gratis-ongkir/Composition';
 import {projectConfig as gratisOngkirConfig} from './projects/001-gratis-ongkir/project.config';
 import {KulkasEpisode} from './projects/002-kulkas/Composition';
@@ -157,6 +159,29 @@ export const projectRegistry: ProjectRegistryEntry[] = [
       label: scene.label,
       startFrame: Math.round(scene.start*returnTripConfig.fps),
       durationInFrames: Math.round((scene.end-scene.start)*returnTripConfig.fps)
+    })),
+  },
+  // Unpublished E006: visible for editorial preview in branch CMS only.
+  {
+    id: '006-lagu-masa-lalu',
+    episode: 6,
+    title: 'Kenapa lagu tertentu langsung bawa kita ke masa lalu?',
+    coverText: 'Lagu lama, memori yang tiba-tiba hidup lagi',
+    category: 'Psikologi sehari-hari',
+    status: 'review',
+    compositionId: 'E006-Lagu-Masa-Lalu-Review',
+    width: 1080,
+    height: 1920,
+    fps: 30,
+    durationInFrames: episode6Duration * 30,
+    folder: 'src/projects/006-lagu-masa-lalu',
+    component: LaguMasaLaluEpisode,
+    scenes: episode6Scenes.map(scene => ({
+      id: scene.id,
+      title: scene.id.charAt(0).toUpperCase()+scene.id.slice(1),
+      label: scene.description,
+      startFrame: Math.round(scene.start*30),
+      durationInFrames: Math.round((scene.end-scene.start)*30),
     })),
   },
 ];

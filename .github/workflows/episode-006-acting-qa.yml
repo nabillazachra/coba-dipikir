@@ -1,0 +1,103 @@
+name: Episode 006 Acting Proof QA (No MP4)
+on:
+  push:
+    branches:
+      - feature/e006-lagu-acting-proof
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --quiet Pillow==11.3.0
+      - name: TypeScript verification
+        run: npx tsc --noEmit
+      - name: Confirm proof-only constraints
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('src/projects/006-lagu-masa-lalu/ActingProof.tsx').read_text()
+          app=Path('src/Root.tsx').read_text()
+          assert "from '../002-kulkas/Character'" in root
+          assert 'width="1080" height="1920"' in root
+          assert 'showSafeOverlay' in root
+          assert 'E006-Lagu-Acting-Proof' in app and 'durationInFrames={210}' in app
+          assert 'E006-Lagu-Acting-Proof-QA' in app
+          assert 'playbackRate' not in root
+          assert not any((Path('src/projects/006-lagu-masa-lalu')/s).exists() for s in ('Composition.tsx','EpisodeAudio.tsx','FullEpisode.tsx'))
+          print('E006 proof-only contracts: PASSED')
+          PY
+      - name: Generate storyboard stills and safe-area stills (never MP4)
+        run: |
+          mkdir -p /tmp/e006
+          for frame in 0 15 30 45 60 75 90 105 120 135 150 165 180 195 209; do
+            npx remotion still E006-Lagu-Acting-Proof /tmp/e006/scene-$frame.png --frame=$frame --log=error
+          done
+          for frame in 0 60 120 165 209; do
+            npx remotion still E006-Lagu-Acting-Proof-QA /tmp/e006/safe-$frame.png --frame=$frame --log=error
+          done
+      - name: Build compact contact sheet for creative review
+        run: |
+          python - <<'PY'
+          import base64,io
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          frames=[0,15,30,45,60,75,90,105,120,135,150,165,180,195,209]
+          w,h=216,384
+          sheet=Image.new('RGB',(5*(w+12)+12,3*(h+26)+10),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,frame in enumerate(frames):
+            im=Image.open('/tmp/e006/scene-{}.png'.format(frame)).convert('RGB')
+            im.thumbnail((w,h))
+            x=12+(i%5)*(w+12)
+            y=24+(i//5)*(h+26)
+            sheet.paste(im,(x,y))
+            d.text((x,y-16),'{:.2f}s'.format(frame/30),fill='#20251f')
+          sheet.save('/tmp/e006/contact-sheet.webp','WEBP',quality=76)
+          img=io.BytesIO(); sheet.save(img,'WEBP',quality=42)
+          print('E006_SHEET_BEGIN')
+          print(base64.b64encode(img.getvalue()).decode())
+          print('E006_SHEET_END')
+          PY
+      - name: Create low-resolution looping WebP acting preview (not MP4)
+        run: |
+          for frame in $(seq 0 5 205); do
+            npx remotion still E006-Lagu-Acting-Proof /tmp/e006/anim-$frame.png --frame=$frame --log=error
+          done
+          python - <<'PY'
+          import base64,io
+          from PIL import Image
+          frames=[]
+          for frame in range(0,210,5):
+            im=Image.open('/tmp/e006/anim-{}.png'.format(frame)).convert('RGB')
+            im.thumbnail((270,480))
+            frames.append(im)
+          frames[0].save('/tmp/e006/review-motion-7s.webp', format='WEBP',
+              save_all=True, append_images=frames[1:], duration=167, loop=0,
+              quality=57, method=4)
+          b=open('/tmp/e006/review-motion-7s.webp','rb').read()
+          print('E006_MOTION_BEGIN')
+          print(base64.b64encode(b).decode('ascii'))
+          print('E006_MOTION_END')
+          print('Review motion bytes:',len(b))
+          PY
+      - name: Upload frame QA artifact (no video export)
+        uses: actions/upload-artifact@v4
+        with:
+          name: e006-seven-second-proof-frames
+          path: /tmp/e006
+          retention-days: 7
