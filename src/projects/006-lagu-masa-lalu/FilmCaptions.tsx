@@ -18,11 +18,11 @@ export const Episode6Captions:React.FC=()=>{
   if (!cue) return null;
   return <AbsoluteFill style={{pointerEvents:'none',zIndex:50}}>
     <div style={{
-      position:'absolute',top:1340,left:92,width:782,minHeight:118,
+      position:'absolute',top:1340,left:92,width:782,minHeight:130,
       display:'flex',alignItems:'center',justifyContent:'center',
       color:brand.colors.white,textAlign:'center',
-      fontFamily:brand.fontFamily,fontWeight:950,fontSize:45,
-      lineHeight:1.14,letterSpacing:-0.6,
+      fontFamily:brand.fontFamily,fontWeight:950,fontSize:50,
+      lineHeight:1.12,letterSpacing:-0.6,
       WebkitTextStroke:'1.75px rgba(23,27,25,.89)',
       textShadow:'0 4px 10px rgba(12,18,19,.90),0 2px 2px #18201B',
     }}>
