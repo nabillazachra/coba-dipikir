@@ -1,0 +1,106 @@
+name: Episode 006 Full Draft - natural VO and cinematic visual QA
+on:
+  push:
+    branches:
+      - feature/e006-full-episode-review
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: e006-full-draft-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install tooling
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --quiet edge-tts mutagen==1.47.0 Pillow==11.3.0
+      - name: Generate original soundtrack (never commercial music)
+        run: node scripts/generate-episode6-score.mjs
+      - name: Generate natural Indonesian voiceover at 1.00x
+        run: node scripts/generate-voiceover.mjs --project=006-lagu-masa-lalu
+      - name: Verify actual voice timings and generate exact captions manifest
+        run: python scripts/measure-episode6-voice.py
+      - name: Verify full episode and unchanged master character
+        run: |
+          npx tsc --noEmit
+          python - <<'PY'
+          from pathlib import Path
+          import json,re
+          root=Path('src/projects/006-lagu-masa-lalu')
+          code=(root/'Film.tsx').read_text()
+          worlds=(root/'FilmWorlds.tsx').read_text()
+          audio=(root/'FilmAudio.tsx').read_text()
+          cap=(root/'FilmCaptions.tsx').read_text()
+          durations=json.loads((root/'voice-durations.generated.json').read_text())
+          assert durations['ready']
+          assert len(durations['durations'])==24
+          assert "from '../002-kulkas/Character'" in worlds
+          assert 'LaguActingProof' in code
+          assert 'durationInFrames={7*fps}' in code
+          assert 'DURATION_SECONDS-61' in code
+          assert 'playbackRate' not in audio and 'playbackRate' not in code
+          assert 'cue.text' in cap and 'voiceoverConfig.scenes' in cap
+          assert 'top:1340' in cap
+          assert 'width:1080' in code or 'AbsoluteFill' in code
+          assert 'LaguMasaLaluEpisode' in Path('src/Root.tsx').read_text()
+          assert not Path('renders/006-lagu-masa-lalu.mp4').exists()
+          print('E006 full-draft contracts: PASS; 24 natural VO cues; no MP4')
+          PY
+      - name: Render representative cinematic stills (NEVER an MP4)
+        run: |
+          mkdir -p /tmp/e006-full
+          for frame in 0 45 110 182 219 330 450 550 630 755 820 930 1030 1190 1275 1375 1485 1615 1715 1850 1965 2009; do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-full/scene-$frame.png --frame=$frame --log=error
+          done
+      - name: Build phone-scale storyboard contact sheet
+        run: |
+          python - <<'PY'
+          import base64,io
+          from PIL import Image,ImageDraw
+          frames=[0,45,110,182,219,330,450,550,630,755,820,930,1030,1190,1275,1375,1485,1615,1715,1850,1965,2009]
+          w,h,cols=210,373,5
+          rows=(len(frames)+cols-1)//cols
+          sheet=Image.new('RGB',(cols*(w+12)+12,rows*(h+24)+12),'#f6f0e5')
+          d=ImageDraw.Draw(sheet)
+          for i,n in enumerate(frames):
+            frame=Image.open('/tmp/e006-full/scene-{}.png'.format(n)).convert('RGB')
+            frame.thumbnail((w,h))
+            x=12+(i%cols)*(w+12);y=24+(i//cols)*(h+24)
+            sheet.paste(frame,(x,y))
+            d.text((x,y-18),'{:.2f}s'.format(n/30),fill='#20251f')
+          sheet.save('/tmp/e006-full/contact-sheet.webp','WEBP',quality=77)
+          small=io.BytesIO();sheet.save(small,'WEBP',quality=42)
+          print('E006_FULL_SHEET_BEGIN')
+          print(base64.b64encode(small.getvalue()).decode('ascii'))
+          print('E006_FULL_SHEET_END')
+          PY
+      - name: Upload source-based QA outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode006-full-draft-visual-qa
+          path: /tmp/e006-full
+          retention-days: 7
+      - name: Preserve measured VO and original soundbed on review branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/projects/006-lagu-masa-lalu/voice-durations.generated.json
+          git add public/audio/006-lagu-masa-lalu
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(e006): measured natural VO and original score for full draft review"
+            git push origin HEAD:feature/e006-full-episode-review
+          fi
