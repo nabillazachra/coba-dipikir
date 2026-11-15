@@ -1,8 +1,10 @@
-import {existsSync, mkdirSync, readFileSync, readdirSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 
 const projectsRoot = 'src/projects';
+// CMS builds reuse tracked/cached audio instead of regenerating every clip.
+const missingOnly = process.argv.includes('--missing-only');
 const requestedProject = process.argv.find((arg) => arg.startsWith('--project='))
   ?.split('=')[1];
 
@@ -53,6 +55,9 @@ for (const projectDir of projectDirs) {
 
   for (const scene of scenes) {
     const output = join(outputDir, `${scene.id}.mp3`);
+    if (missingOnly && existsSync(output) && statSync(output).size > 1024) {
+      continue;
+    }
     const rate = scene.rate || defaultRate;
     const pitch = scene.pitch || defaultPitch;
     const volume = scene.volume || defaultVolume;
@@ -80,8 +85,8 @@ for (const projectDir of projectDirs) {
   }
 }
 
-if (generated === 0) {
+if (generated === 0 && !missingOnly) {
   throw new Error('No voiceover files were generated.');
 }
 
-console.log(`Generated ${generated} voiceover file(s).`);
+console.log(`Generated ${generated} voiceover file(s)${missingOnly ? ' (missing clips only)' : ''}.`);

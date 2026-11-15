@@ -44,14 +44,16 @@ jobs:
         with:
           path: public/audio
           key: ${{ runner.os }}-voice-${{ hashFiles('src/projects/**/voiceover.config.ts', 'requirements-voice.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-voice-
 
+      # Reuse voice files from checkout/cache, generate only truly missing clips.
+      # A new episode must not cause all older clips to be synthesized again.
       - name: Install Edge TTS
-        if: steps.voice-cache.outputs.cache-hit != 'true'
         run: pip install -r requirements-voice.txt
 
-      - name: Generate voiceover
-        if: steps.voice-cache.outputs.cache-hit != 'true'
-        run: npm run voice:generate
+      - name: Generate only missing voiceover
+        run: node scripts/generate-voiceover.mjs --missing-only
 
       - name: Generate sound bed
         run: npm run audio:bed
@@ -90,58 +92,12 @@ jobs:
       - name: Build CMS
         run: npm run cms:build
 
-      - name: Visual QA - Episode 3 storyboard contact sheet
+      # Cinematic stills are validated by episode-specific QA workflows,
+      # not by the release pipeline that publishes the CMS application.
+      - name: Verify Episode 006 is in the published CMS bundle
         run: |
-          python -m pip install --quiet Pillow
-          for frame in 53 187 320 468 627 815 1004 1166 1302 1459 1641 1821; do
-            npx remotion still E003-Harga-99000 /tmp/e003-${frame}.png --frame=${frame}
-          done
-          python - <<'PY'
-          import base64, io
-          from PIL import Image, ImageDraw
-          frames = [53,187,320,468,627,815,1004,1166,1302,1459,1641,1821]
-          sheet = Image.new('RGB', (1050, 1530), '#f6f0e5')
-          draw = ImageDraw.Draw(sheet)
-          for i,n in enumerate(frames):
-              image = Image.open(f'/tmp/e003-{n}.png').convert('RGB')
-              image = image.resize((244,434))
-              x = (i%4)*260+14
-              y = (i//4)*496+26
-              sheet.paste(image,(x,y))
-              draw.text((x,y-17),f'SCENE {i+1} @ {n/30:.1f}s',fill='#20251f')
-          out = io.BytesIO()
-          sheet.save(out,format='WEBP',quality=52,method=6)
-          print('E003_QA_BEGIN')
-          print(base64.b64encode(out.getvalue()).decode('ascii'))
-          print('E003_QA_END')
-          PY
-
-      - name: Visual QA - Episode 4 storyboard contact sheet
-        run: |
-          mkdir -p /tmp/e004
-          for frame in 44 167 275 348 477 609 684 779 929 1067 1240 1452 1614 1746 1905 2043 2244 2394; do
-            npx remotion still E004-Close-Lift /tmp/e004/e004-${frame}.png --frame=${frame}
-          done
-          python - <<'PY'
-          import base64,io
-          from PIL import Image,ImageDraw
-          frames=[44,167,275,348,477,609,684,779,929,1067,1240,1452,1614,1746,1905,2043,2244,2394]
-          W,H=215,383
-          sheet=Image.new('RGB',(3*(W+12)+14,6*(H+30)+14),'#f6f0e5')
-          d=ImageDraw.Draw(sheet)
-          for i,n in enumerate(frames):
-              im=Image.open(f'/tmp/e004/e004-{n}.png').convert('RGB')
-              im.thumbnail((W,H))
-              x=14+(i%3)*(W+12)
-              y=26+(i//3)*(H+30)
-              sheet.paste(im,(x,y))
-              d.text((x,y-19),f'SCENE {i+1} @ {n/30:.1f}s',fill='#20251f')
-          out=io.BytesIO()
-          sheet.save(out,format='WEBP',quality=49,method=6)
-          print('E004_QA_BEGIN')
-          print(base64.b64encode(out.getvalue()).decode('ascii'))
-          print('E004_QA_END')
-          PY
+          grep -R -q "006-lagu-masa-lalu" dist/cms/assets
+          echo "Episode 006 found in compiled CMS bundle"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

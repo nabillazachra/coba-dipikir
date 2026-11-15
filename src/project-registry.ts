@@ -161,7 +161,7 @@ export const projectRegistry: ProjectRegistryEntry[] = [
       durationInFrames: Math.round((scene.end-scene.start)*returnTripConfig.fps)
     })),
   },
-  // Unpublished E006: visible for editorial preview in branch CMS only.
+  // Episode 006 is deployed to CMS for review; publishing still requires creative approval.
   {
     id: '006-lagu-masa-lalu',
     episode: 6,
