@@ -9,7 +9,7 @@ import {DURATION_SECONDS} from './timeline';
 
 // Approved 7-second proof is reused unchanged. All later worlds are
 // continuous full-bleed scenes; no infographic cards or generic fades.
-// The parent composition is 67 s / 2010f at 30 fps.
+// The parent composition is 69 s / 2070f at 30 fps.
 export const LaguMasaLaluEpisode:React.FC=()=>{
   const {fps}=useVideoConfig();
   return <AbsoluteFill style={{background:'#F6F0E5',overflow:'hidden'}}>

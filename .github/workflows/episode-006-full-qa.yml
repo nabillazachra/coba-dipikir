@@ -28,6 +28,8 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           python -m pip install --quiet edge-tts mutagen==1.47.0 Pillow==11.3.0
+      - name: Verify TypeScript before expensive TTS
+        run: npx tsc --noEmit
       - name: Generate original soundtrack (never commercial music)
         run: node scripts/generate-episode6-score.mjs
       - name: Generate natural Indonesian voiceover at 1.00x

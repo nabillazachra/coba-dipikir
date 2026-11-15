@@ -28,9 +28,9 @@ for i,cue in enumerate(cues):
     if drift>0.05:
         print(f"ADJUST {cue['id']}: planned {planned:.2f} -> {at:.2f}; "
               f"natural audio {duration:.3f}s; delay {drift:.3f}s")
-    if at+duration > 66.8:
+    if at+duration > 68.8:
         raise RuntimeError(f"Final VO {cue['id']} ends at {at+duration:.3f}s "
-                           "after 67s composition. Extend editorial scene, "
+                           "after 69s composition. Extend editorial scene, "
                            "trim wording, or adjust pauses; never time-stretch.")
     durations[cue['id']]=duration
     starts[cue['id']]=at
