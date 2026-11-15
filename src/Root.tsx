@@ -13,6 +13,7 @@ import {Harga99000Episode} from './projects/003-harga-99000/Composition';
 import {LiftCloseEpisode} from './projects/004-lift-close/Composition';
 import {ReturnTripEpisode} from './projects/005-perjalanan-pulang/Composition';
 import {LaguActingProof} from './projects/006-lagu-masa-lalu/ActingProof';
+import {LaguMasaLaluEpisode} from './projects/006-lagu-masa-lalu/Film';
 
 export const RemotionRoot: React.FC = () => (
   <Folder name="Coba-Dipikir">
@@ -77,6 +78,14 @@ export const RemotionRoot: React.FC = () => (
       />
     </Folder>
     <Folder name="Episode-006-Lagu-Masa-Lalu">
+      <Composition
+        id="E006-Lagu-Masa-Lalu-Review"
+        component={LaguMasaLaluEpisode}
+        durationInFrames={2010}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
       <Composition
         id="E006-Lagu-Acting-Proof"
         component={LaguActingProof}
