@@ -14,6 +14,10 @@ export const Episode6Audio:React.FC=()=>{
   // Once generated, a custom original 60s bed scores the remaining film.
   if (!m.ready) return null;
   return <>
+    {/* Subtle original diegetic Foley; 69s, never a licensed effect. */}
+    <Audio name="Original E006 physical Foley"
+      from={0} premountFor={fps} src={publicAsset(path+'foley.wav')}
+      volume={.42}/>
     <Audio name="Original E006 motif and atmospheric score"
       from={7*fps} premountFor={fps} src={publicAsset(path+'score.wav')}
       volume={.35}/>

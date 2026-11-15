@@ -35,6 +35,27 @@ jobs:
           if [ ! -f public/audio/006-lagu-masa-lalu/score.wav ]; then
             node scripts/generate-episode6-score.mjs
           fi
+      - name: Generate or reuse original diegetic Foley
+        run: |
+          if [ ! -f public/audio/006-lagu-masa-lalu/foley.wav ]; then
+            node scripts/generate-episode6-foley.mjs
+          fi
+      - name: Verify original 69-second diegetic Foley
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import wave, audioop
+          f=Path('public/audio/006-lagu-masa-lalu/foley.wav')
+          with wave.open(str(f),'rb') as w:
+            assert w.getnchannels()==1 and w.getsampwidth()==2
+            assert abs(w.getnframes()/w.getframerate()-69)<0.003
+            values=w.readframes(w.getnframes())
+          peak=audioop.max(values,2)/32767
+          rms=audioop.rms(values,2)/32767
+          assert 0.001<rms<0.11,(peak,rms)
+          assert peak<0.75,(peak,rms)
+          print('E006 original physical Foley PASS:',round(rms,4),round(peak,4))
+          PY
       - name: Generate or reuse natural Indonesian voiceover at 1.00x
         run: |
           if [ ! -f public/audio/006-lagu-masa-lalu/voiceover/v24.mp3 ]; then
