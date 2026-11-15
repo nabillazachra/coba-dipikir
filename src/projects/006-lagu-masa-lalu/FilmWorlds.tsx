@@ -228,9 +228,9 @@ export const CueRoom:React.FC=()=>{
   const drawerFocus=smooth(2.2,4.2,s)*(1-smooth(6.6,8.0,s));
   const ticketFocus=smooth(7.2,9.3,s)*(1-smooth(11.8,14.6,s));
   const drift=smooth(2.4,10.0,s);
-  const zoom=1.01+.17*drawerFocus+.56*ticketFocus+.035*drift;
-  const trackX=-35*drift-75*drawerFocus-345*ticketFocus;
-  const trackY=-95*drawerFocus-320*ticketFocus;
+  const zoom=1.01+.17*drawerFocus+.31*ticketFocus+.035*drift;
+  const trackX=-35*drift-75*drawerFocus-90*ticketFocus;
+  const trackY=-95*drawerFocus-220*ticketFocus;
   return <AbsoluteFill style={{overflow:'hidden',background:P.wall}}>
     <div style={{position:'absolute',width:1080,height:1920,
       transform:'translate('+trackX+'px,'+trackY+'px) scale('+zoom+')',
