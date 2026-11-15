@@ -152,10 +152,13 @@ type WorldProps={from?:number};
 export const BusMemory:React.FC<WorldProps>=()=>{
   const frame=useCurrentFrame();const {fps}=useVideoConfig();const s=frame/fps;
   const smile=s>3.5&&s<9.2;
-  const lens=lerp(1,1.055,smooth(1,9,s));
+  // A brief window-focused truck lets the music-linked city become the subject,
+  // before returning to the shared-earbud interaction.
+  const cityLook=smooth(5.7,7.9,s)*(1-smooth(9.1,11.25,s));
+  const lens=lerp(1,1.055,smooth(1,9,s))+.08*cityLook;
   return <AbsoluteFill style={{overflow:'hidden',background:'#A98170'}}>
     <div style={{position:'absolute',width:1080,height:1920,
-      transform:'translate('+(-15*smooth(1,9,s))+'px,0px) scale('+lens+')',
+      transform:'translate('+(-15*smooth(1,9,s)-94*cityLook)+'px,0px) scale('+lens+')',
       transformOrigin:'52% 55%'}}>
       <BusWindow sec={s}/>
       <Friend x={614} y={866} scale={.86} smile={smile}
@@ -220,14 +223,24 @@ export const CueRoom:React.FC=()=>{
   const glow=smooth(4.3,6.2,s);
   const objects=smooth(7.1,11.5,s);
   const pulse=Math.sin((s-4)*9);
+  const inspect=smooth(7.6,10.5,s)*(1-smooth(12.1,15.2,s));
   return <AbsoluteFill style={{overflow:'hidden',background:P.wall}}>
     <div style={{position:'absolute',width:1080,height:1920,
-      transform:'translate('+(-22*smooth(3,11,s))+'px,0px) scale('+(1.01+.055*smooth(2,11,s))+')',
+      transform:'translate('+(-22*smooth(3,11,s)-150*inspect)+'px,'+(-92*inspect)+'px) scale('+(1.01+.055*smooth(2,11,s)+.31*inspect)+')',
       transformOrigin:'50% 60%'}}>
       <RoomSet sec={s}/>
       {/* The old desk drawer opens on actual rails. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
         style={{position:'absolute',inset:0}}>
+        {/* The familiar sound briefly gives the existing window an older,
+            warmer city reflection instead of spawning an infographic card. */}
+        <rect x="615" y="397" width="525" height="660" rx="20"
+          fill="#E96B3C" opacity={objects*.115*(1-smooth(13.2,15.3,s))}/>
+        <path d="M638 873 Q748 808 853 872 T1115 861"
+          fill="none" stroke="#FFE0B0" strokeWidth="21"
+          opacity={objects*.34*(1-smooth(13.2,15.3,s))}/>
+        <circle cx="1015" cy="554" r={75+58*objects}
+          fill="#FFE0A0" opacity={objects*.21}/>
         <rect x={645-45*drawer} y={1224+111*drawer} width={335+60*drawer}
           height={151+62*drawer} rx="12" stroke="#51473C" strokeWidth="13"
           fill="#B49A7D"/>
@@ -255,7 +268,7 @@ export const CueRoom:React.FC=()=>{
       <CharacterAt x={169} y={797} w={495}
         expression={s<3?'curious':s<10?'thinking':'happy'}
         tilt={-6+11*look} leftArm={15-38*drawer}
-        rightArm={-21+46*drawer}
+        rightArm={-21+107*drawer}
         scarf={5*Math.sin(s*2.7)*glow}/>
     </div>
   </AbsoluteFill>;

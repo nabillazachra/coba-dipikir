@@ -30,10 +30,16 @@ jobs:
           python -m pip install --quiet edge-tts mutagen==1.47.0 Pillow==11.3.0
       - name: Verify TypeScript before expensive TTS
         run: npx tsc --noEmit
-      - name: Generate original soundtrack (never commercial music)
-        run: node scripts/generate-episode6-score.mjs
-      - name: Generate natural Indonesian voiceover at 1.00x
-        run: node scripts/generate-voiceover.mjs --project=006-lagu-masa-lalu
+      - name: Generate or reuse original soundtrack (never commercial music)
+        run: |
+          if [ ! -f public/audio/006-lagu-masa-lalu/score.wav ]; then
+            node scripts/generate-episode6-score.mjs
+          fi
+      - name: Generate or reuse natural Indonesian voiceover at 1.00x
+        run: |
+          if [ ! -f public/audio/006-lagu-masa-lalu/voiceover/v24.mp3 ]; then
+            node scripts/generate-voiceover.mjs --project=006-lagu-masa-lalu
+          fi
       - name: Verify actual voice timings and generate exact captions manifest
         run: python scripts/measure-episode6-voice.py
       - name: Verify full episode and unchanged master character
@@ -59,6 +65,7 @@ jobs:
           assert 'top:1340' in cap
           assert 'width:1080' in code or 'AbsoluteFill' in code
           assert 'LaguMasaLaluEpisode' in Path('src/Root.tsx').read_text()
+          assert 'E006-Lagu-Masa-Lalu-Safe-QA' in Path('src/Root.tsx').read_text()
           assert not Path('renders/006-lagu-masa-lalu.mp4').exists()
           print('E006 full-draft contracts: PASS; 24 natural VO cues; no MP4')
           PY
@@ -67,6 +74,11 @@ jobs:
           mkdir -p /tmp/e006-full
           for frame in 0 45 110 182 219 330 450 550 630 755 820 930 1030 1190 1275 1375 1485 1615 1715 1850 1965 2009; do
             npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-full/scene-$frame.png --frame=$frame --log=error
+          done
+      - name: Render provisional social UI overlay checks (no MP4)
+        run: |
+          for frame in 45 820 1275 1715 2009; do
+            npx remotion still E006-Lagu-Masa-Lalu-Safe-QA /tmp/e006-full/social-$frame.png --frame=$frame --log=error
           done
       - name: Build phone-scale storyboard contact sheet
         run: |
