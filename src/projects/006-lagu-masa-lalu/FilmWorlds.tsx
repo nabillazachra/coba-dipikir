@@ -122,6 +122,21 @@ const BusSeats:React.FC<{sec:number;front?:boolean;seated?:boolean}>=({sec,front
       <path d="M55 1372 Q292 1308 502 1380 M659 1370 Q862 1304 1085 1385"
         stroke="#7BA99A" strokeWidth="12" fill="none" opacity=".65"/>
       <path d="M574 1320 L610 1940" stroke="#25483F" strokeWidth="19" opacity=".6"/>
+      {/* The central aisle opens toward the camera: foreground furniture now
+          frames a real bus interior instead of covering half the canvas. */}
+      <path d="M528 1342 L590 1342 L748 1940 H359 Z"
+        fill="#68736B" stroke="#324B46" strokeWidth="14" strokeLinejoin="round"/>
+      <path d="M529 1346 L359 1940 M590 1346 L748 1940"
+        stroke="#9BA89B" strokeWidth="11" opacity=".42" fill="none"/>
+      <path d="M458 1590 H660 M410 1780 H706"
+        stroke="#A5AFA3" strokeWidth="9" opacity=".27" fill="none"/>
+      {/* Wear marks, seams and reflected bus-window light travel down the aisle. */}
+      <path d="M541 1410 L463 1930" stroke="#E3D7B7" strokeWidth="13" opacity=".10"/>
+      <path d="M585 1450 L660 1935" stroke="#F8E6BC" strokeWidth="10" opacity=".07"/>
+      <path d="M-40 1622 Q160 1575 375 1645 M758 1645 Q950 1575 1130 1630"
+        stroke="#8CB7A7" strokeWidth="16" opacity=".32" fill="none"/>
+      <path d="M-20 1850 Q160 1804 311 1865 M802 1865 Q974 1809 1130 1845"
+        stroke="#235347" strokeWidth="16" opacity=".39" fill="none"/>
     </g>}
     <path d={'M'+(510+Math.sin(sec*1.2)*19)+' 0 V1920'}
       stroke="#E6F6E1" strokeWidth="9" opacity=".025"/>
