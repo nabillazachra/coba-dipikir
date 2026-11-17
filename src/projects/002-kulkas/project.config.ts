@@ -9,7 +9,7 @@ export const projectConfig = {
   height: 1920,
   fps: 30,
   durationInFrames: 1590,
-  status: 'draft',
+  status: 'published',
   narrative: {
     hook: 'Kenapa kita buka kulkas padahal tahu isinya?',
     reveal: 'Kadang bukan lapar. Otak cuma mencari reward kecil dan mengulang kebiasaan.',

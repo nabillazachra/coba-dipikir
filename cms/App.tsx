@@ -9,11 +9,37 @@ const LIBRARY_PAGE_SIZE = 6;
 const defaultProject = [...projectRegistry].sort((a, b) => b.episode - a.episode)[0];
 type RenderState = 'idle' | 'checking' | 'ready' | 'rendering' | 'done' | 'unsupported' | 'error';
 
-const statusLabel: Record<ProjectRegistryEntry['status'], string> = {
+type EpisodeStatus = ProjectRegistryEntry['status'];
+const STATUS_STORAGE_KEY = 'coba-dipikir-episode-status-v1';
+const statusOrder: EpisodeStatus[] = ['idea', 'draft', 'review', 'published'];
+const statusLabel: Record<EpisodeStatus, string> = {
   idea: 'Idea',
   draft: 'Draft',
   review: 'Review',
   published: 'Published',
+};
+const statusMeaning: Record<EpisodeStatus, string> = {
+  idea: 'Konsep belum diproduksi',
+  draft: 'Dalam proses produksi',
+  review: 'Menunggu review kreatif',
+  published: 'Sudah diposting (catatan manual)',
+};
+
+const readSavedStatuses = (): Record<string, EpisodeStatus> => {
+  if (typeof window === 'undefined') return {};
+  try {
+    const data: unknown = JSON.parse(window.localStorage.getItem(STATUS_STORAGE_KEY) ?? '{}');
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return {};
+
+    return Object.fromEntries(
+      Object.entries(data).filter(([id, status]) =>
+        projectRegistry.some((project) => project.id === id) &&
+        statusOrder.includes(status as EpisodeStatus),
+      ),
+    ) as Record<string, EpisodeStatus>;
+  } catch {
+    return {};
+  }
 };
 
 const formatDuration = (project: ProjectRegistryEntry) => {
@@ -46,7 +72,10 @@ const StudioIcon = ({type}: {type: StudioTab | 'library' | 'github'}) => {
 
 export const App: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | ProjectRegistryEntry['status']>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | EpisodeStatus>('all');
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, EpisodeStatus>>(readSavedStatuses);
+  const [statusSaveError, setStatusSaveError] = useState(false);
+  const [statusNotice, setStatusNotice] = useState('');
   const [libraryPage, setLibraryPage] = useState(1);
   const [workspaceView, setWorkspaceView] = useState<WorkspaceView>('library');
   const [selectedId, setSelectedId] = useState(defaultProject?.id ?? '');
@@ -58,6 +87,34 @@ export const App: React.FC = () => {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  const getProjectStatus = (project: ProjectRegistryEntry): EpisodeStatus =>
+    statusOverrides[project.id] ?? project.status;
+
+  const statusCounts = useMemo(
+    () => Object.fromEntries(
+      statusOrder.map((status) => [
+        status,
+        projectRegistry.filter((project) => (statusOverrides[project.id] ?? project.status) === status).length,
+      ]),
+    ) as Record<EpisodeStatus, number>,
+    [statusOverrides],
+  );
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(statusOverrides));
+      setStatusSaveError(false);
+    } catch {
+      setStatusSaveError(true);
+    }
+  }, [statusOverrides]);
+
+  const updateProjectStatus = (id: string, status: EpisodeStatus) => {
+    setStatusOverrides((previous) => ({...previous, [id]: status}));
+    const project = projectRegistry.find((entry) => entry.id === id);
+    setStatusNotice(`Status EP ${String(project?.episode ?? '').padStart(3, '0')} menjadi ${statusLabel[status]}.`);
+  };
+
   const filteredProjects = useMemo(() => {
     const normalized = query.trim().toLowerCase();
 
@@ -67,10 +124,10 @@ export const App: React.FC = () => {
           .join(' ')
           .toLowerCase()
           .includes(normalized);
-        return matchesSearch && (statusFilter === 'all' || project.status === statusFilter);
+        return matchesSearch && (statusFilter === 'all' || (statusOverrides[project.id] ?? project.status) === statusFilter);
       })
       .sort((a, b) => b.episode - a.episode);
-  }, [query, statusFilter]);
+  }, [query, statusFilter, statusOverrides]);
 
   const totalLibraryPages = Math.max(1, Math.ceil(filteredProjects.length / LIBRARY_PAGE_SIZE));
   const currentLibraryPage = Math.min(libraryPage, totalLibraryPages);
@@ -85,6 +142,7 @@ export const App: React.FC = () => {
 
   const selected =
     projectRegistry.find((project) => project.id === selectedId) ?? projectRegistry[0];
+  const selectedStatus = getProjectStatus(selected);
 
   const selectedScene =
     selected?.scenes.find((scene) => scene.id === selectedSceneId) ?? selected?.scenes[0];
@@ -302,33 +360,63 @@ export const App: React.FC = () => {
               </select>
             </div>
 
+            <div className="library-status-overview" aria-label="Ringkasan status produksi">
+              {statusOrder.map((status) => (
+                <button
+                  key={status}
+                  type="button"
+                  className={`library-status-summary ${statusFilter === status ? 'active' : ''}`}
+                  onClick={() => setStatusFilter((previous) => previous === status ? 'all' : status)}
+                  title={statusMeaning[status]}
+                  aria-pressed={statusFilter === status}
+                >
+                  <strong>{statusCounts[status]}</strong>
+                  <span>{statusLabel[status]}</span>
+                </button>
+              ))}
+            </div>
+
             <div className="library-result-count" role="status">
               {filteredProjects.length} episode ditemukan <span>· Urut terbaru</span>
             </div>
+            <p className="library-status-note">
+              Status dapat diubah langsung di kartu atau Studio. Tersimpan di browser ini saja; tidak mengubah GitHub atau mengunggah video.
+            </p>
+            {statusNotice ? <p className="library-status-feedback" role="status">{statusNotice}</p> : null}
+            {statusSaveError ? <p className="library-status-error" role="alert">Browser menolak penyimpanan status. Perubahan hanya berlaku selama halaman ini terbuka.</p> : null}
 
             {visibleProjects.length > 0 ? (
               <div className="library-grid">
                 {visibleProjects.map((project) => (
-                  <button
-                    key={project.id}
-                    type="button"
-                    className="library-episode-card"
-                    onClick={() => selectProject(project.id)}
-                    aria-label={`Buka Episode ${String(project.episode).padStart(3, '0')}: ${project.title}`}
-                  >
+                  <article key={project.id} className="library-episode-card">
                     <div className="library-card-top">
                       <span className="library-episode-number">EP {String(project.episode).padStart(3, '0')}</span>
-                      <span className={`project-status project-status-${project.status}`}>
-                        <span />{statusLabel[project.status]}
-                      </span>
+                      <select
+                        className={`library-card-status status-select-${getProjectStatus(project)}`}
+                        aria-label={`Ubah status Episode ${String(project.episode).padStart(3, '0')}`}
+                        title={statusMeaning[getProjectStatus(project)]}
+                        value={getProjectStatus(project)}
+                        onChange={(event) => updateProjectStatus(project.id, event.target.value as EpisodeStatus)}
+                      >
+                        {statusOrder.map((status) => (
+                          <option key={status} value={status}>{statusLabel[status]}</option>
+                        ))}
+                      </select>
                     </div>
-                    <strong className="library-card-title">{project.title}</strong>
-                    <p className="library-card-description">{project.coverText}</p>
-                    <div className="library-card-bottom">
-                      <span>{formatDuration(project)} · {project.category}</span>
-                      <span className="library-card-open">Open studio <span aria-hidden="true">→</span></span>
-                    </div>
-                  </button>
+                    <button
+                      type="button"
+                      className="library-card-link"
+                      onClick={() => selectProject(project.id)}
+                      aria-label={`Buka Episode ${String(project.episode).padStart(3, '0')}: ${project.title}`}
+                    >
+                      <strong className="library-card-title">{project.title}</strong>
+                      <p className="library-card-description">{project.coverText}</p>
+                      <div className="library-card-bottom">
+                        <span>{formatDuration(project)} · {project.category}</span>
+                        <span className="library-card-open">Open studio <span aria-hidden="true">→</span></span>
+                      </div>
+                    </button>
+                  </article>
                 ))}
               </div>
             ) : (
@@ -364,10 +452,20 @@ export const App: React.FC = () => {
             <strong>#{String(selected.episode).padStart(3, '0')} {selected.title}</strong>
           </div>
           <div className="topbar-actions">
-            <span className={`project-status project-status-${selected.status}`}>
-              <span />
-              {statusLabel[selected.status]}
-            </span>
+            <label className="studio-status-control">
+              <span>Status produksi</span>
+              <select
+                className={`studio-status-select status-select-${selectedStatus}`}
+                aria-label="Ubah status episode terpilih"
+                title={statusMeaning[selectedStatus]}
+                value={selectedStatus}
+                onChange={(event) => updateProjectStatus(selected.id, event.target.value as EpisodeStatus)}
+              >
+                {statusOrder.map((status) => (
+                  <option key={status} value={status}>{statusLabel[status]}</option>
+                ))}
+              </select>
+            </label>
             <a
               className="icon-button"
               href={`https://github.com/nabillazachra/coba-dipikir/tree/main/${selected.folder}`}
@@ -380,6 +478,7 @@ export const App: React.FC = () => {
           </div>
         </header>
 
+        {statusNotice ? <div className="studio-status-feedback" role="status">{statusNotice} {statusSaveError ? 'Belum berhasil disimpan di browser.' : 'Tersimpan di browser ini.'}</div> : null}
         <section className="project-hero">
           <div>
             <div className="project-eyebrow">
