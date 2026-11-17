@@ -129,7 +129,7 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   const deadpan = smooth(6.42, 6.72, t);
 
   // The actor is staged large (525px master width) and tracks IN to the cabin.
-  const heroX = mix(-235, 356, walk);
+  const heroX = mix(-235, 379, walk);
   const heroY = 702 - 10 * walk;
   const heroWidth = 525;
   const leftArmAngle = mix(-16, 83, pressReach);
@@ -237,24 +237,25 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
           <path d="M157 1450 L310 1356 L767 1356 L919 1450"
             fill="#718179" stroke="#475D50" strokeWidth="12" />
 
-          {/* Button panel has a real world position; finger contacts "12". */}
-          <Panel pressed={pressed}/>
-          {/* Doors are behind our actor after the camera travels inside. */}
-          <rect x="160" y="260" width={378 * closed} height="1195"
+          {/* The cabin doors close behind the actor; the control panel is on the adjacent wall. */}
+          <rect x="160" y="260" width={215 * closed} height="1195"
             fill="url(#e007-door)" stroke="#31453E" strokeWidth="11"/>
-          <rect x={920 - 378 * closed} y="260" width={378 * closed}
+          <rect x={590 - 215 * closed} y="260" width={215 * closed}
             height="1195" fill="url(#e007-door)" stroke="#31453E"
             strokeWidth="11"/>
-          <path d={'M' + (159 + 378 * closed) + ' 260 V1452 M'
-            + (921 - 378 * closed) + ' 260 V1452'}
+          <path d={'M' + (159 + 215 * closed) + ' 260 V1452 M'
+            + (591 - 215 * closed) + ' 260 V1452'}
             fill="none" stroke="#DBDFCB" strokeWidth="11" opacity={closed}/>
           <path d="M139 254 V1457 M942 254 V1457"
             stroke="#23382F" strokeWidth="26"/>
-          <rect x="428" y="347" width="225" height="101" rx="15"
+          {/* Floor indicator sits above the door, not painted over a door leaf. */}
+          <rect x="259" y="117" width="225" height="101" rx="15"
             fill="#293A33" stroke="#1F2F28" strokeWidth="9"/>
-          <text x="540" y="422" textAnchor="middle"
+          <text x="371" y="192" textAnchor="middle"
             fill="#FBE0AD" fontWeight="850" fontSize="62"
             fontFamily={brand.fontFamily}>{t < 3.54 ? 'G' : '2'}</text>
+          {/* Control panel is mounted on the right interior wall, never on a moving door. */}
+          <Panel pressed={pressed}/>
           {/* A narrow parallax foreground for a lived-in cabin, not a stage. */}
           <path d="M0 1580 L124 1485 L143 1920 H0 Z"
             fill="#344D41" opacity=".74"/>
