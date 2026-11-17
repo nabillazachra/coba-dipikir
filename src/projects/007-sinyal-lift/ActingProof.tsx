@@ -87,14 +87,14 @@ const SignalBars: React.FC<{bars: number; x: number; y: number; scale?: number}>
   </g>
 );
 
-const Panel: React.FC<{pressed: number}> = ({pressed}) => (
-  <g transform="translate(75 0)">
+const Panel: React.FC<{pressed: number; floor: string}> = ({pressed, floor}) => (
+  <g transform="translate(75 73)">
     <rect x="641" y="748" width="116" height="544" rx="16" fill="#454C47"
       stroke="#26332F" strokeWidth="10" />
     <rect x="661" y="785" width="76" height="107" rx="9" fill="#172421"
       stroke="#647269" strokeWidth="5" />
     <text x="699" y="861" fontFamily={brand.fontFamily} fontSize="62"
-      fontWeight="850" textAnchor="middle" fill="#F5D5A0">G</text>
+      fontWeight="850" textAnchor="middle" fill="#F5D5A0">{floor}</text>
     {[0, 1, 2, 3].map((i) => (
       <g key={i}>
         <rect x="665" y={926 + i * 83 + (i === 2 ? pressed * 6 : 0)}
@@ -130,7 +130,7 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
 
   // The actor is staged large (525px master width) and tracks IN to the cabin.
   const heroX = mix(-280, 292, walk);
-  const heroY = 702 - 10 * walk;
+  const heroY = 775 - 10 * walk;
   const heroWidth = 525;
   // Phone remains in LEFT hand; RIGHT hand has an unobstructed reach to button 12.
   // Raising the phone changes left-hand position rather than moving a floating prop.
@@ -160,7 +160,8 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   const blink = Math.max(0, 1 - Math.abs(t - 3.22) / 0.105);
   const cameraPush = smooth(4.7, 6.96, t);
   const cameraTrack = -42 * walk - 13 * cameraPush;
-  const cameraZoom = 1 + 0.064 * cameraPush;
+  // Film closer to the actor: the cabin fills 9:16 instead of appearing in a small top stage.
+  const cameraZoom = 1.22 + 0.04 * cameraPush;
 
   // Character.tsx pointFrom(100,235,78,leftArmAngle), no detached/floating handset.
   const handX = heroX + heroWidth / 300
@@ -266,13 +267,13 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
             fill="#FBE0AD" fontWeight="850" fontSize="62"
             fontFamily={brand.fontFamily}>{t < 3.54 ? 'G' : '2'}</text>
           {/* Control panel is mounted on the right interior wall, never on a moving door. */}
-          <Panel pressed={pressed}/>
+          <Panel pressed={pressed} floor={t < 3.54 ? "G" : "2"}/>
           {/* A narrow parallax foreground for a lived-in cabin, not a stage. */}
           <path d="M0 1580 L124 1485 L143 1920 H0 Z"
             fill="#344D41" opacity=".74"/>
           <path d="M1080 1573 L975 1478 L960 1920 H1080 Z"
             fill="#344D41" opacity=".67"/>
-          <ellipse cx={heroX + 265} cy="1440" rx="171" ry="31"
+          <ellipse cx={heroX + 265} cy="1456" rx="171" ry="31"
             fill="#26352F" opacity={0.23 + 0.08 * walk}/>
         </svg>
 
