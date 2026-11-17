@@ -88,7 +88,7 @@ const SignalBars: React.FC<{bars: number; x: number; y: number; scale?: number}>
 );
 
 const Panel: React.FC<{pressed: number}> = ({pressed}) => (
-  <g>
+  <g transform="translate(75 0)">
     <rect x="641" y="748" width="116" height="544" rx="16" fill="#454C47"
       stroke="#26332F" strokeWidth="10" />
     <rect x="661" y="785" width="76" height="107" rx="9" fill="#172421"
@@ -129,11 +129,13 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   const deadpan = smooth(6.42, 6.72, t);
 
   // The actor is staged large (525px master width) and tracks IN to the cabin.
-  const heroX = mix(-235, 379, walk);
+  const heroX = mix(-280, 292, walk);
   const heroY = 702 - 10 * walk;
   const heroWidth = 525;
-  const leftArmAngle = mix(-16, 83, pressReach);
-  const rightArmAngle = mix(140, 179, lifting);
+  // Phone remains in LEFT hand; RIGHT hand has an unobstructed reach to button 12.
+  // Raising the phone changes left-hand position rather than moving a floating prop.
+  const leftArmAngle = mix(-124, -160, lifting);
+  const rightArmAngle = mix(5, 75, pressReach);
   const walkEnergy = 1 - smooth(1.19, 1.49, t);
   const step = t * 2.5 * walkEnergy;
   const bob = 5 * Math.sin(t * 18) * walkEnergy - 7 * suspicious + 7 * deadpan;
@@ -160,13 +162,18 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   const cameraTrack = -42 * walk - 13 * cameraPush;
   const cameraZoom = 1 + 0.064 * cameraPush;
 
-  // Calculate true hand endpoint from Character.tsx pointFrom(200,235,78,angle).
+  // Character.tsx pointFrom(100,235,78,leftArmAngle), no detached/floating handset.
   const handX = heroX + heroWidth / 300
-    * (200 + Math.sin(rightArmAngle * Math.PI / 180) * 78);
+    * (100 + Math.sin(leftArmAngle * Math.PI / 180) * 78);
   const handY = heroY + heroWidth / 300
+    * (235 + Math.cos(leftArmAngle * Math.PI / 180) * 78) + bob;
+  const phoneX = handX - 80;
+  const phoneY = handY - 147;
+  // The right hand directly touches the raised face of the '12' floor button.
+  const buttonFingerX = heroX + heroWidth / 300
+    * (200 + Math.sin(rightArmAngle * Math.PI / 180) * 78);
+  const buttonFingerY = heroY + heroWidth / 300
     * (235 + Math.cos(rightArmAngle * Math.PI / 180) * 78) + bob;
-  const phoneX = handX - 42;
-  const phoneY = handY - 119 - 17 * lifting;
   const bars = t < 2.85 ? 4
     : t < 3.21 ? 3
       : t < 3.51 ? 2
@@ -237,21 +244,25 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
           <path d="M157 1450 L310 1356 L767 1356 L919 1450"
             fill="#718179" stroke="#475D50" strokeWidth="12" />
 
-          {/* The cabin doors close behind the actor; the control panel is on the adjacent wall. */}
-          <rect x="160" y="260" width={215 * closed} height="1195"
+          {/* TWO true full-height leaves meet at center (x540), with no uncovered gap. */}
+          <rect x="160" y="260" width={380 * closed} height="1195"
             fill="url(#e007-door)" stroke="#31453E" strokeWidth="11"/>
-          <rect x={590 - 215 * closed} y="260" width={215 * closed}
+          <rect x={920 - 380 * closed} y="260" width={380 * closed}
             height="1195" fill="url(#e007-door)" stroke="#31453E"
             strokeWidth="11"/>
-          <path d={'M' + (159 + 215 * closed) + ' 260 V1452 M'
-            + (591 - 215 * closed) + ' 260 V1452'}
+          <path d={'M' + (159 + 380 * closed) + ' 260 V1452 M'
+            + (921 - 380 * closed) + ' 260 V1452'}
             fill="none" stroke="#DBDFCB" strokeWidth="11" opacity={closed}/>
           <path d="M139 254 V1457 M942 254 V1457"
             stroke="#23382F" strokeWidth="26"/>
-          {/* Floor indicator sits above the door, not painted over a door leaf. */}
-          <rect x="259" y="117" width="225" height="101" rx="15"
+          {/* Right foreground wall gives the panel a fixed diegetic surface. */}
+          <path d="M710 250 H920 V1454 H710 Z" fill="#53665A"
+            stroke="#31463E" strokeWidth="10"/>
+          <path d="M707 255 V1454" stroke="#9CAC9E" strokeWidth="11" opacity=".45"/>
+          {/* Floor indicator sits above the doorway, not on a moving panel. */}
+          <rect x="428" y="117" width="225" height="101" rx="15"
             fill="#293A33" stroke="#1F2F28" strokeWidth="9"/>
-          <text x="371" y="192" textAnchor="middle"
+          <text x="540" y="192" textAnchor="middle"
             fill="#FBE0AD" fontWeight="850" fontSize="62"
             fontFamily={brand.fontFamily}>{t < 3.54 ? 'G' : '2'}</text>
           {/* Control panel is mounted on the right interior wall, never on a moving door. */}
@@ -297,10 +308,13 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
             <rect x="27" y="154" width="30" height="4" rx="2"
               fill="#ABB7A9"/>
           </g>
-          {/* Foreground thumb communicates an actual held prop. */}
-          <ellipse cx={handX + 4} cy={handY + 4} rx="18" ry="15"
+          {/* Thumb contacts the phone's lower edge: no orphaned hand or floating device. */}
+          <ellipse cx={handX - 1} cy={handY - 1} rx="15" ry="13"
             fill={brand.colors.paper} stroke={brand.colors.ink}
             strokeWidth="7" opacity={walk > 0.03 ? 1 : 0.95}/>
+          {/* Right-hand pad meets button 12's surface as the button depresses. */}
+          <circle cx={buttonFingerX} cy={buttonFingerY} r={pressed * 8}
+            fill={brand.colors.orange} opacity={pressed * 0.48}/>
           {/* Momentary little POP belongs to the phone, not a floating diagram. */}
           <g opacity={glow * (1 - smooth(5.22, 5.61, t))}
             stroke="#E9A56C" strokeWidth="9" strokeLinecap="round">
