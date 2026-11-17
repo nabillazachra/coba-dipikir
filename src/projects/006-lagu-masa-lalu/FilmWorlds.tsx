@@ -70,14 +70,20 @@ const BusWindow:React.FC<{sec:number;warm?:number;large?:boolean}>=({sec,warm=1,
   </svg>;
 };
 
-const Friend:React.FC<{x?:number;y?:number;scale?:number;smile?:boolean;sway?:number;earTouch?:number;blink?:number}>=({
-  x=650,y=895,scale=1,smile=true,sway=0,earTouch=0,blink=0,
+const Friend:React.FC<{x?:number;y?:number;scale?:number;smile?:boolean;sway?:number;earTouch?:number;blink?:number;seated?:boolean;gaze?:number}>=({
+  x=650,y=895,scale=1,smile=true,sway=0,earTouch=0,blink=0,seated=false,gaze=0,
 })=><div style={{position:'absolute',left:x,top:y,width:310*scale,height:610*scale,
   transform:'rotate('+sway+'deg)',transformOrigin:'50% 80%'}}>
   <svg width="100%" height="100%" viewBox="0 0 310 610" overflow="visible">
-    <path d="M80 228 Q91 185 145 190 Q220 181 240 254 L238 502
-      Q155 534 65 494 Z" fill="#42765B" stroke="#20251F" strokeWidth="13" strokeLinejoin="round"/>
-    <path d="M100 496 L87 578 M204 496 L212 578" stroke="#20251F" strokeWidth="15" strokeLinecap="round"/>
+    <path d={seated
+      ? 'M80 228 Q91 185 145 190 Q220 181 240 254 L238 447 Q157 472 65 447 Z'
+      : 'M80 228 Q91 185 145 190 Q220 181 240 254 L238 502 Q155 534 65 494 Z'}
+      fill="#42765B" stroke="#20251F" strokeWidth="13" strokeLinejoin="round"/>
+    {seated
+      ? <path d="M103 447 Q114 468 151 463 M198 447 Q210 465 228 458"
+          stroke="#20251F" strokeWidth="15" fill="none" strokeLinecap="round"/>
+      : <path d="M100 496 L87 578 M204 496 L212 578"
+          stroke="#20251F" strokeWidth="15" strokeLinecap="round"/>}
     {/* Arm rises to touch the physical earbud rather than hovering beside it. */}
     <path d={'M84 270 Q'+(25+35*earTouch)+' '+(308-115*earTouch)+' '+(22+40*earTouch)+' '+(359-207*earTouch)+' M226 272 Q289 308 290 342'}
       stroke="#20251F" strokeWidth="15" fill="none" strokeLinecap="round"/>
@@ -85,7 +91,10 @@ const Friend:React.FC<{x?:number;y?:number;scale?:number;smile?:boolean;sway?:nu
     <circle cx="289" cy="342" r="17" fill="#F6F0E5" stroke="#20251F" strokeWidth="8"/>
     <circle cx="150" cy="125" r="103" fill="#F6F0E5" stroke="#20251F" strokeWidth="13"/>
     <path d="M82 99 Q149 24 220 91" stroke="#20251F" strokeWidth="16" fill="none" strokeLinecap="round"/>
-    <path d={blink>.7?'M111 132 H125 M181 132 H195':'M111 127 V139 M185 127 V139'} stroke="#20251F" strokeWidth="13" strokeLinecap="round"/>
+    <g transform={'translate('+gaze+' 0)'}>
+      <path d={blink>.7?'M111 132 H125 M181 132 H195':'M111 127 V139 M185 127 V139'}
+        stroke="#20251F" strokeWidth="13" strokeLinecap="round"/>
+    </g>
     <path d={smile?'M113 183 Q150 214 188 178':'M126 184 Q151 180 176 185'}
       fill="none" stroke="#20251F" strokeWidth="9" strokeLinecap="round"/>
     <circle cx="209" cy="145" r="15" fill="#E96B3C" stroke="#20251F" strokeWidth="6"/>
@@ -106,13 +115,13 @@ const BusSeats:React.FC<{sec:number;front?:boolean;seated?:boolean}>=({sec,front
     {/* A continuous upholstered front rail occludes feet naturally:
         passengers belong in the bus, not standing on a flat floor layer. */}
     {seated&&<g>
-      <path d="M-70 1480 Q120 1370 329 1400 Q488 1411 572 1480 L625 1940 H-90 Z"
+      <path d="M-70 1375 Q120 1290 329 1318 Q488 1328 572 1380 L625 1940 H-90 Z"
         fill="#326F62" stroke="#244840" strokeWidth="21"/>
-      <path d="M556 1485 Q732 1382 919 1412 Q1060 1426 1170 1490 L1180 1940 H530 Z"
+      <path d="M556 1380 Q732 1286 919 1315 Q1060 1326 1170 1385 L1180 1940 H530 Z"
         fill="#32675B" stroke="#244840" strokeWidth="20"/>
-      <path d="M55 1475 Q292 1413 502 1484 M659 1467 Q862 1410 1085 1493"
+      <path d="M55 1372 Q292 1308 502 1380 M659 1370 Q862 1304 1085 1385"
         stroke="#7BA99A" strokeWidth="12" fill="none" opacity=".65"/>
-      <path d="M574 1420 L610 1940" stroke="#25483F" strokeWidth="19" opacity=".6"/>
+      <path d="M574 1320 L610 1940" stroke="#25483F" strokeWidth="19" opacity=".6"/>
     </g>}
     <path d={'M'+(510+Math.sin(sec*1.2)*19)+' 0 V1920'}
       stroke="#E6F6E1" strokeWidth="9" opacity=".025"/>
@@ -197,14 +206,15 @@ export const BusMemory:React.FC<WorldProps>=()=>{
           It does not cut across anyone's eyes, nose, or mouth. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
         style={{position:'absolute',inset:0,pointerEvents:'none'}}>
-        <path d="M570 971 C557 1088 558 1180 610 1210 C657 1187 668 1070 659 963"
+        <path d="M526 943 C536 1088 560 1180 610 1210 C657 1187 668 1070 660 957"
           stroke="#25362F" strokeWidth="6" fill="none" strokeLinecap="round"/>
         <path d="M610 1210 Q615 1265 592 1340"
           stroke="#25362F" strokeWidth="6" fill="none" strokeLinecap="round"/>
       </svg>
-      <Friend x={606} y={816} scale={1.0} smile={smile} earTouch={earShare}
+      <Friend x={606} y={816} scale={1.13} seated smile={smile}
+        earTouch={earShare} gaze={-7*lookFriend}
         blink={blink} sway={sway+2*smooth(2.2,3.1,s)*(1-smooth(3.6,4.8,s))}/>
-      <CharacterAt x={158} y={743} w={510}
+      <CharacterAt x={158} y={743} w={455}
         expression={s<1.3?'curious':s<3.15?'thinking':smile?'happy':'curious'}
         tilt={-4+6*lookFriend}
         lean={-2+1.5*Math.sin(s*1.55)}
@@ -215,9 +225,9 @@ export const BusMemory:React.FC<WorldProps>=()=>{
       {/* Earbud knobs: placed on the head silhouettes, not in front of faces. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
         style={{position:'absolute',inset:0,pointerEvents:'none'}}>
-        <circle cx="570" cy="971" r="12" fill="#E96B3C"
+        <circle cx="526" cy="943" r="12" fill="#E96B3C"
           stroke="#20251F" strokeWidth="5"/>
-        <circle cx="659" cy="963" r="12" fill="#F6F0E5"
+        <circle cx="660" cy="957" r="12" fill="#F6F0E5"
           stroke="#20251F" strokeWidth="5"/>
       </svg>
       <BusSeats sec={s} seated/>
