@@ -4,6 +4,9 @@ import {canRenderMediaOnWeb, renderMediaOnWeb} from '@remotion/web-renderer';
 import {projectRegistry, type ProjectRegistryEntry} from '../src/project-registry';
 
 type StudioTab = 'preview' | 'edit' | 'render';
+type WorkspaceView = 'library' | 'studio';
+const LIBRARY_PAGE_SIZE = 6;
+const defaultProject = [...projectRegistry].sort((a, b) => b.episode - a.episode)[0];
 type RenderState = 'idle' | 'checking' | 'ready' | 'rendering' | 'done' | 'unsupported' | 'error';
 
 const statusLabel: Record<ProjectRegistryEntry['status'], string> = {
@@ -43,9 +46,12 @@ const StudioIcon = ({type}: {type: StudioTab | 'library' | 'github'}) => {
 
 export const App: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [selectedId, setSelectedId] = useState(projectRegistry[0]?.id ?? '');
+  const [statusFilter, setStatusFilter] = useState<'all' | ProjectRegistryEntry['status']>('all');
+  const [libraryPage, setLibraryPage] = useState(1);
+  const [workspaceView, setWorkspaceView] = useState<WorkspaceView>('library');
+  const [selectedId, setSelectedId] = useState(defaultProject?.id ?? '');
   const [activeTab, setActiveTab] = useState<StudioTab>('preview');
-  const [selectedSceneId, setSelectedSceneId] = useState(projectRegistry[0]?.scenes[0]?.id ?? '');
+  const [selectedSceneId, setSelectedSceneId] = useState(defaultProject?.scenes[0]?.id ?? '');
   const [renderState, setRenderState] = useState<RenderState>('checking');
   const [renderProgress, setRenderProgress] = useState(0);
   const [renderMessage, setRenderMessage] = useState('Memeriksa kemampuan browser...');
@@ -54,15 +60,28 @@ export const App: React.FC = () => {
 
   const filteredProjects = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return projectRegistry;
 
-    return projectRegistry.filter((project) =>
-      [project.title, project.coverText, project.category, project.id]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalized),
-    );
-  }, [query]);
+    return projectRegistry
+      .filter((project) => {
+        const matchesSearch = !normalized || [project.title, project.coverText, project.category, project.id]
+          .join(' ')
+          .toLowerCase()
+          .includes(normalized);
+        return matchesSearch && (statusFilter === 'all' || project.status === statusFilter);
+      })
+      .sort((a, b) => b.episode - a.episode);
+  }, [query, statusFilter]);
+
+  const totalLibraryPages = Math.max(1, Math.ceil(filteredProjects.length / LIBRARY_PAGE_SIZE));
+  const currentLibraryPage = Math.min(libraryPage, totalLibraryPages);
+  const visibleProjects = filteredProjects.slice(
+    (currentLibraryPage - 1) * LIBRARY_PAGE_SIZE,
+    currentLibraryPage * LIBRARY_PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    setLibraryPage(1);
+  }, [query, statusFilter]);
 
   const selected =
     projectRegistry.find((project) => project.id === selectedId) ?? projectRegistry[0];
@@ -185,6 +204,7 @@ export const App: React.FC = () => {
 
   const selectProject = (id: string) => {
     setSelectedId(id);
+    setWorkspaceView('studio');
     setActiveTab('preview');
     if (downloadUrl) {
       URL.revokeObjectURL(downloadUrl);
@@ -204,45 +224,31 @@ export const App: React.FC = () => {
         </div>
 
         <div className="sidebar-section-label">Workspace</div>
-        <nav className="sidebar-nav">
-          <button className="sidebar-nav-item active" type="button">
+        <nav className="sidebar-nav" aria-label="Workspace">
+          <button
+            className={`sidebar-nav-item ${workspaceView === 'library' ? 'active' : ''}`}
+            type="button"
+            onClick={() => setWorkspaceView('library')}
+          >
             <StudioIcon type="library" />
-            <span>Episodes</span>
+            <span>Episode Library</span>
             <b>{projectRegistry.length}</b>
           </button>
         </nav>
 
         <div className="sidebar-section-label episode-heading">
-          <span>Library</span>
-          <span>{filteredProjects.length}</span>
+          <span>Selected episode</span>
         </div>
-
-        <div className="episode-search">
-          <span>⌕</span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Cari episode..."
-          />
-        </div>
-
-        <div className="episode-list">
-          {filteredProjects.map((project) => (
-            <button
-              key={project.id}
-              type="button"
-              className={`episode-item ${project.id === selected.id ? 'active' : ''}`}
-              onClick={() => selectProject(project.id)}
-            >
-              <div className="episode-index">{String(project.episode).padStart(3, '0')}</div>
-              <div className="episode-copy">
-                <strong>{project.title}</strong>
-                <span>{project.coverText}</span>
-              </div>
-              <span className={`status-dot status-${project.status}`} title={statusLabel[project.status]} />
-            </button>
-          ))}
-        </div>
+        <button
+          className={`sidebar-current-episode ${workspaceView === 'studio' ? 'active' : ''}`}
+          type="button"
+          onClick={() => setWorkspaceView('studio')}
+        >
+          <span className="sidebar-current-number">EP #{String(selected.episode).padStart(3, '0')}</span>
+          <strong>{selected.title}</strong>
+          <span className="sidebar-current-open">Open studio <span aria-hidden="true">→</span></span>
+        </button>
+        <p className="sidebar-library-hint">Semua episode ada di Library. Pilih langsung tanpa scroll panjang.</p>
 
         <div className="sidebar-footer">
           <a
@@ -254,14 +260,106 @@ export const App: React.FC = () => {
             <StudioIcon type="github" />
             <span>GitHub Repository</span>
           </a>
-          <div className="sidebar-version">Studio v0.2</div>
+          <div className="sidebar-version">Studio v0.3</div>
         </div>
       </aside>
 
       <main className="studio-main">
+        {workspaceView === 'library' ? (
+          <div className="library-workspace">
+            <header className="studio-topbar">
+              <div className="breadcrumb"><strong>Episode Library</strong></div>
+              <span className="library-count">{projectRegistry.length} total episodes</span>
+            </header>
+
+            <section className="library-intro">
+              <span className="project-eyebrow">CONTENT STUDIO / LIBRARY</span>
+              <h1>Semua episode, satu tempat.</h1>
+              <p>Cari, pilih, dan buka episode langsung ke studio. Tanpa daftar panjang ke bawah.</p>
+            </section>
+
+            <div className="library-controls">
+              <label className="library-search">
+                <span aria-hidden="true">⌕</span>
+                <input
+                  aria-label="Cari episode"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Cari judul atau nomor episode..."
+                />
+              </label>
+              <select
+                className="library-status-filter"
+                aria-label="Filter status episode"
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
+              >
+                <option value="all">Semua status</option>
+                <option value="idea">Idea</option>
+                <option value="draft">Draft</option>
+                <option value="review">Review</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+
+            <div className="library-result-count" role="status">
+              {filteredProjects.length} episode ditemukan <span>· Urut terbaru</span>
+            </div>
+
+            {visibleProjects.length > 0 ? (
+              <div className="library-grid">
+                {visibleProjects.map((project) => (
+                  <button
+                    key={project.id}
+                    type="button"
+                    className="library-episode-card"
+                    onClick={() => selectProject(project.id)}
+                    aria-label={`Buka Episode ${String(project.episode).padStart(3, '0')}: ${project.title}`}
+                  >
+                    <div className="library-card-top">
+                      <span className="library-episode-number">EP {String(project.episode).padStart(3, '0')}</span>
+                      <span className={`project-status project-status-${project.status}`}>
+                        <span />{statusLabel[project.status]}
+                      </span>
+                    </div>
+                    <strong className="library-card-title">{project.title}</strong>
+                    <p className="library-card-description">{project.coverText}</p>
+                    <div className="library-card-bottom">
+                      <span>{formatDuration(project)} · {project.category}</span>
+                      <span className="library-card-open">Open studio <span aria-hidden="true">→</span></span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="library-empty">Tidak ada episode yang cocok. Coba kata kunci atau status lain.</div>
+            )}
+
+            {totalLibraryPages > 1 ? (
+              <nav className="library-pagination" aria-label="Halaman episode">
+                <button
+                  type="button"
+                  disabled={currentLibraryPage === 1}
+                  onClick={() => setLibraryPage((value) => Math.max(1, value - 1))}
+                >
+                  ← Sebelumnya
+                </button>
+                <span>Halaman {currentLibraryPage} dari {totalLibraryPages}</span>
+                <button
+                  type="button"
+                  disabled={currentLibraryPage === totalLibraryPages}
+                  onClick={() => setLibraryPage((value) => Math.min(totalLibraryPages, value + 1))}
+                >
+                  Berikutnya →
+                </button>
+              </nav>
+            ) : null}
+          </div>
+        ) : (
+          <>
         <header className="studio-topbar">
           <div className="breadcrumb">
-            <span>Episodes</span>
+            <button className="library-back-button" type="button" onClick={() => setWorkspaceView('library')}>← Library</button>
             <i>/</i>
             <strong>#{String(selected.episode).padStart(3, '0')} {selected.title}</strong>
           </div>
@@ -588,6 +686,8 @@ export const App: React.FC = () => {
             </aside>
           </div>
         ) : null}
+          </>
+        )}
       </main>
     </div>
   );
