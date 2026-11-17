@@ -1,0 +1,62 @@
+name: E006 Bus staging visual proof (WebP only)
+on:
+  push:
+    branches:
+      - fix/e006-bus-staging
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bus-acting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --quiet Pillow==11.3.0
+      - name: TypeScript gate
+        run: npx tsc --noEmit
+      - name: Render bus acting and visual phone-size samples
+        run: |
+          mkdir -p /tmp/e006-bus-qa
+          for frame in 213 228 240 255 270 285 300 315 330 345 360 375 390 405 420 450 480 510 540 565; do
+            npx remotion still E006-Lagu-Masa-Lalu-Review /tmp/e006-bus-qa/f-$frame.png --frame=$frame --log=error
+          done
+      - name: Produce QA contact sheet and short motion proxy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          d=Path('/tmp/e006-bus-qa')
+          frames=sorted(d.glob('f-*.png'),key=lambda p:int(p.stem.split('-')[-1]))
+          assert len(frames)==20
+          W,H=226,402
+          sheet=Image.new('RGB',(5*(W+12)+12,4*(H+26)+12),'#f6f0e5')
+          draw=ImageDraw.Draw(sheet)
+          anim=[]
+          for i,p in enumerate(frames):
+              with Image.open(p) as original:
+                  im=original.convert('RGB')
+                  im.thumbnail((W,H),Image.Resampling.LANCZOS)
+                  anim.append(im.copy())
+              x=12+(i%5)*(W+12);y=26+(i//5)*(H+26)
+              sheet.paste(im,(x,y))
+              draw.text((x,y-19),f'{int(p.stem.split("-")[-1])/30:.1f}s',fill='#20251f')
+          sheet.save(d/'bus-acting-contact.webp','WEBP',quality=80)
+          anim[0].save(d/'bus-acting-motion.webp',save_all=True,append_images=anim[1:],duration=430,loop=0,quality=70,method=4)
+          print('BUS_QA_CONTACT_OK', (d/'bus-acting-contact.webp').stat().st_size)
+          print('BUS_QA_MOTION_OK', (d/'bus-acting-motion.webp').stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: episode006-bus-staging-review
+          path: /tmp/e006-bus-qa/*.webp
+          retention-days: 7

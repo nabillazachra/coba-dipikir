@@ -18,7 +18,7 @@ export const Episode6Captions:React.FC=()=>{
   if (!cue) return null;
   return <AbsoluteFill style={{pointerEvents:'none',zIndex:50}}>
     <div style={{
-      position:'absolute',top:1340,left:92,width:782,minHeight:130,
+      position:'absolute',top:1482,left:92,width:782,minHeight:125,
       display:'flex',alignItems:'center',justifyContent:'center',
       color:brand.colors.white,textAlign:'center',
       fontFamily:brand.fontFamily,fontWeight:950,fontSize:50,

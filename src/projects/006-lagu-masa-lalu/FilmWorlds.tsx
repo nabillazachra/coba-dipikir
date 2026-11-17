@@ -70,28 +70,41 @@ const BusWindow:React.FC<{sec:number;warm?:number;large?:boolean}>=({sec,warm=1,
   </svg>;
 };
 
-const Friend:React.FC<{x?:number;y?:number;scale?:number;smile?:boolean;sway?:number}>=({
-  x=650,y=895,scale=1,smile=true,sway=0,
+const Friend:React.FC<{x?:number;y?:number;scale?:number;smile?:boolean;sway?:number;earTouch?:number;blink?:number;seated?:boolean;gaze?:number}>=({
+  x=650,y=895,scale=1,smile=true,sway=0,earTouch=0,blink=0,seated=false,gaze=0,
 })=><div style={{position:'absolute',left:x,top:y,width:310*scale,height:610*scale,
   transform:'rotate('+sway+'deg)',transformOrigin:'50% 80%'}}>
   <svg width="100%" height="100%" viewBox="0 0 310 610" overflow="visible">
-    <path d="M80 228 Q91 185 145 190 Q220 181 240 254 L238 502
-      Q155 534 65 494 Z" fill="#42765B" stroke="#20251F" strokeWidth="13" strokeLinejoin="round"/>
-    <path d="M100 496 L87 578 M204 496 L212 578" stroke="#20251F" strokeWidth="15" strokeLinecap="round"/>
-    <path d="M84 270 Q25 308 22 359 M226 272 Q289 308 290 342"
+    <path d={seated
+      ? 'M80 228 Q91 185 145 190 Q220 181 240 254 L238 447 Q157 472 65 447 Z'
+      : 'M80 228 Q91 185 145 190 Q220 181 240 254 L238 502 Q155 534 65 494 Z'}
+      fill="#42765B" stroke="#20251F" strokeWidth="13" strokeLinejoin="round"/>
+    {seated
+      ? <path d="M103 447 Q114 468 151 463 M198 447 Q210 465 228 458"
+          stroke="#20251F" strokeWidth="15" fill="none" strokeLinecap="round"/>
+      : <path d="M100 496 L87 578 M204 496 L212 578"
+          stroke="#20251F" strokeWidth="15" strokeLinecap="round"/>}
+    {/* Arm rises to touch the physical earbud rather than hovering beside it. */}
+    <path d={'M84 270 Q'+(25+35*earTouch)+' '+(308-115*earTouch)+' '+(22+40*earTouch)+' '+(359-207*earTouch)+' M226 272 Q289 308 290 342'}
       stroke="#20251F" strokeWidth="15" fill="none" strokeLinecap="round"/>
-    <circle cx="22" cy="360" r="17" fill="#F6F0E5" stroke="#20251F" strokeWidth="8"/>
+    <circle cx={22+40*earTouch} cy={359-207*earTouch} r="17" fill="#F6F0E5" stroke="#20251F" strokeWidth="8"/>
     <circle cx="289" cy="342" r="17" fill="#F6F0E5" stroke="#20251F" strokeWidth="8"/>
     <circle cx="150" cy="125" r="103" fill="#F6F0E5" stroke="#20251F" strokeWidth="13"/>
     <path d="M82 99 Q149 24 220 91" stroke="#20251F" strokeWidth="16" fill="none" strokeLinecap="round"/>
-    <path d="M111 127 V139 M185 127 V139" stroke="#20251F" strokeWidth="13" strokeLinecap="round"/>
+    <g transform={'translate('+gaze+' 0)'}>
+      <path d={blink>.7?'M111 132 H125 M181 132 H195':'M111 127 V139 M185 127 V139'}
+        stroke="#20251F" strokeWidth="13" strokeLinecap="round"/>
+    </g>
     <path d={smile?'M113 183 Q150 214 188 178':'M126 184 Q151 180 176 185'}
       fill="none" stroke="#20251F" strokeWidth="9" strokeLinecap="round"/>
     <circle cx="209" cy="145" r="15" fill="#E96B3C" stroke="#20251F" strokeWidth="6"/>
+    {/* The lifted fingertip remains visible over the ear/head contour. */}
+    <circle cx={22+40*earTouch} cy={359-207*earTouch} r="17" fill="#F6F0E5"
+      stroke="#20251F" strokeWidth="8" opacity={smooth(.45,.8,earTouch)}/>
   </svg>
 </div>;
 
-const BusSeats:React.FC<{sec:number;front?:boolean}>=({sec,front=true})=>
+const BusSeats:React.FC<{sec:number;front?:boolean;seated?:boolean}>=({sec,front=true,seated=false})=>
   <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position:'absolute',inset:0,pointerEvents:'none'}}>
     <path d="M-100 1397 Q105 1275 307 1370 L415 1920 H-120 Z"
       fill="#42766A" stroke="#202F2D" strokeWidth="17"/>
@@ -99,6 +112,32 @@ const BusSeats:React.FC<{sec:number;front?:boolean}>=({sec,front=true})=>
     {front&&<path d="M885 1530 Q1050 1450 1180 1547 L1180 1920 H840 Z"
       fill="#28584E" stroke="#213D37" strokeWidth="19"/>}
     <path d="M-30 1691 Q174 1599 366 1682" fill="none" stroke="#33675D" strokeWidth="18" opacity=".67"/>
+    {/* A continuous upholstered front rail occludes feet naturally:
+        passengers belong in the bus, not standing on a flat floor layer. */}
+    {seated&&<g>
+      <path d="M-70 1375 Q120 1290 329 1318 Q488 1328 572 1380 L625 1940 H-90 Z"
+        fill="#326F62" stroke="#244840" strokeWidth="21"/>
+      <path d="M556 1380 Q732 1286 919 1315 Q1060 1326 1170 1385 L1180 1940 H530 Z"
+        fill="#32675B" stroke="#244840" strokeWidth="20"/>
+      <path d="M55 1372 Q292 1308 502 1380 M659 1370 Q862 1304 1085 1385"
+        stroke="#7BA99A" strokeWidth="12" fill="none" opacity=".65"/>
+      <path d="M574 1320 L610 1940" stroke="#25483F" strokeWidth="19" opacity=".6"/>
+      {/* The central aisle opens toward the camera: foreground furniture now
+          frames a real bus interior instead of covering half the canvas. */}
+      <path d="M528 1342 L590 1342 L748 1940 H359 Z"
+        fill="#68736B" stroke="#324B46" strokeWidth="14" strokeLinejoin="round"/>
+      <path d="M529 1346 L359 1940 M590 1346 L748 1940"
+        stroke="#9BA89B" strokeWidth="11" opacity=".42" fill="none"/>
+      <path d="M458 1590 H660 M410 1780 H706"
+        stroke="#A5AFA3" strokeWidth="9" opacity=".27" fill="none"/>
+      {/* Wear marks, seams and reflected bus-window light travel down the aisle. */}
+      <path d="M541 1410 L463 1930" stroke="#E3D7B7" strokeWidth="13" opacity=".10"/>
+      <path d="M585 1450 L660 1935" stroke="#F8E6BC" strokeWidth="10" opacity=".07"/>
+      <path d="M-40 1622 Q160 1575 375 1645 M758 1645 Q950 1575 1130 1630"
+        stroke="#8CB7A7" strokeWidth="16" opacity=".32" fill="none"/>
+      <path d="M-20 1850 Q160 1804 311 1865 M802 1865 Q974 1809 1130 1845"
+        stroke="#235347" strokeWidth="16" opacity=".39" fill="none"/>
+    </g>}
     <path d={'M'+(510+Math.sin(sec*1.2)*19)+' 0 V1920'}
       stroke="#E6F6E1" strokeWidth="9" opacity=".025"/>
   </svg>;
@@ -154,35 +193,64 @@ const RoomSet:React.FC<{sec:number;lamp?:boolean;evening?:boolean}>=({sec,evenin
 type WorldProps={from?:number};
 export const BusMemory:React.FC<WorldProps>=()=>{
   const frame=useCurrentFrame();const {fps}=useVideoConfig();const s=frame/fps;
-  const smile=s>3.5&&s<9.2;
-  // A brief window-focused truck lets the music-linked city become the subject,
-  // before returning to the shared-earbud interaction.
+  // Short physical story: recognition -> share an earbud -> glance at friend
+  // -> ride with the memory -> passing pole returns us to the present.
+  const earShare=smooth(1.1,2.3,s)*(1-smooth(4.2,5.0,s));
+  const lookFriend=smooth(2.6,3.65,s)*(1-smooth(5.6,6.7,s));
+  const smile=s>3.0&&s<10.3;
   const cityLook=smooth(5.7,7.9,s)*(1-smooth(9.1,11.25,s));
-  const lens=lerp(1.015,1.10,smooth(1,4,s))+.07*cityLook;
+  // Mid-shot, not an unjustified zoom that turns two seated people into giants.
+  const lens=1.012+.032*smooth(1,4,s)+.055*cityLook;
+  const cameraX=-12*smooth(1,9,s)-36*cityLook;
+  const sway=2.0*Math.sin(s*1.55);
+  const blink=Math.exp(-Math.pow((s-4.75)/.12,2));
   return <AbsoluteFill style={{overflow:'hidden',background:'#A98170'}}>
     <div style={{position:'absolute',width:1080,height:1920,
-      transform:'translate('+(-15*smooth(1,9,s)-94*cityLook)+'px,0px) scale('+lens+')',
+      transform:'translate('+cameraX+'px,0px) scale('+lens+')',
       transformOrigin:'52% 55%'}}>
       <BusWindow sec={s}/>
-      <Friend x={614} y={846} scale={1.02} smile={smile}
-        sway={3*Math.sin(s*1.55)+4*smooth(1.8,3,s)*(1-smooth(3.5,4.5,s))}/>
-      {/* One shared cable ties both characters to the music as a physical prop. */}
+      {/* The rear seat holds both characters in one actual bus interior. */}
       <svg width="1080" height="1920" viewBox="0 0 1080 1920"
-        style={{position:'absolute',inset:0}}>
-        <path d="M789 987 C758 1082 654 1155 602 1107 C533 1039 516 1060 489 1024"
-          fill="none" stroke="#29312D" strokeWidth="6"/>
-        <circle cx="487" cy="1023" r="15" fill="#E96B3C" stroke="#20251F" strokeWidth="5"/>
+        style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+        <path d="M76 1348 V1086 Q76 1036 130 1036 H931 Q983 1036 983 1090 V1390"
+          fill="none" stroke="#234B43" strokeWidth="36" strokeLinecap="round"/>
+        <path d="M108 1302 V1090 Q108 1066 142 1066 H920 Q948 1066 948 1092 V1310"
+          fill="none" stroke="#427A6D" strokeWidth="15" strokeLinecap="round"/>
       </svg>
-      <CharacterAt x={110} y={780} w={570}
-        expression={smile?'happy':'curious'}
-        tilt={-4+7*smooth(2,4,s)} lean={-3+Math.sin(s*2)*2}
-        leftArm={20-35*smooth(2,3.8,s)}
-        rightArm={-20+36*smooth(4.5,6,s)}
-        scarf={8*Math.sin(s*2.2)} light={.33}/>
-      <BusSeats sec={s}/>
-      {/* Passing foreground pole creates a cut-ready moving spatial landmark. */}
-      <div style={{position:'absolute',left:1120-167*smooth(9.7,11.9,s),top:-40,
-        width:45,height:2050,background:'#304741',boxShadow:'-9px 0 12px rgba(10,20,20,.2)'}}/>
+      {/* Cable runs behind faces and bodies, with visible buds on the ear rims.
+          It does not cut across anyone's eyes, nose, or mouth. */}
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+        style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+        <path d="M526 943 C536 1088 560 1180 610 1210 C657 1187 668 1070 660 957"
+          stroke="#25362F" strokeWidth="6" fill="none" strokeLinecap="round"/>
+        <path d="M610 1210 Q615 1265 592 1340"
+          stroke="#25362F" strokeWidth="6" fill="none" strokeLinecap="round"/>
+      </svg>
+      <Friend x={606} y={816} scale={1.13} seated smile={smile}
+        earTouch={earShare} gaze={-7*lookFriend}
+        blink={blink} sway={sway+2*smooth(2.2,3.1,s)*(1-smooth(3.6,4.8,s))}/>
+      <CharacterAt x={158} y={743} w={455}
+        expression={s<1.3?'curious':s<3.15?'thinking':smile?'happy':'curious'}
+        tilt={-4+6*lookFriend}
+        lean={-2+1.5*Math.sin(s*1.55)}
+        leftArm={14-12*smooth(3.3,5.0,s)}
+        rightArm={-20+166*smooth(.5,1.65,s)-146*smooth(2.3,3.6,s)}
+        blink={Math.exp(-Math.pow((s-5.3)/.12,2))}
+        scarf={5*Math.sin(s*1.9)} light={.21}/>
+      {/* Earbud knobs: placed on the head silhouettes, not in front of faces. */}
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+        style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+        <circle cx="526" cy="943" r="12" fill="#E96B3C"
+          stroke="#20251F" strokeWidth="5"/>
+        <circle cx="660" cy="957" r="12" fill="#F6F0E5"
+          stroke="#20251F" strokeWidth="5"/>
+      </svg>
+      <BusSeats sec={s} seated/>
+      {/* Poles and seats are camera-relative foreground, not graphic dividers. */}
+      <div style={{position:'absolute',
+        left:1120-167*smooth(9.7,11.9,s),top:-40,
+        width:45,height:2050,background:'#304741',
+        boxShadow:'-9px 0 12px rgba(10,20,20,.2)'}}/>
     </div>
   </AbsoluteFill>;
 };
