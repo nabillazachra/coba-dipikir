@@ -31,16 +31,19 @@
 | 12 Vote | Corridor branches into A city ambulance / B rainy car interior | Two connected cinematic mini-worlds | Choose A/B in comments |
 | 13 Closing | Both worlds simplify; character remains in center | Continuous scene, not blank end card | COBA DIPIKIR + tagline |
 
-## Gate B proof timing — 7.5 s, 30 fps, 225 frames
-| Seconds | Action | Validation target |
+## Gate B V4 proof timing — 8 seconds, 30 fps, 240 frames
+| Seconds | Camera + action | Acceptance gate |
 |---|---|---|
-| 0.00–1.30 | Character enters while holding an active call | Full-screen lobby/cabin, character scale and walking |
-| 1.30–1.90 | Reach and press floor 12 | Finger/hand and button contact, button depresses |
-| 2.10–3.10 | Door panels slide shut behind actor | Physical panels, readable architecture |
-| 2.85–4.21 | Reception drops from 4 to 1 | Phone screen readable, actor notices |
-| 3.65–4.98 | Character raises phone; momentary loss | Phone linked to hand endpoint, scarf follow-through |
-| 4.98–6.22 | One bar appears; total comic freeze | No blinking, no busy music, one-bar tension |
-| 6.22–7.50 | Signal disappears; awkward deadpan | Eyebrows/pose/stillness readable without VO |
+| 0.00–0.38 | FULL-SCREEN lobby; character approaches while actively on call | Before entering, scenery and elevator doorway visible at once |
+| 0.38–2.21 | Side-offset perspective: character crosses into cabin, body reduces in scale and foot passes threshold | Physical crossing reads with NO VO; jamb visibly occludes body while crossing |
+| 2.11–2.59 | Door jamb foreground wipes over camera; 2.35 inside cut | No unmotivated hard cut; camera feels like it follows character inside |
+| 2.48–3.17 | Interior shot: right hand presses button 12 | Finger contacts button, button depresses, beep |
+| 3.17–3.95 | Twin steel leaves close on back wall | Real world door geometry, center seam |
+| 3.86–5.43 | Reception declines; actor looks at phone then raises it | Face/phone clearly readable, phone follows left hand |
+| 5.51–6.72 | One bar returns; character HOPEFULLY FREEZES | Eyes/eyebrows and scarf timing, tiny signal pop |
+| 6.72–8.00 | Bar disappears; prolonged deadpan | Silence, no explanatory VO, tension and visual payoff |
+
+**V4 review focus:** Compare opening (0s, 1.5s, 2s) to the V3 failure. The action MUST read specifically as **entering** an elevator rather than standing in front of a rectangle. The camera handoff at ~2.35s must be evaluated frame-by-frame and on continuous motion. The initial 8-second proof should remain proof-only; full-film vote/reveal remains only storyboard planning.
 
 ### Current implementation boundary
 - Source: \`src/projects/007-sinyal-lift/ActingProof.tsx\`.
