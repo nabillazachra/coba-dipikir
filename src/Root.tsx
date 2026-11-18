@@ -15,6 +15,7 @@ import {ReturnTripEpisode} from './projects/005-perjalanan-pulang/Composition';
 import {LaguActingProof} from './projects/006-lagu-masa-lalu/ActingProof';
 import {LaguMasaLaluEpisode} from './projects/006-lagu-masa-lalu/Film';
 import {LaguMasaLaluSafeQA} from './projects/006-lagu-masa-lalu/FilmSafeQA';
+import {LiftActingProof} from './projects/007-sinyal-lift/ActingProof';
 
 export const RemotionRoot: React.FC = () => (
   <Folder name="Coba-Dipikir">
@@ -108,6 +109,26 @@ export const RemotionRoot: React.FC = () => (
         id="E006-Lagu-Acting-Proof-QA"
         component={LaguActingProof}
         durationInFrames={210}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{showSafeOverlay: true}}
+      />
+    </Folder>
+    <Folder name="Episode-007-Lift-Signal-ACTING-REVIEW">
+      <Composition
+        id="E007-Lift-Signal-Acting-Proof"
+        component={LiftActingProof}
+        durationInFrames={240}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{showSafeOverlay: false}}
+      />
+      <Composition
+        id="E007-Lift-Signal-Acting-Proof-QA"
+        component={LiftActingProof}
+        durationInFrames={240}
         fps={30}
         width={1080}
         height={1920}
