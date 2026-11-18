@@ -4,7 +4,7 @@ import {Audio} from '@remotion/media';
 import {brand} from '../../brand/tokens';
 import {Character, type CharacterExpression} from '../002-kulkas/Character';
 
-// E007 GATE B ONLY: 7.5-second acting proof. Not the full film.
+// E007 GATE B ONLY: 8-second acting proof. Not the full film.
 // Reuse the signed-off E002 master character; no copy or redesign.
 // There is deliberately no VO, caption, reveal, vote or ending card here.
 export type LiftActingProofProps = {readonly showSafeOverlay?: boolean};
@@ -52,12 +52,12 @@ const actingCues = () => {
   for (let i = 0; i < count; i++) {
     const t = i / rate;
     const hum = t > 1 ? 0.011 * Math.sin(2 * Math.PI * 70 * t) : 0;
-    const ding = tone(t, 0.69, 710, 0.45, 0.12) + tone(t, 0.69, 1065, 0.36, 0.05);
-    const beep = tone(t, 1.59, 890, 0.16, 0.10);
-    const doorEnvelope = smooth(2.10, 2.31, t) * (1 - smooth(2.87, 3.11, t));
+    const ding = tone(t, 0.38, 710, 0.45, 0.12) + tone(t, 0.38, 1065, 0.36, 0.05);
+    const beep = tone(t, 2.90, 890, 0.16, 0.10);
+    const doorEnvelope = smooth(3.15, 3.34, t) * (1 - smooth(3.77, 3.98, t));
     const noise = (Math.sin(i * 1.93) * Math.sin(i * 0.117) * 0.025) * doorEnvelope;
-    const pop = tone(t, 4.97, 880, 0.17, 0.077) + tone(t, 4.97, 1260, 0.12, 0.045);
-    const fail = tone(t, 6.23, 270, 0.23, 0.058);
+    const pop = tone(t, 5.51, 880, 0.17, 0.077) + tone(t, 5.51, 1260, 0.12, 0.045);
+    const fail = tone(t, 6.72, 270, 0.23, 0.058);
     const sample = clamp(hum + ding + beep + noise + pop + fail, -1, 1);
     view.setInt16(44 + i * 2, Math.round(sample * 32767), true);
   }
@@ -112,239 +112,265 @@ const Panel: React.FC<{pressed: number; floor: string}> = ({pressed, floor}) => 
   </g>
 );
 
+
+/**
+ * V4 ACTING GATE
+ * Shot A: actual exterior lobby -> crosses threshold and disappears BEHIND the portal jamb.
+ * Shot B: inside the same cab facing the doors -> press floor 12 -> shut -> signal comedy.
+ * Transition is motivated by the door jamb occluding the camera, not a title or dissolve.
+ * Every prop position is resolved from the E002 Character's real hand endpoints.
+ */
 export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   showSafeOverlay = false,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const t = frame / fps;
-  const walk = smooth(0.02, 1.32, t);
-  const pressReach = smooth(0.98, 1.55, t) * (1 - smooth(1.86, 2.24, t));
-  const pressed = smooth(1.55, 1.64, t) * (1 - smooth(1.78, 1.91, t));
-  const closed = smooth(2.10, 3.07, t);
-  const suspicious = smooth(3.06, 3.55, t);
-  const lifting = smooth(3.65, 4.82, t);
-  const freeze = smooth(4.91, 5.11, t);
-  const signalLost = smooth(6.17, 6.30, t);
-  const deadpan = smooth(6.42, 6.72, t);
+  const exterior = t < 2.35;
+  const enter = smooth(0.20, 2.21, t);
+  const entryStride = (1 - smooth(1.95, 2.28, t));
+  const pressReach = smooth(2.48, 2.84, t) * (1 - smooth(3.00, 3.36, t));
+  const buttonPress = smooth(2.83, 2.92, t) * (1 - smooth(3.03, 3.17, t));
+  const doorClose = smooth(3.17, 3.95, t);
+  const hearGlitch = smooth(3.86, 4.36, t);
+  const inspectPhone = smooth(4.08, 4.56, t);
+  const liftPhone = smooth(4.72, 5.43, t);
+  const hope = smooth(5.48, 5.57, t);
+  const signalLoss = smooth(6.69, 6.82, t);
+  const deadpan = smooth(6.96, 7.24, t);
 
-  // The actor is staged large (525px master width) and tracks IN to the cabin.
-  const heroX = mix(-280, 292, walk);
-  const heroY = 775 - 10 * walk;
-  const heroWidth = 525;
-  // Phone remains in LEFT hand; RIGHT hand has an unobstructed reach to button 12.
-  // Raising the phone changes left-hand position rather than moving a floating prop.
-  const leftArmAngle = mix(-124, -160, lifting);
-  const rightArmAngle = mix(5, 75, pressReach);
-  const walkEnergy = 1 - smooth(1.19, 1.49, t);
-  const step = t * 2.5 * walkEnergy;
-  const bob = 5 * Math.sin(t * 18) * walkEnergy - 7 * suspicious + 7 * deadpan;
-  const handRecoil = (1 - smooth(6.23, 6.51, t)) * signalLost;
-  const headTilt = -3 + 6 * suspicious - 9 * lifting + 3 * deadpan;
-  const lean = 3 * Math.sin(t * 12) * walkEnergy - 3 * lifting + 8 * deadpan
-    - 5 * handRecoil;
-  // Scarf continues after the torso stops, and settles completely in the freeze.
-  const scarfSwing = 8 * Math.sin(t * 16 - 0.6) * walkEnergy
-    + 8 * Math.sin((t - 3.65) * 10) * Math.exp(-Math.max(0, t - 3.65) * 2)
-      * lifting * (1 - freeze)
-    - 5 * Math.sin(Math.max(0, t - 6.18) * 13)
-      * Math.exp(-Math.max(0, t - 6.18) * 6) * signalLost;
-  const expression: CharacterExpression =
-    deadpan > 0.8 ? 'deadpan'
-      : signalLost > 0.1 ? 'annoyed'
-        : freeze > 0.35 ? 'curious'
-          : lifting > 0.55 ? 'surprised'
-            : suspicious > 0.38 ? 'worried'
-              : 'happy';
-  // A microscopic anticipatory blink; absolutely NO blink during signal freeze.
-  const blink = Math.max(0, 1 - Math.abs(t - 3.22) / 0.105);
-  const cameraPush = smooth(4.7, 6.96, t);
-  const cameraTrack = -42 * walk - 13 * cameraPush;
-  // Film closer to the actor: the cabin fills 9:16 instead of appearing in a small top stage.
-  const cameraZoom = 1.22 + 0.04 * cameraPush;
+  // EXTERIOR: recognizable lobby, right-hand doorway, and walking across it.
+  const eX = mix(-310, 480, enter);
+  const eWidth = mix(475, 399, enter);
+  const eY = mix(765, 901, enter);
+  const walkingStep = t * 2.55 * entryStride;
+  const eBob = Math.sin(t * 17) * 7 * entryStride;
+  const eLeftAngle = -143;
+  const eRightAngle = 13 + Math.sin(t * 11) * 12 * entryStride;
+  const eHandX = eX + eWidth / 300 * (100 + Math.sin(eLeftAngle * Math.PI / 180) * 78);
+  const eHandY = eY + eWidth / 300 * (235 + Math.cos(eLeftAngle * Math.PI / 180) * 78) + eBob;
+  const ePhoneX = eHandX - 29;
+  const ePhoneY = eHandY - 118;
+  const exteriorCamera = -64 * enter;
 
-  // Character.tsx pointFrom(100,235,78,leftArmAngle), no detached/floating handset.
-  const handX = heroX + heroWidth / 300
-    * (100 + Math.sin(leftArmAngle * Math.PI / 180) * 78);
-  const handY = heroY + heroWidth / 300
-    * (235 + Math.cos(leftArmAngle * Math.PI / 180) * 78) + bob;
-  const phoneX = handX - 80;
-  const phoneY = handY - 147;
-  // The right hand directly touches the raised face of the '12' floor button.
-  const buttonFingerX = heroX + heroWidth / 300
-    * (200 + Math.sin(rightArmAngle * Math.PI / 180) * 78);
-  const buttonFingerY = heroY + heroWidth / 300
-    * (235 + Math.cos(rightArmAngle * Math.PI / 180) * 78) + bob;
-  const bars = t < 2.85 ? 4
-    : t < 3.21 ? 3
-      : t < 3.51 ? 2
-        : t < 4.21 ? 1
-          : t < 4.98 ? 0
-            : t < 6.22 ? 1 : 0;
-  const glow = smooth(4.96, 5.11, t) * (1 - smooth(6.2, 6.33, t));
+  // INTERIOR: the actor finishes entering, then genuinely operates a real button.
+  // At contact, right-hand endpoint ~ (797,1179), inside the button 12 surface.
+  const iX = mix(352, 331, smooth(2.34, 2.64, t));
+  const iY = 763;
+  const iWidth = 510;
+  const iRightAngle = mix(-15, 79, pressReach);
+  const iLeftAngle = mix(-145, -78, inspectPhone) +
+    mix(0, -82, liftPhone);
+  const iBob = 3.2 * Math.sin(t * 14) * (1 - smooth(2.47, 2.76, t))
+    + 4.5 * deadpan;
+  const iLean = 2.6 * pressReach - 3.0 * liftPhone + 7.0 * deadpan;
+  const iHeadTilt = -2 + 8 * hearGlitch - 9 * liftPhone + 2 * deadpan;
+  const iHandX = iX + iWidth / 300 * (100 + Math.sin(iLeftAngle * Math.PI / 180) * 78);
+  const iHandY = iY + iWidth / 300 * (235 + Math.cos(iLeftAngle * Math.PI / 180) * 78) + iBob;
+  const iPhoneX = iHandX - 29;
+  const iPhoneY = iHandY - 119;
+  const iButtonX = iX + iWidth / 300 * (200 + Math.sin(iRightAngle * Math.PI / 180) * 78);
+  const iButtonY = iY + iWidth / 300 * (235 + Math.cos(iRightAngle * Math.PI / 180) * 78) + iBob;
+  const bars = t < 3.78 ? 4 : t < 4.12 ? 3 : t < 4.37 ? 2 : t < 4.87 ? 1
+    : t < 5.51 ? 0 : t < 6.73 ? 1 : 0;
+  const expression: CharacterExpression = deadpan > 0.73 ? 'deadpan'
+    : signalLoss > 0.1 ? 'annoyed'
+    : hope > 0.5 ? 'curious'
+    : liftPhone > 0.18 ? 'surprised'
+    : hearGlitch > 0.4 ? 'worried'
+    : pressReach > 0.6 ? 'neutral'
+    : 'happy';
+  const blink = Math.max(0, 1 - Math.abs(t - 4.10) / 0.10);
+  const iScarf = 5 * Math.sin((t - 2.35) * 8) *
+    Math.exp(-Math.max(0, t - 2.35) * 2.4) * (1 - hope)
+    + 8 * Math.sin((t - 4.72) * 11) *
+    Math.exp(-Math.max(0, t - 4.72) * 3) * liftPhone * (1 - hope);
+  const glow = smooth(5.51, 5.63, t) * (1 - smooth(6.68, 6.83, t));
+
+  // Diegetic phone: wrist underneath device; never a separate floating diagram.
+  const Phone: React.FC<{x: number; y: number; bars: number; tilt?: number; scale?: number}> =
+    ({x, y, bars: n, tilt = 0, scale = 1}) => (
+      <g transform={'translate(' + x + ' ' + y + ') rotate(' + tilt + ' 30 119) scale(' + scale + ')'}>
+        <rect width="61" height="130" rx="15" fill="#25342F" stroke="#172820" strokeWidth="9"/>
+        <rect x="7" y="10" width="47" height="104" rx="7" fill="#3A6D59"/>
+        <SignalBars bars={n} x={8} y={16} scale={0.72}/>
+        <circle cx="30" cy="84" r="14" fill="#E96B3C"/>
+        <path d="M23 84 Q31 96 38 83" stroke="#F6F0E5"
+          strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <rect x="23" y="121" width="16" height="3" rx="2" fill="#BCC7BC"/>
+      </g>
+    );
 
   return (
-    <AbsoluteFill style={{background: '#34403B', overflow: 'hidden'}}>
-      <div style={{
-        position: 'absolute', width: 1080, height: 1920, left: 0, top: 0,
-        transform: 'translateX(' + cameraTrack + 'px) scale(' + cameraZoom + ')',
-        transformOrigin: '55% 55%',
-      }}>
-        <svg viewBox="0 0 1080 1920" width="1080" height="1920"
-          style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
-          <defs>
-            <linearGradient id="e007-wall" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#6F776D" />
-              <stop offset="0.5" stopColor="#92988A" />
-              <stop offset="1" stopColor="#4F5B53" />
-            </linearGradient>
-            <linearGradient id="e007-floor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#70776B" />
-              <stop offset="1" stopColor="#293B36" />
-            </linearGradient>
-            <linearGradient id="e007-door" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#56665F" />
-              <stop offset="0.48" stopColor="#B0B6A5" />
-              <stop offset="1" stopColor="#526259" />
-            </linearGradient>
-          </defs>
+    <AbsoluteFill style={{background: '#43564D', overflow: 'hidden'}}>
+      {exterior ? (
+        // --- SHOT 1: outside the elevator, not an already-entered frontal scene. ---
+        <div style={{
+          position: 'absolute', inset: 0, width: 1080, height: 1920,
+          transform: 'translateX(' + exteriorCamera + 'px)',
+        }}>
+          <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+            style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
+            <defs>
+              <linearGradient id="e007-lobby-wall" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stopColor="#B9C6B3"/>
+                <stop offset="1" stopColor="#8FA394"/>
+              </linearGradient>
+              <linearGradient id="e007-lobby-floor" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stopColor="#9EA99A"/>
+                <stop offset="1" stopColor="#5E7569"/>
+              </linearGradient>
+            </defs>
+            {/* A complete 9:16 lobby — continuous walls, ceiling and floor. */}
+            <rect x="-130" y="-100" width="1450" height="1700" fill="url(#e007-lobby-wall)"/>
+            <path d="M-150 1415 H1280 V2030 H-150 Z" fill="url(#e007-lobby-floor)"/>
+            <path d="M-130 1420 H1260" stroke="#394D41" strokeWidth="21"/>
+            <path d="M-190 1690 H1260 M-80 1880 H1190" stroke="#CAD1BD" strokeWidth="7" opacity=".33"/>
+            <path d="M110 1428 L-100 1920 M525 1428 L450 1920 M980 1428 L1190 1920"
+              stroke="#E8E2CD" strokeWidth="9" opacity=".24"/>
+            <rect x="0" y="54" width="1080" height="125" fill="#738E7B" opacity=".55"/>
+            <rect x="90" y="201" width="408" height="22" rx="8" fill="#D8DEC7" opacity=".7"/>
+            <rect x="79" y="250" width="283" height="590" rx="12" fill="#7C998B"
+              stroke="#3E564A" strokeWidth="21"/>
+            <rect x="107" y="281" width="227" height="530" fill="#A9BFAD" opacity=".6"/>
+            <path d="M206 290 V799 M110 549 H332" stroke="#516E5E" strokeWidth="16"/>
+            {/* Large elevator portal on the RIGHT; cabin visually recedes. */}
+            <path d="M415 280 H1130 V1512 H415 Z" fill="#24362F" stroke="#34483F" strokeWidth="30"/>
+            <path d="M448 312 H1085 V1460 H448 Z" fill="#A5B7A9"/>
+            <path d="M448 312 L568 447 V1354 L448 1460 Z" fill="#6D8679"/>
+            <path d="M1085 312 L1004 443 V1360 L1085 1460 Z" fill="#738B7C"/>
+            <path d="M570 442 H1005 V1357 H570 Z" fill="#C6CAB7"/>
+            <path d="M570 442 L787 604 L1005 442" fill="#AEBDAA" opacity=".44"/>
+            <rect x="600" y="372" width="350" height="23" rx="10" fill="#FFF0C9" opacity=".87"/>
+            <path d="M570 1357 L448 1460 H1085 L1005 1357 Z" fill="#7C9284"/>
+            <path d="M444 1457 H1085" stroke="#ECDEBC" strokeWidth="18"/>
+            <path d="M568 443 V1357 M1004 443 V1357"
+              stroke="#72897C" strokeWidth="10"/>
+            {/* Diegetic exterior lift indicator with lit arrow. */}
+            <rect x="680" y="237" width="175" height="83" rx="16" fill="#293A32" stroke="#1C2D26" strokeWidth="8"/>
+            <text x="770" y="294" fontFamily={brand.fontFamily}
+              fontSize="49" fontWeight="800" textAnchor="middle" fill="#FFE0B1">G ↑</text>
+            {/* Subtle lobby depth and a small plant, not a floating card. */}
+            <path d="M0 1116 H158 V1415 H0 Z" fill="#5A7466"/>
+            <path d="M55 1160 Q-8 1060 61 952 Q102 1022 62 1110" fill="#42765B" stroke="#2B5040" strokeWidth="9"/>
+            <path d="M55 1130 Q156 1048 120 925 Q51 1012 55 1130" fill="#5B8662" stroke="#294A3B" strokeWidth="9"/>
+          </svg>
 
-          {/* Architectural planes bleed to EVERY edge, including both safe zones. */}
-          <rect x="-200" y="-200" width="1480" height="2200"
-            fill="url(#e007-wall)" />
-          <path d="M-200 1462 H1280 V2120 H-200 Z" fill="url(#e007-floor)"/>
-          <path d="M0 1475 L1080 1475 M-160 1705 L1300 1705"
-            fill="none" stroke="#C9C7AD" strokeWidth="7" opacity=".32"/>
-          <path d="M235 1465 L-110 1920 M848 1465 L1190 1920"
-            fill="none" stroke="#BFC3B2" strokeWidth="11" opacity=".23"/>
-          {/* Lobby wall accents and foreground depth remain after the door closes. */}
-          <path d="M20 -100 V1545 M1014 -100 V1555" fill="none"
-            stroke="#33463F" strokeWidth="36" opacity=".62"/>
-          <path d="M75 0 V1460 M991 0 V1460" fill="none"
-            stroke="#BCC0AD" strokeWidth="8" opacity=".50"/>
-          <rect x="38" y="468" width="79" height="710" rx="7"
-            fill="#536E61" stroke="#2B3C34" strokeWidth="14" />
-          <rect x="958" y="421" width="95" height="769" rx="9"
-            fill="#4E695D" stroke="#25382F" strokeWidth="15" />
-          {/* Real portal, not a standalone framed illustration. */}
-          <rect x="132" y="226" width="812" height="1290" rx="9"
-            fill="#2A332E" stroke="#283D36" strokeWidth="35"/>
-          <rect x="157" y="258" width="762" height="1200"
-            fill="#9EA99B"/>
-          <path d="M157 258 L305 405 V1380 L157 1458 Z"
-            fill="#77877E"/>
-          <path d="M919 258 L783 405 V1380 L919 1458 Z"
-            fill="#6C8076"/>
-          <path d="M315 411 L775 411 L845 1380 H235 Z"
-            fill="#B6B8A8" opacity=".36"/>
-          <rect x="355" y="274" width="366" height="27" rx="11"
-            fill="#FAE8C9" opacity=".82"/>
-          <rect x="373" y="306" width="334" height="60" rx="26"
-            fill="#FFE3B2" opacity=".17"/>
-          <path d="M145 1458 L928 1458" stroke="#283E36" strokeWidth="28"/>
-          <path d="M157 1450 L310 1356 L767 1356 L919 1450"
-            fill="#718179" stroke="#475D50" strokeWidth="12" />
+          {/* Large recognizable actor crosses from x<0 through visible portal x~440. */}
+          <Character width={eWidth} left={eX} top={eY} expression="happy"
+            step={walkingStep} bob={eBob} leftArm={eLeftAngle}
+            rightArm={eRightAngle} scarfSwing={10 * Math.sin(t * 11 - .7) * entryStride}
+            headTilt={-2 + 2 * Math.sin(t * 6) * entryStride}/>
+          <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+            style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
+            <Phone x={ePhoneX} y={ePhoneY} bars={4} tilt={-12}/>
+            {/* A real door jamb crosses IN FRONT of the actor, proving threshold depth. */}
+            <rect x="426" y="270" width="29" height="1205" fill="#31463A"/>
+            <path d="M451 301 V1457" stroke="#D6DBC7" strokeWidth="10" opacity=".62"/>
+            <path d="M412 1459 L1095 1459" stroke="#2B4337" strokeWidth="13"/>
+            {/* Passing-frame wipe motivates the interior camera switch. */}
+            <rect x={-200 + 1440 * smooth(2.20, 2.39, t)}
+              y="-20" width="110" height="2020" fill="#253A30"
+              opacity={smooth(2.20, 2.29, t) * (1 - smooth(2.29, 2.39, t))}/>
+          </svg>
+        </div>
+      ) : (
+        // --- SHOT 2: camera is INSIDE cab, looking toward its closing doorway. ---
+        <div style={{position: 'absolute', inset: 0, width: 1080, height: 1920,
+          transform: 'translateX(' + (-14 * smooth(4.8, 7.5, t)) +
+          'px) scale(' + (1.08 + .025 * smooth(4.8, 7.5, t)) + ')',
+          transformOrigin: '52% 52%',
+        }}>
+          <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+            style={{position:'absolute',inset:0,overflow:'visible'}}>
+            <defs>
+              <linearGradient id="e007-int-wall" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#A9B8A4"/>
+                <stop offset=".6" stopColor="#839889"/>
+                <stop offset="1" stopColor="#536B5E"/>
+              </linearGradient>
+              <linearGradient id="e007-int-door" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor="#65786F"/>
+                <stop offset=".5" stopColor="#D0D0BB"/>
+                <stop offset="1" stopColor="#697C70"/>
+              </linearGradient>
+            </defs>
+            <rect x="-170" y="-180" width="1450" height="2200" fill="url(#e007-int-wall)"/>
+            <path d="M-160 1445 H1280 V2060 H-160 Z" fill="#536E61"/>
+            <path d="M-130 1640 H1290 M-130 1785 H1290" stroke="#92A697" strokeWidth="8" opacity=".28"/>
+            <path d="M160 1445 L-130 1920 M720 1445 L1000 1920" stroke="#D3D5B8" strokeWidth="8" opacity=".27"/>
+            <path d="M0 290 L1080 290" stroke="#30463A" strokeWidth="26" opacity=".6"/>
+            <rect x="130" y="360" width="590" height="1110" fill="#2A3C33"
+              stroke="#30483D" strokeWidth="29"/>
+            <rect x="153" y="379" width="544" height="1064" fill="#B5BCA9"/>
+            {/* Door remains on back wall, never in front of actor's face. */}
+            <rect x="153" y="379" width={272 * doorClose} height="1064"
+              fill="url(#e007-int-door)" stroke="#41564A" strokeWidth="8"/>
+            <rect x={697 - 272 * doorClose} y="379" width={272 * doorClose}
+              height="1064" fill="url(#e007-int-door)" stroke="#41564A" strokeWidth="8"/>
+            <path d={'M' + (153 + 272 * doorClose) + ' 379 V1443 M'
+              + (697 - 272 * doorClose) + ' 379 V1443'}
+              stroke="#E6E2CD" strokeWidth="10" opacity={doorClose}/>
+            <path d="M128 367 V1464 M722 367 V1464" stroke="#263B32" strokeWidth="21"/>
+            <path d="M121 1452 H729" stroke="#2D4739" strokeWidth="23"/>
+            {/* Controls on the separate right wall, not on the sliding doors. */}
+            <path d="M730 314 H1130 V1478 H730 Z" fill="#728D7C"
+              stroke="#425B4B" strokeWidth="15"/>
+            <path d="M742 331 V1440" stroke="#B8CAB3" strokeWidth="10" opacity=".6"/>
+            <rect x="381" y="226" width="176" height="98" rx="15"
+              fill="#263B30" stroke="#172920" strokeWidth="9"/>
+            <text x="469" y="295" fontSize="60" textAnchor="middle" fontWeight="850"
+              fontFamily={brand.fontFamily} fill="#F6DAAA">{t < 4.20 ? 'G' : '2'}</text>
+            <Panel pressed={buttonPress} floor={t < 4.20 ? 'G' : '2'}/>
+            {/* Occluding near-wall geometry extends to the screen edge. */}
+            <path d="M-100 1550 L30 1455 L65 2020 H-100 Z"
+              fill="#395548" opacity=".75"/>
+            <path d="M1100 1550 L1007 1450 L968 2020 H1100 Z"
+              fill="#395548" opacity=".75"/>
+            <ellipse cx={iX + iWidth/2} cy="1458"
+              rx="141" ry="25" fill="#243B30" opacity=".21"/>
+          </svg>
 
-          {/* TWO true full-height leaves meet at center (x540), with no uncovered gap. */}
-          <rect x="160" y="260" width={380 * closed} height="1195"
-            fill="url(#e007-door)" stroke="#31453E" strokeWidth="11"/>
-          <rect x={920 - 380 * closed} y="260" width={380 * closed}
-            height="1195" fill="url(#e007-door)" stroke="#31453E"
-            strokeWidth="11"/>
-          <path d={'M' + (159 + 380 * closed) + ' 260 V1452 M'
-            + (921 - 380 * closed) + ' 260 V1452'}
-            fill="none" stroke="#DBDFCB" strokeWidth="11" opacity={closed}/>
-          <path d="M139 254 V1457 M942 254 V1457"
-            stroke="#23382F" strokeWidth="26"/>
-          {/* Right foreground wall gives the panel a fixed diegetic surface. */}
-          <path d="M710 250 H920 V1454 H710 Z" fill="#53665A"
-            stroke="#31463E" strokeWidth="10"/>
-          <path d="M707 255 V1454" stroke="#9CAC9E" strokeWidth="11" opacity=".45"/>
-          {/* Floor indicator sits above the doorway, not on a moving panel. */}
-          <rect x="428" y="117" width="225" height="101" rx="15"
-            fill="#293A33" stroke="#1F2F28" strokeWidth="9"/>
-          <text x="540" y="192" textAnchor="middle"
-            fill="#FBE0AD" fontWeight="850" fontSize="62"
-            fontFamily={brand.fontFamily}>{t < 3.54 ? 'G' : '2'}</text>
-          {/* Control panel is mounted on the right interior wall, never on a moving door. */}
-          <Panel pressed={pressed} floor={t < 3.54 ? "G" : "2"}/>
-          {/* A narrow parallax foreground for a lived-in cabin, not a stage. */}
-          <path d="M0 1580 L124 1485 L143 1920 H0 Z"
-            fill="#344D41" opacity=".74"/>
-          <path d="M1080 1573 L975 1478 L960 1920 H1080 Z"
-            fill="#344D41" opacity=".67"/>
-          <ellipse cx={heroX + 265} cy="1456" rx="171" ry="31"
-            fill="#26352F" opacity={0.23 + 0.08 * walk}/>
-        </svg>
+          <Character width={iWidth} left={iX} top={iY}
+            expression={expression} leftArm={iLeftAngle} rightArm={iRightAngle}
+            headTilt={iHeadTilt} lean={iLean} bob={iBob}
+            scarfSwing={iScarf} gazeX={deadpan > .8 ? 1 : liftPhone > .1 ? -8 : 7}
+            blink={blink}/>
+          <svg width="1080" height="1920" viewBox="0 0 1080 1920"
+            style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+            <ellipse cx={iPhoneX+30} cy={iPhoneY+45} rx="60" ry="85"
+              fill="#B6ECA5" opacity={glow*.22}/>
+            <Phone x={iPhoneX} y={iPhoneY} bars={bars}
+              tilt={mix(-12,-8,liftPhone)}/>
+            {/* Wrist is drawn on top of phone edge, illustrating actual grip. */}
+            <ellipse cx={iHandX} cy={iHandY-1} rx="15" ry="12"
+              fill={brand.colors.paper} stroke={brand.colors.ink} strokeWidth="7"/>
+            {/* Contact flash only when the real finger reaches button 12. */}
+            <circle cx={iButtonX} cy={iButtonY} r={buttonPress*11}
+              fill={brand.colors.orange} opacity={buttonPress*.4}/>
+            <g opacity={glow * (1 - smooth(5.73, 6.12, t))}
+              stroke="#EFAB6D" strokeWidth="7" strokeLinecap="round">
+              <path d={'M' + (iPhoneX-12) + ' ' + (iPhoneY+10) + ' l-15 -19'}/>
+              <path d={'M' + (iPhoneX+66) + ' ' + (iPhoneY+2) + ' l15 -19'}/>
+            </g>
+          </svg>
+        </div>
+      )}
 
-        <Character
-          width={heroWidth} left={heroX} top={heroY}
-          expression={expression} headTilt={headTilt} lean={lean}
-          bob={bob} step={step} leftArm={leftArmAngle}
-          rightArm={rightArmAngle}
-          scarfSwing={scarfSwing}
-          gazeX={t < 3 ? -3 : t < 5 ? 12 : deadpan > 0.9 ? 0 : 9}
-          blink={blink}
-        />
-
-        {/* A single diegetic telephone follows the real hand endpoint. */}
-        <svg width="1080" height="1920" viewBox="0 0 1080 1920"
-          style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
-          <ellipse cx={phoneX + 43} cy={phoneY + 59}
-            rx={65 + glow * 17} ry={92 + glow * 15}
-            fill="#D6F0B1" opacity={0.11 * glow}/>
-          <g transform={'translate(' + phoneX + ' ' + phoneY
-            + ') rotate(' + mix(9, -12, lifting) + ' 42 124)'}>
-            <rect width="85" height="163" rx="20"
-              fill="#2B3632" stroke="#192720" strokeWidth="11"/>
-            <rect x="8" y="12" width="69" height="134" rx="12"
-              fill="#3A6355"/>
-            <path d="M20 36 H65" stroke="#D8E3C5" strokeWidth="4"
-              opacity=".24"/>
-            <SignalBars bars={bars} x={16} y={22} scale={0.96}/>
-            <circle cx="42" cy="100" r="18" fill="#E96B3C"/>
-            <path d="M33 102 Q43 115 51 101"
-              fill="none" stroke="#F6F0E5" strokeWidth="6"
-              strokeLinecap="round"/>
-            <rect x="27" y="154" width="30" height="4" rx="2"
-              fill="#ABB7A9"/>
-          </g>
-          {/* Thumb contacts the phone's lower edge: no orphaned hand or floating device. */}
-          <ellipse cx={handX - 1} cy={handY - 1} rx="15" ry="13"
-            fill={brand.colors.paper} stroke={brand.colors.ink}
-            strokeWidth="7" opacity={walk > 0.03 ? 1 : 0.95}/>
-          {/* Right-hand pad meets button 12's surface as the button depresses. */}
-          <circle cx={buttonFingerX} cy={buttonFingerY} r={pressed * 8}
-            fill={brand.colors.orange} opacity={pressed * 0.48}/>
-          {/* Momentary little POP belongs to the phone, not a floating diagram. */}
-          <g opacity={glow * (1 - smooth(5.22, 5.61, t))}
-            stroke="#E9A56C" strokeWidth="9" strokeLinecap="round">
-            <path d={'M' + (phoneX - 18) + ' ' + (phoneY + 10)
-              + ' l-18 -22'}/>
-            <path d={'M' + (phoneX + 88) + ' ' + (phoneY - 5)
-              + ' l19 -22'}/>
-          </g>
-        </svg>
-      </div>
-
-      {/* QA-only layer; never included in the clean proof. */}
       {showSafeOverlay ? (
         <svg width="1080" height="1920" viewBox="0 0 1080 1920"
-          style={{position: 'absolute', inset: 0, pointerEvents: 'none'}}>
-          <rect width="1080" height="300" fill="#DE4D57" fillOpacity=".19"/>
-          <rect x="900" width="180" height="1920"
-            fill="#DE4D57" fillOpacity=".17"/>
-          <rect y="1620" width="1080" height="300"
-            fill="#DE4D57" fillOpacity=".20"/>
-          <rect x="72" y="330" width="800" height="1170"
-            fill="none" stroke="#E0B96E" strokeWidth="6"
-            strokeDasharray="17 14"/>
-          <rect x="72" y="1340" width="800" height="160"
-            fill="none" stroke="#E96B3C" strokeWidth="6"
-            strokeDasharray="14 12"/>
+          style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+          <rect width="1080" height="300" fill="#DD4D53" fillOpacity=".18"/>
+          <rect x="900" width="180" height="1920" fill="#DD4D53" fillOpacity=".16"/>
+          <rect y="1620" width="1080" height="300" fill="#DD4D53" fillOpacity=".21"/>
+          <rect x="72" y="330" width="800" height="1170" fill="none"
+            stroke="#D8B76F" strokeWidth="6" strokeDasharray="17 14"/>
+          <rect x="72" y="1340" width="800" height="160" fill="none"
+            stroke="#E96B3C" strokeWidth="6" strokeDasharray="16 12"/>
         </svg>
       ) : null}
-      <Audio name="Original lift + phone acting cues" src={actingCues()} volume={0.85}/>
+      <Audio name="Original elevator/call action cues (1.0x)"
+        src={actingCues()} volume={0.85}/>
     </AbsoluteFill>
   );
 };
