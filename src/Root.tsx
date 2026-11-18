@@ -119,7 +119,7 @@ export const RemotionRoot: React.FC = () => (
       <Composition
         id="E007-Lift-Signal-Acting-Proof"
         component={LiftActingProof}
-        durationInFrames={225}
+        durationInFrames={240}
         fps={30}
         width={1080}
         height={1920}
@@ -128,7 +128,7 @@ export const RemotionRoot: React.FC = () => (
       <Composition
         id="E007-Lift-Signal-Acting-Proof-QA"
         component={LiftActingProof}
-        durationInFrames={225}
+        durationInFrames={240}
         fps={30}
         width={1080}
         height={1920}
