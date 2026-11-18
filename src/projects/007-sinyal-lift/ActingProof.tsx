@@ -140,9 +140,9 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
   const deadpan = smooth(6.96, 7.24, t);
 
   // EXTERIOR: recognizable lobby, right-hand doorway, and walking across it.
-  const eX = mix(-310, 480, enter);
+  const eX = mix(-45, 480, enter);
   const eWidth = mix(475, 399, enter);
-  const eY = mix(765, 901, enter);
+  const eY = mix(800, 901, enter);
   const walkingStep = t * 2.55 * entryStride;
   const eBob = Math.sin(t * 17) * 7 * entryStride;
   const eLeftAngle = -143;
