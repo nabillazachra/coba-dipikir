@@ -268,10 +268,7 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
             <rect x="426" y="270" width="29" height="1205" fill="#31463A"/>
             <path d="M451 301 V1457" stroke="#D6DBC7" strokeWidth="10" opacity=".62"/>
             <path d="M412 1459 L1095 1459" stroke="#2B4337" strokeWidth="13"/>
-            {/* Passing-frame wipe motivates the interior camera switch. */}
-            <rect x={-200 + 1440 * smooth(2.20, 2.39, t)}
-              y="-20" width="110" height="2020" fill="#253A30"
-              opacity={smooth(2.20, 2.29, t) * (1 - smooth(2.29, 2.39, t))}/>
+            {/* Foreground jamb persists in the lobby shot; the camera passes it. */}
           </svg>
         </div>
       ) : (
@@ -357,6 +354,16 @@ export const LiftActingProof: React.FC<LiftActingProofProps> = ({
         </div>
       )}
 
+      {/* Foreground architectural jamb wipes across BOTH shots at 2.35s,
+          making the camera transition occur while its view is occluded. */}
+      <div style={{
+        position: 'absolute', top: 0,
+        left: -1300 + 2350 * smooth(2.11, 2.59, t),
+        width: 1400, height: 1920,
+        background: 'linear-gradient(90deg,#273D32,#475F50 36%,#344B3E)',
+        boxShadow: '24px 0 45px rgba(23,44,32,.14)',
+        pointerEvents: 'none',
+      }} />
       {showSafeOverlay ? (
         <svg width="1080" height="1920" viewBox="0 0 1080 1920"
           style={{position:'absolute',inset:0,pointerEvents:'none'}}>
