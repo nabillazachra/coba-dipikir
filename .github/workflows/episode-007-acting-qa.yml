@@ -32,7 +32,7 @@ jobs:
           proof=Path('src/projects/007-sinyal-lift/ActingProof.tsx').read_text()
           root=Path('src/Root.tsx').read_text()
           assert "from '../002-kulkas/Character'" in proof
-          assert "durationInFrames={225}" in root
+          assert "durationInFrames={240}" in root
           assert "E007-Lift-Signal-Acting-Proof-QA" in root
           assert 'playbackRate' not in proof
           assert not Path('src/projects/007-sinyal-lift/Film.tsx').exists()
@@ -42,10 +42,10 @@ jobs:
       - name: Generate representative full-resolution still frames (NO MP4)
         run: |
           mkdir -p /tmp/e007
-          for frame in 0 15 30 45 60 75 90 105 120 135 150 165 180 195 210 224; do
+          for frame in 0 15 30 45 60 75 90 105 120 135 150 165 180 195 210 225 239; do
             npx remotion still E007-Lift-Signal-Acting-Proof /tmp/e007/scene-$frame.png --frame=$frame --log=error
           done
-          for frame in 0 45 90 135 150 180 210 224; do
+          for frame in 0 45 90 135 150 180 210 239; do
             npx remotion still E007-Lift-Signal-Acting-Proof-QA /tmp/e007/safe-$frame.png --frame=$frame --log=error
           done
       - name: Generate contact sheet and low-res looping WebP (NO MP4)
@@ -54,9 +54,9 @@ jobs:
           from pathlib import Path
           from PIL import Image,ImageDraw
           d=Path('/tmp/e007')
-          marks=[0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,224]
+          marks=[0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,239]
           w,h=216,384
-          sheet=Image.new('RGB',(4*(w+12)+12,4*(h+29)+10),'#f6f0e5')
+          sheet=Image.new('RGB',(4*(w+12)+12,5*(h+29)+10),'#f6f0e5')
           draw=ImageDraw.Draw(sheet)
           for i,frame in enumerate(marks):
             im=Image.open(d/f'scene-{frame}.png').convert('RGB')
@@ -67,7 +67,7 @@ jobs:
             draw.text((x,y-17),f'{frame/30:.2f}s',fill='#20251f')
           sheet.save(d/'contact-sheet.webp','WEBP',quality=86)
           PY
-          for frame in $(seq 0 5 220); do
+          for frame in $(seq 0 5 235); do
             npx remotion still E007-Lift-Signal-Acting-Proof /tmp/e007/anim-$frame.png --frame=$frame --log=error
           done
           python - <<'PY'
@@ -75,11 +75,11 @@ jobs:
           from PIL import Image
           d=Path('/tmp/e007')
           frames=[]
-          for frame in range(0,225,5):
+          for frame in range(0,240,5):
             im=Image.open(d/f'anim-{frame}.png').convert('RGB')
             im.thumbnail((270,480))
             frames.append(im)
-          frames[0].save(d/'review-motion-7_5s.webp',format='WEBP',save_all=True,
+          frames[0].save(d/'review-motion-8s.webp',format='WEBP',save_all=True,
              append_images=frames[1:],duration=167,loop=0,quality=72,method=4)
           print('Contact sheet and WebP loop generated; nothing exported as MP4')
           PY
